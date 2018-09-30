@@ -20,7 +20,7 @@ library(proto)
 Icon array 
 
 ```{r}
-plot_icons(prev = .01, sens = .80, spec = NA, fart = .096, N = 1000, 
+plot_icons(prev = .1, sens = .70, spec =   NA, fart = .090, N = 100,
            icon.types = c(21, 21, 22, 22),
            title.lbl = "Mammography screening")
 ```
@@ -28,12 +28,13 @@ plot_icons(prev = .01, sens = .80, spec = NA, fart = .096, N = 1000,
 Generating frequencies from probabilities
 
 ```{r}
-f1 <- comp_freq_prob(prev = .1, sens = .70, spec =   NA, fart = .090, N = 1000)
+f1 <- comp_freq_prob(prev = .1, sens = .70, spec =   NA, fart = .090, N = 100)
 length(f1)
+f1
 ```
 
 ```{r}
-plot_mosaic(prev = .1, sens = .70, spec =   NA, fart = .090, N = 1000,
+plot_mosaic(prev = .1, sens = .70, spec =   NA, fart = .090, N = 100,
             title.lbl = "Mammography screening")
 ```
 
@@ -54,15 +55,57 @@ rsim(dice, 100) # simulate random numbers from rv
 
 # Example dataset
 
-For this made-up dataset: `prev = .1, sens = .70, spec =   NA, fart = .090, N = 1000`, create a dataframe instead of having four function arguments
+For this made-up dataset: `prev = .1, sens = .70, spec =   NA, fart = .090, N = 100`, create a dataframe instead of having four function arguments
 
 - Pro: an handle more than two variables, not limited to binary variables, like tidy data?
 - Con: inefficient?
 
+Spec: 
+
+- Each row is one sample
+- Each column is a random variable
+- Each cell is a number (or factor)???
 
 
+## As dataframe
+
+Build the dataframe:
 
 
+```{r}
+df <- data.frame(
+  cancer = c(rep(1, 10),  rep(0, 90)), 
+  test = c(rep(1, 7), rep(0, 3), rep(1, 8), rep(0, 82)))
+```
+
+## As random variable
+
+
+TODO: How to express conditional probabilities?
+
+```{r}
+cancer <- rv(x = c(1, 0), probs = c(0.1, 0.9))
+test <- rv(x = c(1,0), probs = c(0.15, 0.85))
+```
+
+
+# ggplot tutorial
+
+
+## ggproto
+
+```{r}
+StatConditionalProb <- ggproto("StatConditionalProb", Stat,
+  compute_group = function(data, scales) {
+    # data[chull(data$x, data$y), , drop = FALSE]
+    y <- df[df$x == 1, ]$y
+    frequencies <- data.frame(table(y_given_x))
+  
+  },
+  
+  required_aes = c("x", "y")
+)
+```
 
 
 
