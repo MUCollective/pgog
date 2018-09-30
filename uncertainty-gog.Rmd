@@ -7,25 +7,62 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(devtools)
 library(riskyr)
+library(rv2)
+library(proto)
 ```
 
-## R Markdown
+# Data representation
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+## riskyr
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+Icon array 
 
-```{r cars}
-summary(cars)
+```{r}
+plot_icons(prev = .01, sens = .80, spec = NA, fart = .096, N = 1000, 
+           icon.types = c(21, 21, 22, 22),
+           title.lbl = "Mammography screening")
 ```
 
-## Including Plots
+Generating frequencies from probabilities
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r}
+f1 <- comp_freq_prob(prev = .1, sens = .70, spec =   NA, fart = .090, N = 1000)
+length(f1)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+plot_mosaic(prev = .1, sens = .70, spec =   NA, fart = .090, N = 1000,
+            title.lbl = "Mammography screening")
+```
+
+## rv2
+
+- Random variable
+- simulate from prob. distributions
+
+```{r}
+dice <- rv(1:6)
+dice
+plot(dice)
+P(dice <= 3)
+E(dice) 
+rsim(dice, 100) # simulate random numbers from rv
+```
+
+
+# Example dataset
+
+For this made-up dataset: `prev = .1, sens = .70, spec =   NA, fart = .090, N = 1000`, create a dataframe instead of having four function arguments
+
+- Pro: an handle more than two variables, not limited to binary variables, like tidy data?
+- Con: inefficient?
+
+
+
+
+
+
+
+
