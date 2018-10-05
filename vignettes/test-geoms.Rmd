@@ -1,0 +1,46 @@
+---
+title: "Testing new geoms"
+author: "Vignette Author"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+
+library(devtools)
+library(riskyr)
+library(rv2)
+library(tidyverse)
+library(ggplot2)
+library(ggridges)
+library(scales) 
+```
+
+
+
+```{r}
+data(cancer)
+```
+
+
+Plotting stuff
+
+Using fake stat_count
+
+TODO: change the `count` thing somewhere so that it actually computes conditional probabilities
+
+
+```{r}
+ggplot(cancer, aes(x= cancer)) + 
+  stat_fakecount()
+```
+

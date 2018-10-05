@@ -1,0 +1,70 @@
+---
+title: "Reproducing existing uncertainty visualizations with existing stats and geoms"
+author: "Xiaoying Pu"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Reproducing existing uncertainty visualizations with existing stats and geoms}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+library(devtools)
+library(riskyr)
+library(rv2)
+library(tidyverse)
+library(ggplot2)
+library(ggridges)
+library(scales)
+```
+
+
+
+# riskyr
+
+- Icon array 
+- Problems with `plot_icons`
+  - Blah 
+
+```{r}
+plot_icons(prev = .1, sens = .70, spec =   NA, fart = .090, N = 100,
+           icon.types = c(21, 21, 22, 22),
+           title.lbl = "Mammography screening")
+```
+
+
+
+```{r}
+plot_mosaic(prev = .1, sens = .70, spec =   NA, fart = .090, N = 100,
+            title.lbl = "Mammography screening")
+```
+
+
+# ggridges
+
+https://cran.r-project.org/web/packages/ggridges/vignettes/introduction.html
+
+```{r}
+fake_df <- data.frame(test=c(0, 0, 0.1, 0.1, 0.1, 0.2, 0.2, 0.8, 0.8, 0.9, 0.9, 0.9, 1, 1),
+                      cancer = c(rep(0, 7), rep(1, 7)),
+                      height= c(0, (80-8)/80, (80-8)/80, 0, 8/80, 8/80, 0,   0, 0.7, 0.7,0, 0.3, 0.3, 0))
+ggplot(fake_df, 
+       aes(test, cancer, height = height, group = cancer)) + 
+  geom_ridgeline(fill = "lightblue") + 
+  theme(
+    # axis.title.x=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank()) + 
+   scale_y_continuous(breaks=pretty_breaks(2)) +
+  coord_flip() +
+  NULL
+```
+
+
+
