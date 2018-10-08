@@ -53,11 +53,13 @@ str(cancer)
 ```
 
 
-### TODO: Column list
+### Column list
+
+Using nest to count conditional probabilities?
 
 ```{r}
-cancer %>%
-  nest(-test)
+as_tibble(cancer) %>%
+  nest(-cancer, .key = "test.given.cancer")
 ```
 
 

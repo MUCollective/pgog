@@ -24,23 +24,59 @@ library(ggridges)
 library(scales)
 ```
 
-
+# TODO: examples from the four papers
 
 # riskyr
 
-- Icon array 
+- Icon array, 
 - Problems with `plot_icons`
-  - Blah 
+  - Not `ggplot`: _ad hoc_, etc.
 
-```{r}
+## Icon array
+
+TODO: do we have specs for icon array? This spec is not very accurate
+
+```{gog}
+P(has_cancer) -> shape
+P(test_positive) -> color
+100 -> sample_size 
+```
+
+
+.... or ggplot-like specs
+
+
+TODO: difficult to express joint distribution here...
+
+```{gog}
+ggplot(cancer, aes(x = ???)) + 
+  geom_dotplot(
+    binwidth= foo(sample_size), 
+    shape = P(has_cancer),
+    color = P(test_positive),
+    stackdir = "icon_array",
+  )
+```
+
+
+```{r,fig.width=6, fig.height=3, echo=FALSE}
 plot_icons(prev = .1, sens = .70, spec =   NA, fart = .090, N = 100,
            icon.types = c(21, 21, 22, 22),
            title.lbl = "Mammography screening")
 ```
 
+## Product plot?
+
+- TODO: look at product plot?
+- How to specify the coloring?
+
+```{gog}
+has_cancer -> width
+test_positive -> height
+```
 
 
-```{r}
+```{r, echo=FALSE}
 plot_mosaic(prev = .1, sens = .70, spec =   NA, fart = .090, N = 100,
             title.lbl = "Mammography screening")
 ```
@@ -50,7 +86,17 @@ plot_mosaic(prev = .1, sens = .70, spec =   NA, fart = .090, N = 100,
 
 https://cran.r-project.org/web/packages/ggridges/vignettes/introduction.html
 
-```{r}
+## "Bar chart"
+
+```{gog}
+cancer -> x
+test -> y
+P(.) -> width
+```
+
+
+
+```{r, echo=FALSE}
 fake_df <- data.frame(test=c(0, 0, 0.1, 0.1, 0.1, 0.2, 0.2, 0.8, 0.8, 0.9, 0.9, 0.9, 1, 1),
                       cancer = c(rep(0, 7), rep(1, 7)),
                       height= c(0, (80-8)/80, (80-8)/80, 0, 8/80, 8/80, 0,   0, 0.7, 0.7,0, 0.3, 0.3, 0))
@@ -67,4 +113,38 @@ ggplot(fake_df,
 ```
 
 
+# quantile-dotplots
+https://github.com/mjskay/when-ish-is-my-bus/blob/master/quantile-dotplots.md
+
+```{r, echo=FALSE}
+mu_a = log(11.4)
+mu_b = log(7)
+sigma = 0.2
+samples = 20
+
+quantiles = data_frame(
+    p_less_than_x = rep(seq(from = 1/samples / 2, to = 1 - (1/samples / 2), length=samples), 2),
+    x = c(qlnorm(p_less_than_x[1:samples], mu_a, sigma), qlnorm(p_less_than_x[(samples + 1):(samples * 2)], mu_b, sigma)),
+    condition = c(rep("A", samples), rep("B", samples))
+)
+```
+
+
+_GoG specs_
+
+```{GoG}
+value -> x
+condition -> y
+P(.) -> height
+```
+
+
+```{r, echo=FALSE}
+quantiles %>%
+  ggplot(aes(x = x)) +
+  geom_dotplot(binwidth = 1.25, color=NA) +
+  xlim(-3.5,30) +
+  facet_grid(condition ~ .) +
+  NULL
+```
 

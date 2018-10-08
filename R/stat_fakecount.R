@@ -2,12 +2,12 @@
 #'
 #' @return a geom
 stat_fakecount <- function(mapping = NULL, data = NULL,
-                   geom = "bar", position = "stack",
-                   ...,
-                   width = NULL,
-                   na.rm = FALSE,
-                   show.legend = NA,
-                   inherit.aes = TRUE) {
+                           geom = "bar", position = "stack",
+                           ...,
+                           width = NULL,
+                           na.rm = FALSE,
+                           show.legend = NA,
+                           inherit.aes = TRUE) {
 
   params <- list(
     na.rm = na.rm,
