@@ -1,0 +1,67 @@
+---
+title: "Icon array"
+author: "Vignette Author"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+library(magrittr)
+library(tidyverse)
+```
+
+And adjust the ggplot theme to not draw a bunch of things we don't need for the risk characterization theaters:
+
+```{r ggplot_theme}
+theme_set(theme_minimal() +
+    theme(
+      panel.grid = element_blank()
+    )
+  )
+```
+
+Starting from code from risk theatre
+
+```{r}
+N = 100
+width = sqrt(N)
+height = sqrt(N)
+margin = 0.01
+
+x = seq(0, 1, length.out = width + 1)
+y = seq(0, 1, length.out = height + 1)
+
+plan = data.frame(
+  xleft = x[-length(x)] + margin,
+  xright = x[-1] - margin
+)
+
+df <- plan %>%
+  group_by(xleft, xright) %>%
+  do(
+    data.frame(
+      ybottom = y[-length(y)] + margin,
+      ytop = y[-1] - margin
+    )) %>%
+  ungroup()
+
+```
+
+
+```{r}
+df %>%
+  ggplot(aes(xmin = xleft, xmax = xright, ymin = ybottom, ymax = ytop)) +
+  geom_rect(color = "lightsteelblue1", fill = NA, size = 0.5) +
+  geom_rect(color = "skyblue1", fill = "skyblue1", data = slice(df,1:5)) +
+  coord_fixed()
+```
+

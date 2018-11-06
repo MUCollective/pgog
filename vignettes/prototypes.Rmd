@@ -65,6 +65,20 @@ plot_icons(prev = .1, sens = .70, spec =   NA, fart = .090, N = 100,
            title.lbl = "Mammography screening")
 ```
 
+-----
+
+# Icon array with ggplot?
+
+
+```{r}
+
+```
+
+
+
+
+
+
 ## Product plot?
 
 - TODO: look at product plot?
