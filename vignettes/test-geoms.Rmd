@@ -25,6 +25,32 @@ library(ggridges)
 library(scales) 
 ```
 
+# Extending ggplot tutorial
+
+
+[link](https://cran.r-project.org/web/packages/ggplot2/vignettes/extending-ggplot2.html)
+
+- stat
+  - inherits from `Stat`
+  - `compute_group`
+  - `required_aes`
+- layer thing, either called geom_ or stat_
+  - calls `layer()`
+  - The arguments in ... will either be arguments for the geom (if you’re making a stat wrapper), arguments for the stat (if you’re making a geom wrapper), or aesthetics to be set.
+
+```{r}
+ggplot(mpg, aes(displ, hwy)) + 
+  # geom_point() + 
+  stat_chull(fill = NA, colour = "black")
+```
+
+
+
+```{r}
+ggplot(mpg, aes(displ, hwy, colour = drv)) + 
+  geom_point() + 
+  stat_chull(fill = NA)
+```
 
 
 ```{r}

@@ -61,7 +61,8 @@ df <- plan %>%
 df %>%
   ggplot(aes(xmin = xleft, xmax = xright, ymin = ybottom, ymax = ytop)) +
   geom_rect(color = "lightsteelblue1", fill = NA, size = 0.5) +
-  geom_rect(color = "skyblue1", fill = "skyblue1", data = slice(df,1:5)) +
+  geom_rect(color = "skyblue1", fill = "skyblue1", data = slice(df,1:11)) +
+  geom_rect(color = "chartreuse3", fill = "chartreuse3", data = slice(df,12:25)) +
   coord_fixed()
 ```
 

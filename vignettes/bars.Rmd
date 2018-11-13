@@ -1,0 +1,58 @@
+---
+title: "Bar things"
+author: "Vignette Author"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+
+library(devtools)
+library(riskyr)
+library(rv2)
+library(tidyverse)
+library(ggplot2)
+library(ggridges)
+library(scales) 
+```
+
+# Single var
+
+A is the dataset, ___ is the random variable
+
+```{r}
+df <- data_frame(A = c(rep("a", 10), rep("b", 5), rep("c", 15)))
+```
+
+
+More reasonable to have a percent stat
+That works like this
+
+```{r}
+# https://stackoverflow.com/questions/24576515/relative-frequencies-proportions-with-dplyr
+data <- data.frame(df$A)
+data %>%
+  count(df.A) %>%
+  mutate(prob = n/sum(n)) %>%
+  select(-n)
+```
+
+
+```{r}
+df %>%
+  ggplot(aes(x = A)) + 
+  # geom_bar(aes(y = (..count..)/sum(..count..)), stat= "count") + 
+  stat_prob()
+  # coord_flip() + 
+  NULL
+```
+
