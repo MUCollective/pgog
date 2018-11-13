@@ -1,10 +1,11 @@
 StatProb<- ggproto("StatProb", Stat,
                    compute_group = function(data, scales) {
-                     print(str(data))
-                     data %>%
+                     ret <- data %>%
                        count(x) %>%
                        mutate(prob = n/sum(n)) %>%
                        select(-n)
+
+                     ret
                    },
                    required_aes = c("x")
 )

@@ -34,8 +34,8 @@ df <- data_frame(A = c(rep("a", 10), rep("b", 5), rep("c", 15)))
 ```
 
 
-More reasonable to have a percent stat
-That works like this
+- More reasonable to have a percent stat that works like this
+- Need that _setup_params_ probably
 
 ```{r}
 # https://stackoverflow.com/questions/24576515/relative-frequencies-proportions-with-dplyr
