@@ -1,13 +1,21 @@
 StatProb<- ggproto("StatProb", Stat,
-                   compute_group = function(data, scales) {
+
+                   setup_params = function(data, params) {
+                     params$n_data <- nrow(data)
+                     params
+                   },
+
+                   compute_group = function(data, scales, n_data) {
                      ret <- data %>%
                        count(x) %>%
-                       mutate(prob = n/sum(n)) %>%
+                       mutate(probability = n/n_data) %>%
                        select(-n)
-
+                     print(ret)
                      ret
                    },
-                   required_aes = c("x")
+
+                   required_aes = c("x"),
+                   default_aes = aes(y = stat(probability))
 )
 
 

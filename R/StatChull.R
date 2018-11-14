@@ -1,6 +1,8 @@
 StatChull <- ggproto("StatChull", Stat,
                      compute_group = function(data, scales) {
-                       data[chull(data$x, data$y), , drop = FALSE]
+                       ret <- data[chull(data$x, data$y), , drop = FALSE]
+                       print(ret)
+                       ret
                      },
 
                      required_aes = c("x", "y")
