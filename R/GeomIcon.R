@@ -4,6 +4,8 @@ GeomIcon<- ggplot2::ggproto(
 
   setup_data = function(data, params){
     # browser()
+    x = seq(0, 1, length.out = width + 1)
+    y = seq(0, 1, length.out = height + 1)
     data
   }
 )
