@@ -11,12 +11,24 @@ StatIcon <- ggproto(
     params
   },
 
-  compute_panel = function(data, scales, width, height) {
-    res <- data.frame(
-      x = rep(1:height, each = width),
-      y = rep(seq(1:width), height)
-    )
-    res
+  setup_data = function(data, params) {
+    # browser()
+    data
+  },
+
+
+  compute_group = function(data, scales, width, height) {
+    # res <- data.frame(
+    #   x = rep(1:height, each = width),
+    #   y = rep(seq(1:width), height),
+    #   colour = data$colour
+    # )
+    # res
+
+    data$x <- rep(1:height, each = width)
+    data$y <- rep(seq(1:width), height)
+    data$colour <- sort(data$colour)
+    data
   },
 
   required_aes = c("x")
