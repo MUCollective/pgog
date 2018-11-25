@@ -72,11 +72,14 @@ df %>%
 # Custom geom_icon?
 
 ```{r}
-df %>%
+data("cancer")
+```
+
+```{r}
+cancer %>%
   ggplot() + 
-  geom_icon(
-    aes(x = xleft, y = ybottom ),
-    size = 10, shape = 5)
+  # geom_icon(aes(x = cancer))
+  stat_icon(aes(x = cancer), geom = "point")
 ```
 
 
