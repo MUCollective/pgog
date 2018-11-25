@@ -1,13 +1,12 @@
 GeomIcon<- ggplot2::ggproto(
   "GeomIcon", ggplot2::GeomPoint,
-  required_aes = c("x", "y")
+  required_aes = c("x", "y"),
 
-  # from geom-mosaic.R
-  # default_aes = ggplot2::aes(
-  #   fontsize=5,
-  #   shape = 15, colour = NA,
-  #   size = 10, fill = "grey30", alpha = 1, stroke = 0,
-  #   linewidth=.1, weight = 1)
+  # from geom-point.R
+  default_aes = aes(
+    shape = 15, colour = "gray", size = 10, fill = NA,
+    alpha = NA, stroke = 0.5
+  )
 )
 
 
