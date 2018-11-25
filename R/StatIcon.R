@@ -6,14 +6,15 @@ StatIcon <- ggproto(
     w_h <- factor_w_h(N)
     params$width <- w_h$w
     params$height <- w_h$h
+    message("Picking width and height to be ", w_h$w, ", ", w_h$h)
+
     params
   },
 
-  compute_panel = function(data, scales, params) {
-    #browser()
+  compute_panel = function(data, scales, width, height) {
     res <- data.frame(
-      x = seq(1, params$width),
-      y = seq(1, params$height)
+      x = rep(1:height, each = width),
+      y = rep(seq(1:width), height)
     )
     res
   },

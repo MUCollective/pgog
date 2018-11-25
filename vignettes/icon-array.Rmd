@@ -79,7 +79,8 @@ data("cancer")
 cancer %>%
   ggplot() + 
   # geom_icon(aes(x = cancer))
-  stat_icon(aes(x = cancer), geom = "point")
+  stat_icon(aes(x = cancer), geom = "icon")+
+  coord_fixed()
 ```
 
 
