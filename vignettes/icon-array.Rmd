@@ -17,6 +17,7 @@ knitr::opts_chunk$set(
 
 library(magrittr)
 library(tidyverse)
+library(devtools)
 ```
 
 And adjust the ggplot theme to not draw a bunch of things we don't need for the risk characterization theaters:
@@ -28,6 +29,8 @@ theme_set(theme_minimal() +
     )
   )
 ```
+
+# The manual way
 
 Starting from code from risk theatre
 
@@ -65,4 +68,16 @@ df %>%
   geom_rect(color = "chartreuse3", fill = "chartreuse3", data = slice(df,12:25)) +
   coord_fixed()
 ```
+
+# Custom geom_icon?
+
+```{r}
+df %>%
+  ggplot() + 
+  geom_icon(
+    aes(x = xleft, y = ybottom ),
+    size = 10, shape = 5)
+```
+
+
 

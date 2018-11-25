@@ -23,9 +23,20 @@ library(tidyverse)
 library(ggplot2)
 library(ggridges)
 library(scales) 
+library(patchwork)
+```
+
+
+
+```{r}
+data(cancer)
+
 ```
 
 # Single var
+
+
+## Discrete
 
 A is the dataset, ___ is the random variable
 
@@ -47,12 +58,60 @@ data %>%
 ```
 
 
+
 ```{r}
 df %>%
-  ggplot(aes(x = A)) + 
-  # geom_bar(aes(y = (..count..)/sum(..count..)), stat= "count") + 
-  stat_prob()
-  # coord_flip() + 
-  NULL
+  ggplot() + 
+  stat_prob(aes(x = A))
+```
+
+
+
+```{r}
+df %>%
+  ggplot() + 
+  geom_bar(aes(x = A), stat="prob")
+```
+
+
+
+## Continuous
+
+From [Extending ggplot](https://cran.r-project.org/web/packages/ggplot2/vignettes/extending-ggplot2.html)
+
+```{r}
+ggplot(cancer, aes(x=test, colour = cancer)) + 
+  stat_density_common()
+```
+
+
+
+# Two variables
+
+## Marginal?
+
+
+```{r}
+```
+
+```{r}
+plot_1 <- cancer %>%
+  ggplot(aes(x = factor(test))) + 
+  stat_prob()  +
+  ylim(c(0,1))
+
+plot_2 <- cancer %>%
+  ggplot(aes(x = factor(cancer))) + 
+  stat_prob() + 
+  ylim(c(0,1))
+
+plot_1 + plot_2
+```
+
+## Conditional
+
+
+```{r}
+
 ```
 

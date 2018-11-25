@@ -22,6 +22,8 @@ library(tidyverse)
 library(ggplot2)
 library(ggridges)
 library(scales)
+library(productplots)
+library(ggmosaic)
 ```
 
 # TODO: examples from the four papers
@@ -160,5 +162,100 @@ quantiles %>%
   xlim(-3.5,30) +
   facet_grid(condition ~ .) +
   NULL
+```
+
+
+# Product plots
+
+```{r}
+data(happy)
+```
+
+Examples from the paper
+
+```{r}
+prodplot(happy, ~ happy + finrela + health, c("vspine", "fluct"))
+prodplot(happy, ~ happy | finrela + health, c("hspine", "fluct"))
+```
+
+- Code does not reproduce anymore!
+  - horizont vertical flipped
+  - pretty color scheme gone
+
+
+```{r}
+prodplot(happy,~ happy , c("hspine"), na.rm = TRUE)
+prodplot(happy,~ marital, c("hspine"))
+prodplot(happy, ~marital+sex + happy, c("hspine", "hspine", "vspine"))
+prodplot(happy, ~happy + sex + marital, c("vspine", "hspine", "hspine"))
+```
+
+
+# ggmsaic
+
+Using mapping: 
+
+- x <- product()
+- conds <- product()
+
+## 1 ~ X
+
+```{r}
+ggplot(happy) +
+  geom_mosaic(aes(x = product(happy), fill = happy), na.rm = TRUE) +
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank())
+```
+
+## 1 ~ Y + X
+
+```{r}
+
+ggplot(data = happy) +
+  geom_mosaic(
+    aes(x = product(marital, happy), 
+        fill=marital), na.rm=TRUE)
+```
+
+
+## 1 ~ X | Z
+
+Two similar-looking vizes
+
+is this confusion a consequence of not placing probs as first-class citizens?
+
+
+
+- This version will not work for icon arrays?
+- What does conditioning mean for a visualization
+- Should only display P( happy | sex = female)?
+
+```{r}
+
+# or change "health" to "sex"
+
+ggplot(data = happy) +
+  geom_mosaic(
+    aes(x = product(happy), 
+        fill=happy, 
+        conds=product(sex)), 
+    na.rm=TRUE
+  ) 
+
+```
+
+
+This version is more intuitive but it's not using the `conds` argument
+
+```{r}
+ggplot(data = happy) +
+  geom_mosaic(
+    aes(x = product(happy, sex), 
+        fill=happy
+    ),
+    na.rm=TRUE
+  ) 
+
 ```
 
