@@ -174,8 +174,8 @@ data(happy)
 Examples from the paper
 
 ```{r}
-prodplot(happy, ~ happy + finrela + health, c("vspine", "fluct"))
-prodplot(happy, ~ happy | finrela + health, c("hspine", "fluct"))
+# prodplot(happy, ~ happy + finrela + health, c("vspine", "fluct"))
+# prodplot(happy, ~ happy | finrela + health, c("hspine", "fluct"))
 ```
 
 - Code does not reproduce anymore!
@@ -184,10 +184,10 @@ prodplot(happy, ~ happy | finrela + health, c("hspine", "fluct"))
 
 
 ```{r}
-prodplot(happy,~ happy , c("hspine"), na.rm = TRUE)
-prodplot(happy,~ marital, c("hspine"))
-prodplot(happy, ~marital+sex + happy, c("hspine", "hspine", "vspine"))
-prodplot(happy, ~happy + sex + marital, c("vspine", "hspine", "hspine"))
+# prodplot(happy,~ happy , c("hspine"), na.rm = TRUE)
+# prodplot(happy,~ marital, c("hspine"))
+# prodplot(happy, ~marital+sex + happy, c("hspine", "hspine", "vspine"))
+# prodplot(happy, ~happy + sex + marital, c("vspine", "hspine", "hspine"))
 ```
 
 
@@ -230,6 +230,7 @@ is this confusion a consequence of not placing probs as first-class citizens?
 - This version will not work for icon arrays?
 - What does conditioning mean for a visualization
 - Should only display P( happy | sex = female)?
+- Why is the happy variable on the y axis??
 
 ```{r}
 
@@ -259,3 +260,6 @@ ggplot(data = happy) +
 
 ```
 
+
+
+# Testing 
