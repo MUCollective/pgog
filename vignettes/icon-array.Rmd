@@ -87,11 +87,36 @@ cancer %>%
 
 
 
+# Test
+```{r}
+library(gginnards)
+```
+
+```{r}
+cancer %>%
+  ggplot() + 
+  geom_icon(aes(x = P(cancer | !test), color = cancer )) + 
+  coord_fixed()
+```
+
+
+## Debugging
+
+https://cran.r-project.org/web/packages/gginnards/vignettes/user-guide-1.html
+
+```{r}
+str(ggplot(cancer) + 
+  geom_icon(aes(x = P(cancer | test))))
+```
 
 
 
 
+```{r}
+# ggplot(cancer, aes(x = P(cancer | test), y = P(cancer | test))) +    stat_debug_panel()
 
+ggplot()
+```
 
 
 
