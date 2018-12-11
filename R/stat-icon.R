@@ -12,7 +12,6 @@ StatIcon <- ggproto(
   },
 
   setup_data = function(data, params) {
-    # browser()
     data$colour <- data$x # TODO: assuming P(A|B), color = A
     data
   },
@@ -32,13 +31,14 @@ StatIcon <- ggproto(
   },
 
   required_aes = c("x")
+  # non_missing_aes = c("width")
+  # required_aes = c("width")
 )
 
 
 stat_icon <- function(mapping = NULL, data = NULL, geom = "point", # TODO
                        position = "identity", na.rm = FALSE, show.legend = NA,
                        inherit.aes = TRUE, width = NULL, height = NULL, ...) {
-  # browser()
   ggplot2::layer(
     stat = StatIcon, data = data, mapping = mapping, geom = geom,
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,

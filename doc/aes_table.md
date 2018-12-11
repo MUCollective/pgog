@@ -1,7 +1,3 @@
-![](figure/icon_array.png)
-
-
-
 | Geometry            | Aesthetics mapping                      | Visualization name	| Picture  	|
 |--------------------	|--------------------------------------------	|------------	|---	|
 | geom_icon          	| width = P(A);                              	| icon array 	| ![](figure/icon_array.png)|

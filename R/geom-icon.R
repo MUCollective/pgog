@@ -15,7 +15,6 @@ geom_icon <- function(mapping = NULL, data = NULL, stat = "icon", # StatIcon!
                         show.legend = NA, inherit.aes = FALSE,  ...)
 {
 
-
   # from geom_point source
   ggplot2::layer(
     data = data,

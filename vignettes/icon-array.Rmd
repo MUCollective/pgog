@@ -95,7 +95,7 @@ library(gginnards)
 ```{r}
 cancer %>%
   ggplot() + 
-  geom_icon(aes(x = P(cancer | test), color = cancer )) + 
+  geom_icon(aes( x = P(cancer | !test), color = cancer )) + 
   coord_fixed()
 ```
 
@@ -106,7 +106,7 @@ https://cran.r-project.org/web/packages/gginnards/vignettes/user-guide-1.html
 
 ```{r}
 str(ggplot(cancer) + 
-  geom_icon(aes(x = P(cancer | test))))
+  geom_icon(aes(width = P(cancer | test))))
 ```
 
 
