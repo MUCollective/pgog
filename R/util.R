@@ -18,7 +18,6 @@ P <- function(x) {
     # override | in this environment
     # https://adv-r.hadley.nz/meta.html
     `|` = function(a, b) {
-      # browser()
       len <- length(a)
       cond_unnormalized <- a[as.logical(b)]
 
@@ -26,6 +25,10 @@ P <- function(x) {
       tbl <- table(cond_unnormalized)
       counts <- sum(tbl)
       factor <- len %/% counts
+
+      # TODO: this does not consider three or more variables
+      # TODO: this returns a char vec, not the original data type
+      # browser()
       c(rep(names(tbl)[1], times = factor * tbl[1]), rep(names(tbl)[2], times = len - factor * tbl[1]))
     }
   )

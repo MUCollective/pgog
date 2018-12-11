@@ -95,7 +95,7 @@ library(gginnards)
 ```{r}
 cancer %>%
   ggplot() + 
-  geom_icon(aes(x = P(cancer | !test), color = cancer )) + 
+  geom_icon(aes(x = P(cancer | test), color = cancer )) + 
   coord_fixed()
 ```
 
@@ -113,9 +113,9 @@ str(ggplot(cancer) +
 
 
 ```{r}
-# ggplot(cancer, aes(x = P(cancer | test), y = P(cancer | test))) +    stat_debug_panel()
+ggplot(cancer, aes(x = P(cancer | test), y = P(cancer | test))) + 
+    geom_debug()
 
-ggplot()
 ```
 
 

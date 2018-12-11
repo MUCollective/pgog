@@ -13,6 +13,7 @@ StatIcon <- ggproto(
 
   setup_data = function(data, params) {
     # browser()
+    data$colour <- data$x # TODO: assuming P(A|B), color = A
     data
   },
 
@@ -24,10 +25,9 @@ StatIcon <- ggproto(
     #   colour = data$colour
     # )
     # res
-    browser()
+    # browser()
     data$x <- rep(1:height, each = width)
     data$y <- rep(seq(1:width), height)
-    data$colour <- data$group # only this is correct???
     data
   },
 
