@@ -1,3 +1,6 @@
+
+#' calculates the x, y coordiantes for the icon array
+#' @export
 StatIcon <- ggproto(
   "StatIcon", ggplot2::Stat,
 
@@ -18,12 +21,6 @@ StatIcon <- ggproto(
 
 
   compute_panel = function(data, scales, width, height) {
-    # res <- data.frame(
-    #   x = rep(1:height, each = width),
-    #   y = rep(seq(1:width), height),
-    #   colour = data$colour
-    # )
-    # res
     # browser()
     data$x <- rep(1:height, each = width)
     data$y <- rep(seq(1:width), height)
