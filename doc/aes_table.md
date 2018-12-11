@@ -1,6 +1,10 @@
-| 	                  |                                     | Visualization name	| Picture  	|
+![](figure/icon_array.png)
+
+
+
+| Geometry            | Aesthetics mapping                      | Visualization name	| Picture  	|
 |--------------------	|--------------------------------------------	|------------	|---	|
-| geom_icon          	| width = P(A);                              	| icon array 	| ![icon array]("figure/icon_array.png")|
+| geom_icon          	| width = P(A);                              	| icon array 	| ![](figure/icon_array.png)|
 | geom_icon          	| height = P(B);                             	|            	|   	|
 | geom_icon          	| x = A;                                     	| N/A        	|   	|
 | geom_icon          	| y = B;                                     	|            	|   	|
