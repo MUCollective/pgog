@@ -7,6 +7,13 @@ GeomIcon<- ggplot2::ggproto(
     shape = 15, colour = "gray", size = 10, fill = NA,
     alpha = NA, stroke = 0.5
   )
+
+  # TODO: this doesn't do anything
+  # setup_data = function(data, params){
+    # data$width <- NULL
+    # data
+  # }
+
 )
 
 
