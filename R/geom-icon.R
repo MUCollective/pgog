@@ -11,7 +11,7 @@ GeomIcon<- ggplot2::ggproto(
   # TODO: this doesn't do anything
   setup_data = function(data, params){
     # print("setup_data from geom_icon")
-    # browser()
+    browser()
     data$width <- NULL
     data
   }

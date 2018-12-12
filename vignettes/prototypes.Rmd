@@ -262,4 +262,16 @@ ggplot(data = happy) +
 
 
 
+# Dotplots
+
+Try it on the cancer dataset
+
+
+```{r}
+cancer %>%
+  ggplot(aes(x = test)) +
+  geom_dotplot(binwidth = 1) + 
+  xlim(-50, 50)
+```
+
 

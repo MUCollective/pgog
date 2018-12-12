@@ -97,8 +97,8 @@ cancer %>%
   ggplot() + 
   geom_icon(aes( #x = P(cancer | !test),
                  width = P(cancer | !test),
-                 color = cancer )) + 
-  coord_fixed() +
+                 color = cancer)) + 
+  coord_flip() +
   NULL
 ```
 
