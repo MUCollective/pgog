@@ -98,7 +98,8 @@ cancer %>%
   geom_icon(aes( #x = P(cancer | !test),
                  width = P(cancer | !test),
                  color = cancer )) + 
-  coord_fixed()
+  coord_fixed() +
+  NULL
 ```
 
 

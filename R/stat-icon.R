@@ -15,17 +15,22 @@ StatIcon <- ggproto(
   },
 
   setup_data = function(data, params) {
-    browser()
+    # browser()
 
     #ACHTUNG: because there's a bug in util.R ...
-    data$colour <- as.integer(data$width) # TODO: assuming P(A|B), color = A
+    if ("width" %in% names(data)){
+      data$colour <- as.integer(data$width) # TODO: assuming P(A|B), color = A
+    } else {
+      stop("setup_data: unknown aes")
+    }
+
 
     data
   },
 
 
   compute_layer = function(self, data, params, layout) {
-    print("compute_layer")
+    # print("compute_layer")
     data$x <- rep(1:params$height, each = params$width)
     data$y <- rep(seq(1:params$width), params$height)
     data
