@@ -15,21 +15,34 @@ StatIcon <- ggproto(
   },
 
   setup_data = function(data, params) {
-    data$colour <- data$x # TODO: assuming P(A|B), color = A
+    browser()
+
+    #ACHTUNG: because there's a bug in util.R ...
+    data$colour <- as.integer(data$width) # TODO: assuming P(A|B), color = A
+
     data
   },
 
 
-  compute_panel = function(data, scales, width, height) {
-    # browser()
-    data$x <- rep(1:height, each = width)
-    data$y <- rep(seq(1:width), height)
+  compute_layer = function(self, data, params, layout) {
+    print("compute_layer")
+    data$x <- rep(1:params$height, each = params$width)
+    data$y <- rep(seq(1:params$width), params$height)
     data
   },
 
-  required_aes = c("x")
+  # compute_panel = function(data, scales, width, height) {
+  #   print("compute_panel")
+  #   # browser()
+  #   data$x <- rep(1:height, each = width)
+  #   data$y <- rep(seq(1:width), height)
+  #   data
+  # },
+
+  # required_aes = c("x")
   # non_missing_aes = c("width")
-  # required_aes = c("width")
+  required_aes = c("width")
+
 )
 
 

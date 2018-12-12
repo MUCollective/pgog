@@ -6,13 +6,15 @@ GeomIcon<- ggplot2::ggproto(
   default_aes = aes(
     shape = 15, colour = "gray", size = 10, fill = NA,
     alpha = NA, stroke = 0.5
-  )
+  ),
 
   # TODO: this doesn't do anything
-  # setup_data = function(data, params){
-    # data$width <- NULL
-    # data
-  # }
+  setup_data = function(data, params){
+    print("setup_data from geom_icon")
+    # browser()
+    data$width <- NULL
+    data
+  }
 
 )
 
