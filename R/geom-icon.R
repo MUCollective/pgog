@@ -49,7 +49,7 @@ GeomIcon<- ggplot2::ggproto(
     # browser()
 
     # secretly changing stuff
-    # TODO: DIR
+    # TODO: DIW
     data[data$group == 2, ]$x <-data[data$group == 2, ]$x + 3
 
 
