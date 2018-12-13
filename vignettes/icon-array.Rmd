@@ -96,11 +96,9 @@ library(gginnards)
 cancer %>%
   ggplot() + 
   geom_icon(aes( #x = P(cancer | !test),
-                 width = P(cancer | !test),
+                 height = P(cancer | !test),
                  color = cancer)) + 
-  coord_fixed() +
-  xlim(0, 15)
-  NULL
+  coord_fixed()
 ```
 
 

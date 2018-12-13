@@ -49,8 +49,8 @@ GeomIcon<- ggplot2::ggproto(
     # browser()
 
     # secretly changing stuff
-    # TODO: DIW
-    data[data$group == 2, ]$x <-data[data$group == 2, ]$x + 3
+    # TODO: DIW; read the doc: https://github.com/tidyverse/ggplot2/blob/master/R/geom-.r
+    # data[data$group == 2, ]$y <-data[data$group == 2, ]$y + 3
 
 
     ggname <- function(prefix, grob) {

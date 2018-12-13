@@ -20,10 +20,11 @@ StatIcon <- ggproto(
     #ACHTUNG: because there's a bug in util.R ...
     if ("width" %in% names(data)){
       data$colour <- as.integer(data$width) # TODO: assuming P(A|B), color = A
+    } else if ("height" %in% names(data)){
+      data$colour <- as.integer(data$height)
     } else {
       stop("stat-icon:setup_data: unknown aes")
     }
-
 
     data
   },
@@ -31,8 +32,14 @@ StatIcon <- ggproto(
 
   compute_layer = function(self, data, params, layout) {
     # print("compute_layer")
-    data$x <- rep(1:params$height, each = params$width)
-    data$y <- rep(seq(1:params$width), params$height)
+    if ("width" %in% names(data)){
+      data$x <- rep(1:params$height, each = params$width)
+      data$y <- rep(seq(1:params$width), params$height)
+    } else if ("height" %in% names(data)){
+      data$y <- rep(1:params$height, each = params$width)
+      data$x <- rep(seq(1:params$width), params$height)
+    }
+
     data
   },
 
@@ -46,7 +53,8 @@ StatIcon <- ggproto(
 
   # required_aes = c("x")
   # non_missing_aes = c("width")
-  required_aes = c("width")
+  # required_aes = c("width")
+  required_aes = c("height")
 
 )
 
