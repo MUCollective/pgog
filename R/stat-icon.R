@@ -21,7 +21,7 @@ StatIcon <- ggproto(
     if ("width" %in% names(data)){
       data$colour <- as.integer(data$width) # TODO: assuming P(A|B), color = A
     } else {
-      stop("setup_data: unknown aes")
+      stop("stat-icon:setup_data: unknown aes")
     }
 
 

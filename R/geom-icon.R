@@ -11,9 +11,67 @@ GeomIcon<- ggplot2::ggproto(
   # TODO: this doesn't do anything
   setup_data = function(data, params){
     # print("setup_data from geom_icon")
-    browser()
+    # browser()
     data$width <- NULL
     data
+  },
+
+  # Stole from geom-.R, but doc doesn't say we can change this
+  # draw_layer = function(self, data, params, layout, coord) {
+  #   if (empty(data)) {
+  #     n <- if (is.factor(data$PANEL)) nlevels(data$PANEL) else 1L
+  #     return(rep(list(zeroGrob()), n))
+  #   }
+  #
+  #   # Do stuff
+  #   browser()
+  #   data[data$group == 2, ]$x <-data[data$group == 2, ]$x + 3
+  #
+  #   # Trim off extra parameters
+  #   params <- params[intersect(names(params), self$parameters())]
+  #
+  #   args <- c(list(quote(data), quote(panel_params), quote(coord)), params)
+  #   plyr::dlply(data, "PANEL", function(data) {
+  #     if (empty(data)) return(zeroGrob())
+  #
+  #     panel_params <- layout$panel_params[[data$PANEL[1]]]
+  #     do.call(self$draw_panel, args)
+  #   }, .drop = FALSE)
+  # }
+
+
+  # stole from geom-point.R
+  draw_panel = function(data, panel_params, coord, na.rm = FALSE) {
+    if (is.character(data$shape)) {
+      data$shape <- translate_shape_string(data$shape)
+    }
+
+    # browser()
+
+    # secretly changing stuff
+    # TODO: DIR
+    data[data$group == 2, ]$x <-data[data$group == 2, ]$x + 3
+
+
+    ggname <- function(prefix, grob) {
+      grob$name <- grid::grobName(grob, prefix)
+      grob
+    }
+
+    coords <- coord$transform(data, panel_params)
+    ggname("geom_icon",
+           pointsGrob(
+             coords$x, coords$y,
+             pch = coords$shape,
+             gp = gpar(
+               col = alpha(coords$colour, coords$alpha),
+               fill = alpha(coords$fill, coords$alpha),
+               # Stroke is added around the outside of the point
+               fontsize = coords$size * .pt + coords$stroke * .stroke / 2,
+               lwd = coords$stroke * .stroke / 2
+             )
+           )
+    )
   }
 
 )
