@@ -1,3 +1,17 @@
+# From ggplot
+
+# Name ggplot grid object
+# Convenience function to name grid objects
+#
+# @keyword internal
+ggname <- function(prefix, grob) {
+  grob$name <- grobName(grob, prefix)
+  grob
+}
+
+
+
+
 factor_w_h <- function(n){
   factor_test <- as.integer(sqrt(n))
   while (n %% factor_test != 0) {
