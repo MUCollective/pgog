@@ -32,13 +32,18 @@ StatIcon <- ggproto(
 
   compute_layer = function(self, data, params, layout) {
     # print("compute_layer")
-    if ("width" %in% names(data)){
-      data$x <- rep(1:params$height, each = params$width)
-      data$y <- rep(seq(1:params$width), params$height)
-    } else if ("height" %in% names(data)){
-      data$y <- rep(1:params$height, each = params$width)
-      data$x <- rep(seq(1:params$width), params$height)
+    if ("x" %in% names(data)){
+      data$y <-rep(seq(1:params$width), params$height)
+    } else {
+      if ("width" %in% names(data)){
+        data$x <- rev(rep(1:params$height, each = params$width))
+        data$y <- rep(seq(1:params$width), params$height)
+      } else if ("height" %in% names(data)){
+        data$y <- rep(1:params$height, each = params$width)
+        data$x <- rev(rep(seq(1:params$width), params$height))
+      }
     }
+
 
     data
   },
@@ -52,9 +57,10 @@ StatIcon <- ggproto(
   # },
 
   # required_aes = c("x")
-  # non_missing_aes = c("width")
-  # required_aes = c("width")
-  required_aes = c("height")
+  # hack so that can either use height or width as aes
+  # Warning messages don't count as bugs
+  required_aes = c("height"), #c("height"),
+  non_missing_aes = c("height", "width")
 
 )
 

@@ -69,26 +69,27 @@ df %>%
   coord_fixed()
 ```
 
-# Custom geom_icon?
 
-```{r}
-data("cancer")
-```
+# geom_icon
+
+- width <- P(A)
+
 
 ```{r}
 cancer %>%
   ggplot() + 
-  geom_icon(aes(x = cancer, color = test)) + 
-  # stat_icon(aes(x = test, color = cancer), geom = "icon")+
-  coord_fixed() + 
-  NULL
+  geom_icon(aes( #x = P(cancer | !test),
+                 width = P(test),
+                 color = cancer)) + 
+  coord_fixed()
 ```
 
 
+- width <- P(A|B)
 
 
-# Test
 ```{r}
+data("cancer")
 library(gginnards)
 ```
 
@@ -96,10 +97,27 @@ library(gginnards)
 cancer %>%
   ggplot() + 
   geom_icon(aes( #x = P(cancer | !test),
-                 height = P(cancer | !test),
+                 width = P(cancer | !test),
                  color = cancer)) + 
   coord_fixed()
 ```
+
+
+- x <- A
+- width <- P(A)
+
+
+```{r}
+cancer %>%
+  ggplot() +
+  geom_icon(aes(x = factor(cancer),
+                width = P(cancer),
+                color = cancer)) #TODO: remove color then bug
+ 
+```
+
+
+
 
 
 ## Debugging

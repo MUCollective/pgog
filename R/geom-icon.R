@@ -16,29 +16,11 @@ GeomIcon<- ggplot2::ggproto(
     data
   },
 
-  # Stole from geom-.R, but doc doesn't say we can change this
-  # draw_layer = function(self, data, params, layout, coord) {
-  #   if (empty(data)) {
-  #     n <- if (is.factor(data$PANEL)) nlevels(data$PANEL) else 1L
-  #     return(rep(list(zeroGrob()), n))
-  #   }
-  #
-  #   # Do stuff
+  # TODO: is it because
+  # draw_group = function(data, panel_params, coord) {
+  #   print("draw_group")
   #   browser()
-  #   data[data$group == 2, ]$x <-data[data$group == 2, ]$x + 3
-  #
-  #   # Trim off extra parameters
-  #   params <- params[intersect(names(params), self$parameters())]
-  #
-  #   args <- c(list(quote(data), quote(panel_params), quote(coord)), params)
-  #   plyr::dlply(data, "PANEL", function(data) {
-  #     if (empty(data)) return(zeroGrob())
-  #
-  #     panel_params <- layout$panel_params[[data$PANEL[1]]]
-  #     do.call(self$draw_panel, args)
-  #   }, .drop = FALSE)
   # }
-
 
   # stole from geom-point.R
   draw_panel = function(data, panel_params, coord, na.rm = FALSE) {
@@ -46,11 +28,11 @@ GeomIcon<- ggplot2::ggproto(
       data$shape <- translate_shape_string(data$shape)
     }
 
-    # browser()
+    browser()
 
     # secretly changing stuff
     # TODO: DIW; read the doc: https://github.com/tidyverse/ggplot2/blob/master/R/geom-.r
-    # data[data$group == 2, ]$y <-data[data$group == 2, ]$y + 3
+    # data[data$group == 2, ]$x <-data[data$group == 2, ]$x + 10
 
 
     ggname <- function(prefix, grob) {
