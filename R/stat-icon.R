@@ -15,6 +15,7 @@ StatIcon <- ggproto(
   },
 
   setup_data = function(data, params) {
+    print("stat_icon: setup_data")
     # browser()
 
     #ACHTUNG: because there's a bug in util.R ...
@@ -31,7 +32,7 @@ StatIcon <- ggproto(
 
 
   compute_layer = function(self, data, params, layout) {
-    # print("compute_layer")
+    print("stat_icon: compute_layer")
     if ("x" %in% names(data)){
       data$y <-rep(seq(1:params$width), params$height)
 

@@ -34,7 +34,10 @@ GeomIcon <- ggproto("GeomIcon", Geom,
                     ),
 
 
+
+
                     draw_group = function(data, panel_params, coord, na.rm = FALSE) {
+                      print("geom_icon: draw_group")
 
                       # browser()
 
