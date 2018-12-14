@@ -112,8 +112,10 @@ cancer %>%
   ggplot() +
   geom_icon(aes(x = factor(cancer),
                 width = P(cancer),
-                color = cancer)) #TODO: remove color then bug
- 
+                color = cancer,
+                size = 12
+  ), position = "icon") #TODO: remove color then bug
+
 ```
 
 
