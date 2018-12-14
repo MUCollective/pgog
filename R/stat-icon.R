@@ -34,10 +34,12 @@ StatIcon <- ggproto(
     # print("compute_layer")
     if ("x" %in% names(data)){
       data$y <-rep(seq(1:params$width), params$height)
+
     } else {
       if ("width" %in% names(data)){
         data$x <- rev(rep(1:params$height, each = params$width))
         data$y <- rep(seq(1:params$width), params$height)
+
       } else if ("height" %in% names(data)){
         data$y <- rep(1:params$height, each = params$width)
         data$x <- rev(rep(seq(1:params$width), params$height))
