@@ -1,7 +1,11 @@
+https://docs.google.com/spreadsheets/d/1pPdn9oyV1YQ7Pc8O-2elcSSoiXiFNY_1IFBeqELyHGM/edit?usp=sharing
+
+
+
 | Geometry            | Aesthetics mapping                      | Visualization name	| Picture  	|
 |--------------------	|--------------------------------------------	|------------	|---	|
 | geom_icon          	| width = P(A);                              	| icon array 	| ![](figure/icon_array.png)|
-| geom_icon          	| height = P(B);                             	|            	|   	|
+| geom_icon          	| height = P(B);                             	|icon array (coord flip) 	|   	|
 | geom_icon          	| x = A;                                     	| N/A        	|   	|
 | geom_icon          	| y = B;                                     	|            	|   	|
 | geom_icon          	| width = P(A); height = P(B);               	|            	|   	|
