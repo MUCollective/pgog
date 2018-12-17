@@ -18,21 +18,37 @@ PositionIcon <- ggproto("PositionIcon",
 
                         compute_panel = function(self, data, params, scales) {
                           print("position_icon: compute_panel")
+                          browser()
 
                           # calculate some offsets, from ggbeeswarm
-                          trans_x <- function(xx) {
-                            new_x <- vipor::offsetX(
-                              data[, 'x'],
-                              xx,
-                              method = params$method
-                            )
-                            return(new_x + xx)
-                          }
-                          df <- transform_position(data, trans_x, trans_x)
-                          df$y <- sample(df$y)
+                          # trans_x <- function(xx) {
+                          #   new_x <- vipor::offsetX(
+                          #     data[, 'x'],
+                          #     xx,
+                          #     method = params$method
+                          #   )
+                          #   return(new_x + xx)
+                          # }
+                          #
+                          # ident <- function(x) x
 
-                          # browser()
-                          df
+
+                          data$i <- rownames(data)
+                          N <- nrow(data)
+                          data %<>%
+                            group_by(x) %>%
+                            mutate(ratio = n()/N) %>%
+                            ungroup()
+
+                          data %<>%
+                            rowwise() %>%
+                            mutate(x = x + adjust(ratio, i))
+
+                          data
+                          # df <- transform_position(data, ident, trans_x)
+                          # df$y <- sample(df$y)
+
+                          # df
 
                         }
 )

@@ -18,6 +18,8 @@ knitr::opts_chunk$set(
 library(magrittr)
 library(tidyverse)
 library(devtools)
+library(gginnards)
+library(grid)
 ```
 
 And adjust the ggplot theme to not draw a bunch of things we don't need for the risk characterization theaters:
@@ -90,7 +92,6 @@ cancer %>%
 
 ```{r}
 data("cancer")
-library(gginnards)
 ```
 
 ```{r}
@@ -112,8 +113,7 @@ cancer %>%
   ggplot() +
   geom_icon(aes(x = factor(cancer),
                 width = P(cancer),
-                color = cancer,
-                size = 12
+                color = cancer
   ), position = "icon") #TODO: remove color then bug
 
 ```
