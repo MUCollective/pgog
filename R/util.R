@@ -14,7 +14,7 @@ ggname <- function(prefix, grob) {
 
 adjust <- function(ratio, idx, width=5){
   idx <- as.integer(idx) - 1
-  seq(-0.5 * ratio, 0.5 * ratio, length.out = width)[idx %/% width + 1]
+  seq(-0.5 * ratio, 0.5 * ratio, length.out = width)[idx %% width + 1]
 }
 
 # determines the width and height of icon array

@@ -18,7 +18,6 @@ PositionIcon <- ggproto("PositionIcon",
 
                         compute_panel = function(self, data, params, scales) {
                           print("position_icon: compute_panel")
-                          browser()
 
                           # calculate some offsets, from ggbeeswarm
                           # trans_x <- function(xx) {
@@ -32,9 +31,10 @@ PositionIcon <- ggproto("PositionIcon",
                           #
                           # ident <- function(x) x
 
-
-                          data$i <- rownames(data)
+                          data$i <- rownames(data) # add indices
                           N <- nrow(data)
+                          internal_width <- as.integer(sqrt(N)/2)
+
                           data %<>%
                             group_by(x) %>%
                             mutate(ratio = n()/N) %>%
@@ -42,7 +42,20 @@ PositionIcon <- ggproto("PositionIcon",
 
                           data %<>%
                             rowwise() %>%
-                            mutate(x = x + adjust(ratio, i))
+                            mutate(x = x + adjust(0.7, i, width = internal_width)) %>%
+                            ungroup()
+
+                          data %<>%
+                            group_by(x) %>%
+                            mutate(y = (row_number() - 1) ) %>%
+                            ungroup()
+
+                          browser()
+
+                          # flip y axis
+                          # max_y <- tail(data$y, n = 1)
+                          # data$y <- max_y - data$y
+
 
                           data
                           # df <- transform_position(data, ident, trans_x)
