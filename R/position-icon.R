@@ -33,24 +33,28 @@ PositionIcon <- ggproto("PositionIcon",
 
                           data$i <- rownames(data) # add indices
                           N <- nrow(data)
-                          internal_width <- as.integer(sqrt(N)/2)
+                          internal_width <- as.integer(sqrt(N) * 0.5)
 
 
                           data %<>%
-                            rowwise() %>%
-                            mutate(x = x + adjust(0.7, i, width = internal_width)) %>%
+                            group_by(x) %>%
+                            # rowwise() %>%
+                            mutate(coord = x + adjust(0.7, row_number(), width = internal_width)) %>%
                             ungroup()
+
+                          data %<>%
+                            mutate(x = coord)
 
                           data %<>%
                             group_by(x) %>%
                             mutate(y = (row_number())) %>%
                             ungroup()
 
-                          browser()
+                          # browser()
 
                           # flip y axis
-                          # max_y <- tail(data$y, n = 1)
-                          # data$y <- max_y - data$y
+                          max_y <- tail(data$y, n = 1)
+                          data$y <- max_y - data$y
 
 
                           data
