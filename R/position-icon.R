@@ -35,10 +35,6 @@ PositionIcon <- ggproto("PositionIcon",
                           N <- nrow(data)
                           internal_width <- as.integer(sqrt(N)/2)
 
-                          data %<>%
-                            group_by(x) %>%
-                            mutate(ratio = n()/N) %>%
-                            ungroup()
 
                           data %<>%
                             rowwise() %>%
@@ -47,7 +43,7 @@ PositionIcon <- ggproto("PositionIcon",
 
                           data %<>%
                             group_by(x) %>%
-                            mutate(y = (row_number() - 1) ) %>%
+                            mutate(y = (row_number())) %>%
                             ungroup()
 
                           browser()
