@@ -1,4 +1,5 @@
 #' From geom_point
+#'
 geom_icon <- function(mapping = NULL, data = NULL,
                       stat = "icon",
                       ...,
@@ -21,10 +22,10 @@ geom_icon <- function(mapping = NULL, data = NULL,
   )
 }
 
-#' @rdname ggplot2-ggproto
-#' @format NULL
-#' @usage NULL
+
 #' @export
+#' @importFrom grid pointsGrob
+#' @importFrom grid gpar
 GeomIcon <- ggproto("GeomIcon", Geom,
                     required_aes = c("x", "y"),
                     non_missing_aes = c("size", "shape", "colour"),

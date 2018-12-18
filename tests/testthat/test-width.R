@@ -1,15 +1,24 @@
 
 context("Width aesthetics")
+data(cancer)
 
-library(tidyverse)
-library(ggplot2)
+# x = A, width = P(A)
+disp_PA <- cancer %>%
+  ggplot() +
+  geom_icon(aes(width = P(test),
+                color = cancer)) +
+  coord_fixed()
 
-# testthat::test_that("w = P(A)",{
-#   vdiffr::expect_doppelganger()
-# })
 
-disp_hist_base <- function() hist(mtcars$disp)
-disp_hist_ggplot <- ggplot(mtcars, aes(disp)) + geom_histogram()
+# x = A, width = P(A|B)
+disp_PAB <- cancer %>%
+  ggplot() +
+  geom_icon(aes(width = P(cancer | !test),
+    color = cancer)) +
+  coord_fixed()
 
-vdiffr::expect_doppelganger("Base graphics histogram", disp_hist_base)
-vdiffr::expect_doppelganger("ggplot2 histogram", disp_hist_ggplot)
+vdiffr::expect_doppelganger("x = A, width = P(A)", disp_PA)
+vdiffr::expect_doppelganger("x = A, width = P(A|B)", disp_PAB)
+
+
+remove(cancer)

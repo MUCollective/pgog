@@ -1,6 +1,6 @@
 
 #' calculates the x, y coordiantes for the icon array
-#' @import ggplot2
+#' @importFrom ggplot2 Stat
 #' @export
 StatIcon <- ggproto(
   "StatIcon", ggplot2::Stat,
