@@ -1,4 +1,3 @@
-
 context("Width aesthetics")
 data(cancer)
 
@@ -16,6 +15,7 @@ disp_PAB <- cancer %>%
   geom_icon(aes(width = P(cancer | !test),
     color = cancer)) +
   coord_fixed()
+
 
 vdiffr::expect_doppelganger("x = A, width = P(A)", disp_PA)
 vdiffr::expect_doppelganger("x = A, width = P(A|B)", disp_PAB)

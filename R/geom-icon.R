@@ -26,36 +26,12 @@ geom_icon <- function(mapping = NULL, data = NULL,
 #' @export
 #' @importFrom grid pointsGrob
 #' @importFrom grid gpar
-GeomIcon <- ggproto("GeomIcon", Geom,
+GeomIcon <- ggproto("GeomIcon", GeomPoint,
                     required_aes = c("x", "y"),
                     non_missing_aes = c("size", "shape", "colour"),
                     default_aes = aes(
                       shape = 15, colour = "gray", size = 10, fill = NA,
                       alpha = NA, stroke = 0.5
-                    ),
+                    )
 
-                    draw_group = function(data, panel_params, coord, na.rm = FALSE) {
-                      print("geom_icon: draw_group")
-                      # Below is the geom_point source
-                      if (is.character(data$shape)) {
-                        data$shape <- translate_shape_string(data$shape)
-                      }
-
-                      coords <- coord$transform(data, panel_params)
-                      ggname("geom_icon",
-                             pointsGrob(
-                               coords$x, coords$y,
-                               pch = coords$shape,
-                               gp = gpar(
-                                 col = alpha(coords$colour, coords$alpha),
-                                 fill = alpha(coords$fill, coords$alpha),
-                                 # Stroke is added around the outside of the point
-                                 fontsize = coords$size * .pt + coords$stroke * .stroke / 2,
-                                 lwd = coords$stroke * .stroke / 2
-                               )
-                             )
-                      )
-                    },
-
-                    draw_key = draw_key_point
 )

@@ -82,7 +82,7 @@ cancer %>%
   ggplot() + 
   geom_icon(aes( #x = P(cancer | !test),
                  width = P(test),
-                 color = cancer)) + 
+                 color = test)) + 
   coord_fixed()
 ```
 
@@ -112,10 +112,10 @@ cancer %>%
 cancer %>%
   ggplot() +
   geom_icon(aes(x = factor(cancer),
-                height = P(test | cancer),
+                height = P(test),
                 color = test,
                 size = 10
-  ), position = "icon") #TODO: remove color then bug
+  ), position = "icon") 
 
 ```
 
