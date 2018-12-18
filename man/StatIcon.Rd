@@ -4,7 +4,7 @@
 \name{StatIcon}
 \alias{StatIcon}
 \title{calculates the x, y coordiantes for the icon array}
-\format{An object of class \code{StatIcon} (inherits from \code{Stat}, \code{ggproto}, \code{gg}) of length 5.}
+\format{An object of class \code{StatIcon} (inherits from \code{Stat}, \code{ggproto}, \code{gg}) of length 6.}
 \usage{
 StatIcon
 }

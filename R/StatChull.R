@@ -1,3 +1,6 @@
+
+#' @importFrom ggplot2 ggproto
+#' @export
 StatChull <- ggproto("StatChull", Stat,
                      compute_group = function(data, scales) {
                        ret <- data[chull(data$x, data$y), , drop = FALSE]
