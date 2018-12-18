@@ -33,14 +33,8 @@ GeomIcon <- ggproto("GeomIcon", Geom,
                       alpha = NA, stroke = 0.5
                     ),
 
-
-
-
                     draw_group = function(data, panel_params, coord, na.rm = FALSE) {
                       print("geom_icon: draw_group")
-
-                      # browser()
-
                       # Below is the geom_point source
                       if (is.character(data$shape)) {
                         data$shape <- translate_shape_string(data$shape)

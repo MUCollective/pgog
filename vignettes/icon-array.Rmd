@@ -111,8 +111,8 @@ cancer %>%
 ```{r}
 cancer %>%
   ggplot() +
-  geom_icon(aes(x = factor(test),
-                width = P(test),
+  geom_icon(aes(x = factor(cancer),
+                width = P(test | cancer),
                 color = test,
                 size = 10
   ), position = "icon") #TODO: remove color then bug
