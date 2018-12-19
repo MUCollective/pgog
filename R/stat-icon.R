@@ -28,13 +28,20 @@ StatIcon <- ggproto(
 
     #ACHTUNG: because there's a bug in util.R ...
     if ("width" %in% names(data)){
-      if ("is_conditional" %in% attributes(data$width))
-        if (attributes(data$width)$is_conditional)
+      browser()
+      if ("is_conditional" %in% names(attributes(data$width))){
+        if (attributes(data$width)$is_conditional) {
+          # browser()
+          # print("magic")
           data$colour <- as.integer(data$width) # TODO: assuming P(A|B), color = A
+        }
+      }
     } else if ("height" %in% names(data)) {
-      if ("is_conditional" %in% attributes(data$height))
-        if (attributes(data$height)$is_conditional)
+      if ("is_conditional" %in% names(attributes(data$height))){
+        if (attributes(data$height)$is_conditional){
           data$colour <- as.integer(data$height)
+        }
+      }
     }
 
     data

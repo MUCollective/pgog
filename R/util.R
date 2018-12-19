@@ -31,6 +31,7 @@ factor_w_h <- function(n){
 ## TODO: write functionality
 ## TODO: input/output format
 #' @importFrom rlang env
+#' @importFrom rlang caller_env
 P <- function(x) {
   e <- rlang::env(
     caller_env(),
