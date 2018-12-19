@@ -26,9 +26,10 @@ StatIcon <- ggproto(
 
     # browser()
 
-    #ACHTUNG: because there's a bug in util.R ...
+    #ACHTUNG: hack to get the colors right
+    # Assume: P(A|B), color = A immer
     if ("width" %in% names(data)){
-      browser()
+      # browser()
       if ("is_conditional" %in% names(attributes(data$width))){
         if (attributes(data$width)$is_conditional) {
           # browser()
@@ -50,9 +51,7 @@ StatIcon <- ggproto(
 
   compute_layer = function(self, data, params, layout) {
     print("stat_icon: compute_layer")
-
-
-
+    # browser()
     if ("x" %in% names(data)){
       data$y <-rep(seq(1:params$width), params$height)
 

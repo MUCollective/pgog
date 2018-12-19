@@ -8,7 +8,6 @@ disp_PA <- cancer %>%
                 color = cancer)) +
   coord_fixed()
 
-
 # x = A, width = P(A|B)
 disp_PAB <- cancer %>%
   ggplot() +

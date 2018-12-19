@@ -97,9 +97,10 @@ data("cancer")
 cancer %>%
   ggplot() + 
   geom_icon(aes( #x = P(cancer | !test),
-                 width = P(cancer | test),
-                 color = cancer)) +
-                 # color = RandomVar(cancer | !test))) + 
+                 width = P(cancer | !test),
+                 color = cancer),
+            position = "array") +
+  
   coord_fixed()
 ```
 
