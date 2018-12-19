@@ -115,7 +115,7 @@ cancer %>%
                 height = P(cancer),
                 color = cancer,
                 size = 10
-  ), position = "icon") 
+  ), position = "array") 
 
 ```
 

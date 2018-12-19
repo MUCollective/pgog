@@ -3,7 +3,7 @@
 # https://github.com/tidyverse/ggplot2/blob/c84d9a075280d374892e5a3e0e25dd0ba246caad/R/position-.r
 
 
-PositionIcon <- ggproto("PositionIcon",
+PositionArray <- ggproto("PositionArray",
                         ggplot2:::Position,
                         required_aes = c("x", "y"),
 
@@ -67,7 +67,7 @@ PositionIcon <- ggproto("PositionIcon",
 )
 
 
-position_icon <- function (
+position_array <- function (
   width = NULL,
   varwidth = FALSE,
   bandwidth=.5,
@@ -77,7 +77,7 @@ position_icon <- function (
   dodge.width=0){
   ggplot2::ggproto(
     NULL,
-    PositionIcon,
+    PositionArray,
     width = width,
     varwidth = varwidth,
     bandwidth=bandwidth,
