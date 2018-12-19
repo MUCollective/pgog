@@ -19,14 +19,23 @@ StatIcon <- ggproto(
     print("stat_icon: setup_data")
     # browser()
 
+    data %<>%
+      group_by(group) %>%
+      mutate(colour = sort(colour)) %>%
+      ungroup()
+
+    # browser()
+
     #ACHTUNG: because there's a bug in util.R ...
-    # if ("width" %in% names(data)){
-    #   data$colour <- as.integer(data$width) # TODO: assuming P(A|B), color = A
-    # } else if ("height" %in% names(data)){
-    #   data$colour <- as.integer(data$height)
-    # } else {
-    #   stop("stat-icon:setup_data: unknown aes")
-    # }
+    if ("width" %in% names(data)){
+      if ("is_conditional" %in% attributes(data$width))
+        if (attributes(data$width)$is_conditional)
+          data$colour <- as.integer(data$width) # TODO: assuming P(A|B), color = A
+    } else if ("height" %in% names(data)) {
+      if ("is_conditional" %in% attributes(data$height))
+        if (attributes(data$height)$is_conditional)
+          data$colour <- as.integer(data$height)
+    }
 
     data
   },

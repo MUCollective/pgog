@@ -32,6 +32,12 @@ GeomIcon <- ggproto("GeomIcon", GeomPoint,
                     default_aes = aes(
                       shape = 15, colour = "gray", size = 10, fill = NA,
                       alpha = NA, stroke = 0.5
-                    )
+                    ),
+
+                    setup_data = function(data, params) {
+                      # browser()
+                      data
+                    }
+
 
 )

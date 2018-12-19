@@ -30,8 +30,8 @@ factor_w_h <- function(n){
 
 ## TODO: write functionality
 ## TODO: input/output format
+#' @importFrom rlang env
 P <- function(x) {
-  require(rlang)
   e <- rlang::env(
     caller_env(),
     # override | in this environment
@@ -47,16 +47,25 @@ P <- function(x) {
 
       # TODO: this does not consider three or more variables
       # TODO: this returns a char vec, not the original data type
+      res <- c(rep(names(tbl)[1], times = factor * tbl[1]), rep(names(tbl)[2], times = len - factor * tbl[1]))
+      # attributes(res)$is_conditional <- TRUE
       # browser()
-      c(rep(names(tbl)[1], times = factor * tbl[1]), rep(names(tbl)[2], times = len - factor * tbl[1]))
+      res
     }
   )
   # browser()
 
   args <- enexpr(x)
-  eval(args, e)
+  is_conditional <- "|" %in% as.character(args)
+  res <- eval(args, e)
+  attributes(res)$is_conditional <- is_conditional
+  # browser()
+  res
 }
 
+
+#' oops copied from P()
+RandomVar <- P
 
 
 
