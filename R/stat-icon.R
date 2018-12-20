@@ -58,7 +58,8 @@ StatIcon <- ggproto(
 
     } else {
       if ("width" %in% names(data)){
-        data$x <- rev(rep(1:params$height, each = params$width))
+        # data$x <- rev(rep(1:params$height, each = params$width))
+        data$x <- rep(c(1), each = nrow(data))
         data$y <- rep(seq(1:params$width), params$height)
 
       } else if ("height" %in% names(data)){

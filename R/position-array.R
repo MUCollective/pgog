@@ -33,10 +33,11 @@ PositionArray <- ggproto("PositionArray",
 
                           data$i <- rownames(data) # add indices
                           N <- nrow(data)
-                          internal_width <- as.integer(sqrt(N) * 0.5)
+                          n_columns <- length(unique(data$x))
+                          internal_width <- as.integer(sqrt(N) / n_columns)
 
 
-                          browser()
+                          # browser()
                           data %<>%
                             group_by(x) %>%
                             # rowwise() %>%
@@ -48,7 +49,7 @@ PositionArray <- ggproto("PositionArray",
 
                           data %<>%
                             group_by(x) %>%
-                            mutate(y = (row_number())) %>%
+                            mutate(y = (row_number()) * 0.1) %>%
                             ungroup()
 
                           # browser()
