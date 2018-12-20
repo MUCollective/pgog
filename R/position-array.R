@@ -36,6 +36,7 @@ PositionArray <- ggproto("PositionArray",
                           internal_width <- as.integer(sqrt(N) * 0.5)
 
 
+                          browser()
                           data %<>%
                             group_by(x) %>%
                             # rowwise() %>%

@@ -17,14 +17,11 @@ StatIcon <- ggproto(
 
   setup_data = function(data, params) {
     print("stat_icon: setup_data")
-    # browser()
 
     data %<>%
       group_by(group) %>%
       mutate(colour = sort(colour)) %>%
       ungroup()
-
-    # browser()
 
     #ACHTUNG: hack to get the colors right
     # Assume: P(A|B), color = A immer
@@ -45,13 +42,17 @@ StatIcon <- ggproto(
       }
     }
 
+
+    # ACHTUNG: hack to preserve original aes mapping
+    attributes(data)$original_aes <- names(data)
+
     data
   },
 
 
   compute_layer = function(self, data, params, layout) {
     print("stat_icon: compute_layer")
-    # browser()
+
     if ("x" %in% names(data)){
       data$y <-rep(seq(1:params$width), params$height)
 

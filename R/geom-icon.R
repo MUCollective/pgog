@@ -1,5 +1,4 @@
 #' From geom_point
-#'
 geom_icon <- function(mapping = NULL, data = NULL,
                       stat = "icon",
                       ...,
@@ -7,6 +6,18 @@ geom_icon <- function(mapping = NULL, data = NULL,
                       position = "identity",
                       show.legend = NA,
                       inherit.aes = TRUE) {
+
+
+  # ACHTUNG: bunch of checks
+  aes_names <- names(enexpr(mapping))
+  has_coord_aes <- "x" %in% aes_names | "y" %in% aes_names
+
+  if ((!has_coord_aes) & position == "stack"){
+    message("Warning: Can't stack those aesthetics")
+  }
+
+  # browser()
+
   ggplot2::layer(
     data = data,
     mapping = mapping,
@@ -35,7 +46,7 @@ GeomIcon <- ggproto("GeomIcon", GeomPoint,
                     ),
 
                     setup_data = function(data, params) {
-                      # browser()
+                      #browser()
                       data
                     }
 

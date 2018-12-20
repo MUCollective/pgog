@@ -81,7 +81,8 @@ df %>%
 cancer %>%
   ggplot() + 
   geom_icon(aes( width = P(test),
-                 color = test)) + 
+                 color = test),
+            position = "array") + 
   coord_fixed()
 ```
 
@@ -99,7 +100,7 @@ cancer %>%
   geom_icon(aes( #x = P(cancer | !test),
                  width = P(cancer | !test),
                  color = cancer),
-            position = "stack") +
+            position = "array") +
   
   coord_fixed()
 ```
@@ -116,7 +117,7 @@ cancer %>%
                 height = P(cancer),
                 color = cancer,
                 size = 10
-  ), position = "stack") 
+  ), position = "array") 
 
 ```
 
