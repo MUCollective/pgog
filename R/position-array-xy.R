@@ -3,7 +3,7 @@
 # https://github.com/tidyverse/ggplot2/blob/c84d9a075280d374892e5a3e0e25dd0ba246caad/R/position-.r
 
 #' @import dplyr
-PositionArray <- ggproto("PositionArray",
+PositionArrayZ <- ggproto("PositionArrayZ",
                         ggplot2:::Position,
                         required_aes = c("x", "y"),
 
@@ -19,18 +19,6 @@ PositionArray <- ggproto("PositionArray",
                         compute_panel = function(self, data, params, scales) {
                           print("position_icon: compute_panel")
 
-                          # calculate some offsets, from ggbeeswarm
-                          # trans_x <- function(xx) {
-                          #   new_x <- vipor::offsetX(
-                          #     data[, 'x'],
-                          #     xx,
-                          #     method = params$method
-                          #   )
-                          #   return(new_x + xx)
-                          # }
-                          #
-                          # ident <- function(x) x
-
                           data$i <- rownames(data) # add indices
                           N <- nrow(data)
                           n_columns <- length(unique(data$x))
@@ -40,7 +28,6 @@ PositionArray <- ggproto("PositionArray",
                           # browser()
                           data %<>%
                             group_by(x) %>%
-                            # rowwise() %>%
                             mutate(coord = x + adjust(0.7, row_number(), width = internal_width)) %>%
                             ungroup()
 
@@ -48,9 +35,13 @@ PositionArray <- ggproto("PositionArray",
                             mutate(x = coord)
 
                           data %<>%
-                            group_by(x) %>%
-                            mutate(y = (row_number()) * 0.1) %>%
+                            group_by(y) %>%
+                            mutate(coord = y + adjust(0.7, row_number(), width = internal_width)) %>%
                             ungroup()
+
+                          data %<>%
+                            mutate(y = coord)
+
 
                           # browser()
 
@@ -69,7 +60,7 @@ PositionArray <- ggproto("PositionArray",
 )
 
 
-position_array <- function (
+position_array_z <- function (
   width = NULL,
   varwidth = FALSE,
   bandwidth=.5,
@@ -79,7 +70,7 @@ position_array <- function (
   dodge.width=0){
   ggplot2::ggproto(
     NULL,
-    PositionArray,
+    PositionArrayZ,
     width = width,
     varwidth = varwidth,
     bandwidth=bandwidth,

@@ -9,6 +9,7 @@ geom_icon <- function(mapping = NULL, data = NULL,
 
 
   # Logic check: stacking does not make sense without x, y aes
+  # ACHTUNG: this is no longer needed
   aes_names <- names(enexpr(mapping))
   has_coord_aes <- "x" %in% aes_names | "y" %in% aes_names
 
@@ -17,7 +18,10 @@ geom_icon <- function(mapping = NULL, data = NULL,
   }
 
   # Assign the appropriate position adjustment
-  position <- mod_position(aes_names)
+  if (position == "array"){
+    position <- mod_position(aes_names)
+  }
+
 
   # browser()
 

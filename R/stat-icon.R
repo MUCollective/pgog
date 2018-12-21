@@ -52,8 +52,9 @@ StatIcon <- ggproto(
 
   compute_layer = function(self, data, params, layout) {
     print("stat_icon: compute_layer")
-
-    if ("x" %in% names(data)){
+    if ("x" %in% names(data) & "y" %in% names(data)){
+      return(data)
+    } else if ("x" %in% names(data)){
       data$y <-rep(seq(1:params$width), params$height)
 
     } else {

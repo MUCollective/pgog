@@ -10,8 +10,8 @@ ggname <- function(prefix, grob) {
 
 mod_position <- function(aes_names){
   if ("x" %in% aes_names & "y" %in% aes_names){
-    "array_xy"
-
+    position_array_z(width = "width" %in% aes_names)
+    # "array_z"
   } else if ("x" %in% aes_names){
     "array_x"
   } else if ("y" %in% aes_names){

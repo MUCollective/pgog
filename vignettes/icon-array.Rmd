@@ -156,7 +156,11 @@ cancer %>%
 
 ```{r}
 ggplot(data=cancer) + 
-  geom_icon(aes(x = cancer, y = test, width = P(cancer)))
+  geom_icon(aes(x = cancer, 
+                y = test, 
+                width = P(cancer),
+                color = cancer),
+            position = "array")
 ```
 
 
