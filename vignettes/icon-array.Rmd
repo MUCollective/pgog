@@ -116,7 +116,8 @@ cancer %>%
                 height = P(cancer),
                 color = cancer,
                 size = 10
-  ), position = "array") 
+  ), position = "array") + 
+  coord_fixed()
 
 ```
 
