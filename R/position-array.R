@@ -26,14 +26,14 @@ PositionArray <- ggproto("PositionArray",
                           internal_width <- as.integer(sqrt(max_n * 0.618))
 
                           # browser()
-                          if ("x" %in% params$aes_names &
-                                     "y" %in% params$aes_names &
-                                     "height" %in% params$aes_names){
-                            # case: x = A, y = B, height = P(A)
-
-
-
-                          } else if ("x" %in% params$aes_names & "height" %in% params$aes_names){
+                          # if ("x" %in% params$aes_names &
+                          #            "y" %in% params$aes_names &
+                          #            "height" %in% params$aes_names){
+                          #   # case: x = A, y = B, height = P(A)
+                          #
+                          #
+                          #
+                          # } else if ("x" %in% params$aes_names & "height" %in% params$aes_names){
                             # case: x = A, w = P(A)
 
                             # fixed x width
@@ -48,16 +48,16 @@ PositionArray <- ggproto("PositionArray",
                               mutate(x = coord)
 
                             # y coords are just row numbers for each group of unique x's
-                            y_spacing <- x_spacing / (internal_width - 1)
+                            y_spacing <- x_spacing / (internal_width - 1) * 0.618
                             data %<>%
                               group_by(x) %>%
-                              mutate(y = (row_number()) * y_spacing) %>%
+                              mutate(y = y + (row_number()) * y_spacing) %>%
                               ungroup()
 
                             # flip horizontally
                             max_y <- tail(data$y, n = 1)
                             data$y <- max_y - data$y
-                          }
+                          # }
 
 
                           data

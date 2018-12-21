@@ -160,7 +160,8 @@ ggplot(data=cancer) +
   geom_icon(aes(x = cancer, 
                 y = test, 
                 height = P(cancer),
-                color = cancer),
+                color = cancer,
+                size = 10),
             position = "array")
 ```
 
