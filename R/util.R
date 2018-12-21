@@ -18,7 +18,6 @@ mod_position <- function(aes_names){
 
 
 
-
 # for position-icon
 
 adjust <- function(ratio, idx, width=5){
