@@ -1,5 +1,5 @@
 
-#' calculates the x, y coordiantes for the icon array
+#' calculates the x, y aesthetics so that GeomPoint will be happy
 #' @importFrom ggplot2 Stat
 #' @export
 StatIcon <- ggproto(
@@ -55,8 +55,8 @@ StatIcon <- ggproto(
     if ("x" %in% names(data) & "y" %in% names(data)){
       return(data)
     } else if ("x" %in% names(data)){
-      data$y <-rep(seq(1:params$width), params$height)
-
+      # data$y <-rep(seq(1:params$width), params$height)
+      data$y <- rep(c(1), each = nrow(data))
     } else {
       if ("width" %in% names(data)){
         data$x <- rev(rep(1:params$height, each = params$width))

@@ -19,34 +19,45 @@ PositionArray <- ggproto("PositionArray",
                           n_columns <- length(unique(data$x))
                           internal_width <- as.integer(sqrt(N) / n_columns)
 
-
                           browser()
-                          data %<>%
-                            group_by(x) %>%
-                            # rowwise() %>%
-                            mutate(coord = x + adjust(0.7, row_number(), width = internal_width)) %>%
-                            ungroup()
+                          if ("x" %in% params$aes_names &
+                                     "y" %in% params$aes_names &
+                                     "height" %in% params$aes_names){
+                            # case: x = A, y = B, height = P(A)
+                            counts <- data %>%
+                              group_by(x, y) %>%
+                              count()
 
-                          data %<>%
-                            mutate(x = coord)
+                            max_n <- max(counts$n)
 
-                          data %<>%
-                            group_by(x) %>%
-                            mutate(y = (row_number()) * 0.1) %>%
-                            ungroup()
 
-                          # browser()
 
-                          # flip y axis
-                          max_y <- tail(data$y, n = 1)
-                          data$y <- max_y - data$y
+                          } else if ("x" %in% params$aes_names & "height" %in% params$aes_names){
+                            # case: x = A, w = P(A)
+
+                            # fixed x width
+                            data %<>%
+                              group_by(x) %>%
+                              # rowwise() %>%
+                              mutate(coord = x + adjust(0.7, row_number(), width = internal_width)) %>%
+                              ungroup()
+
+                            data %<>%
+                              mutate(x = coord)
+
+                            # y coords are just row numbers for each group of unique x's
+                            data %<>%
+                              group_by(x) %>%
+                              mutate(y = (row_number()) * 0.1) %>%
+                              ungroup()
+
+                            # flip horizontally
+                            max_y <- tail(data$y, n = 1)
+                            data$y <- max_y - data$y
+                          }
 
 
                           data
-                          # df <- transform_position(data, ident, trans_x)
-                          # df$y <- sample(df$y)
-
-                          # df
 
                         }
 )
