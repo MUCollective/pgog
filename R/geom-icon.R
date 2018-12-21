@@ -17,9 +17,7 @@ geom_icon <- function(mapping = NULL, data = NULL,
   }
 
   # Assign the appropriate position adjustment
-
-
-
+  position <- mod_position(aes_names)
 
   # browser()
 

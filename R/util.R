@@ -17,7 +17,7 @@ mod_position <- function(aes_names){
   } else if ("y" %in% aes_names){
     "array_y"
   } else {
-    "array"
+    "identity"
   }
 }
 
