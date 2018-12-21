@@ -3,6 +3,7 @@
 # https://github.com/tidyverse/ggplot2/blob/c84d9a075280d374892e5a3e0e25dd0ba246caad/R/position-.r
 
 #' @import dplyr
+#' @import magrittr
 PositionArray <- ggproto("PositionArray",
                         ggplot2:::Position,
                         required_aes = c("x", "y"),

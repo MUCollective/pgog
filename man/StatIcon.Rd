@@ -3,12 +3,12 @@
 \docType{data}
 \name{StatIcon}
 \alias{StatIcon}
-\title{calculates the x, y coordiantes for the icon array}
+\title{calculates the x, y aesthetics so that GeomPoint will be happy}
 \format{An object of class \code{StatIcon} (inherits from \code{Stat}, \code{ggproto}, \code{gg}) of length 6.}
 \usage{
 StatIcon
 }
 \description{
-calculates the x, y coordiantes for the icon array
+calculates the x, y aesthetics so that GeomPoint will be happy
 }
 \keyword{datasets}
