@@ -116,8 +116,7 @@ cancer %>%
                 height = P(cancer),
                 color = cancer,
                 size = 10
-  ), position = "array") + 
-  coord_fixed()
+  ), position = "array")
 
 ```
 
@@ -157,10 +156,10 @@ cancer %>%
 
 ```{r}
 ggplot(data=cancer) + 
-  geom_icon(aes(x = cancer, 
-                y = test, 
-                height = P(cancer),
-                color = cancer,
+  geom_icon(aes(x = factor(test), # hack to get the coloring right
+                y = cancer, 
+                height = P(test),
+                color = test,
                 size = 10),
             position = "array")
 ```

@@ -14,7 +14,7 @@ PositionArray <- ggproto("PositionArray",
                         compute_panel = function(self, data, params, scales) {
                           print("position_icon: compute_panel")
 
-                          data$i <- rownames(data) # add indices
+                          # data$i <- rownames(data) # add indices
                           # N <- nrow(data)
                           # n_columns <- length(unique(data$x))
                           # internal_width <- as.integer(sqrt(N) / n_columns)
@@ -25,23 +25,13 @@ PositionArray <- ggproto("PositionArray",
                           max_n <- max(counts$n)
                           internal_width <- as.integer(sqrt(max_n * 0.618))
 
-                          # browser()
-                          # if ("x" %in% params$aes_names &
-                          #            "y" %in% params$aes_names &
-                          #            "height" %in% params$aes_names){
-                          #   # case: x = A, y = B, height = P(A)
-                          #
-                          #
-                          #
-                          # } else if ("x" %in% params$aes_names & "height" %in% params$aes_names){
-                            # case: x = A, w = P(A)
-
-                            # fixed x width
+                          if ("height" %in% params$aes_names){
+                            # browser()
                             x_spacing <- 0.7
                             data %<>%
-                              group_by(x) %>%
+                              group_by(x, y) %>%
                               # rowwise() %>%
-                              mutate(coord = x + adjust(x_spacing, row_number(), width = internal_width)) %>%
+                              mutate(coord = x + adjust(x_spacing, row_number() , width = internal_width)) %>%
                               ungroup()
 
                             data %<>%
@@ -50,14 +40,16 @@ PositionArray <- ggproto("PositionArray",
                             # y coords are just row numbers for each group of unique x's
                             y_spacing <- x_spacing / (internal_width - 1) * 0.618
                             data %<>%
-                              group_by(x) %>%
-                              mutate(y = y + (row_number()) * y_spacing) %>%
+                              group_by(x, y) %>%
+                              mutate(coord = y + (row_number()) * y_spacing) %>%
                               ungroup()
 
+                            data %<>%
+                              mutate(y = coord)
                             # flip horizontally
                             max_y <- tail(data$y, n = 1)
                             data$y <- max_y - data$y
-                          # }
+                          }
 
 
                           data
