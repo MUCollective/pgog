@@ -8,6 +8,21 @@ ggname <- function(prefix, grob) {
   grob
 }
 
+mod_position <- function(aes_names){
+  if ("x" %in% aes_names & "y" %in% aes_names){
+    "array_xy"
+
+  } else if ("x" %in% aes_names){
+    "array_x"
+  } else if ("y" %in% aes_names){
+    "array_y"
+  } else {
+    "array"
+  }
+}
+
+
+
 
 # for position-icon
 

@@ -74,7 +74,7 @@ df %>%
 
 # geom_icon
 
-- width <- P(A)
+## width <- P(A)
 
 
 ```{r}
@@ -87,7 +87,7 @@ cancer %>%
 ```
 
 
-- width <- P(A|B)
+## width <- P(A|B)
 
 
 ```{r}
@@ -98,7 +98,7 @@ data("cancer")
 cancer %>%
   ggplot() + 
   geom_icon(aes( #x = P(cancer | !test),
-                 width = P(cancer | !test),
+                 height = P(cancer | !test),
                  color = cancer),
             position = "array") +
   
@@ -106,8 +106,7 @@ cancer %>%
 ```
 
 
-- x <- A
-- width <- P(A)
+## x <- A, width <- P(A), position = array
 
 
 ```{r}
@@ -121,20 +120,49 @@ cancer %>%
 
 ```
 
-# kaput
+
+
+## x <- A, width <- P(A), position = stack
+
+Hmmm there might be something wrong with this one
+
 ```{r}
 cancer %>%
   ggplot() +
-  geom_icon(aes(y = factor(test),
-                width = P(cancer),
+  geom_icon(aes(x = factor(test),
+                height = P(cancer),
                 color = cancer,
-                size = 10
-  ), position = "array") 
+                size = 10,
+                shape = "1"
+  ), position = "stack") 
 ```
 
 
 
-## Debugging
+ kaput
+```{r}
+# cancer %>%
+#   ggplot() +
+#   geom_icon(aes(y = factor(test),
+#                 width = P(test),
+#                 color = test,
+#                 size = 10
+#   ), position = "array") 
+```
+
+
+
+## x <- A, y <- B, w = P(,)
+
+```{r}
+ggplot(data=cancer) + 
+  geom_icon(aes(x = cancer, y = test, width = P(cancer)))
+```
+
+
+
+
+# Debugging
 
 https://cran.r-project.org/web/packages/gginnards/vignettes/user-guide-1.html
 

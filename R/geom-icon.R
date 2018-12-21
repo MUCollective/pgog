@@ -8,13 +8,18 @@ geom_icon <- function(mapping = NULL, data = NULL,
                       inherit.aes = TRUE) {
 
 
-  # ACHTUNG: bunch of checks
+  # Logic check: stacking does not make sense without x, y aes
   aes_names <- names(enexpr(mapping))
   has_coord_aes <- "x" %in% aes_names | "y" %in% aes_names
 
   if ((!has_coord_aes) & position == "stack"){
     message("Warning: Can't stack those aesthetics")
   }
+
+  # Assign the appropriate position adjustment
+
+
+
 
   # browser()
 
