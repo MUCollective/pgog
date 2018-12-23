@@ -1,0 +1,53 @@
+---
+title: "geom-block"
+author: "Vignette Author"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+library(tidyverse)
+library(grid)
+library(ggmosaic)
+data(cancer)
+happy <- data(happy)
+happy <- head(happy, n = 10)
+```
+
+# height <- P(A)
+
+- Borrow from ggmosaic
+
+```{r}
+ggplot(data = happy) + 
+  geom_bloc(aes(x = product(health), fill = health))
+```
+
+```{r}
+ggplot(happy) + 
+  geom_mosaic(aes(x = product(health), fill = health))
+```
+
+
+
+
+# x <- A, height <- P(A)
+
+```{r}
+ggplot(data=cancer) + 
+  geom_bloc(aes(x = (test), 
+              y = stat(width * density)),
+            binwidth = 1)
+            
+
+```
+
