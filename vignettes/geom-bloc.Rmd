@@ -17,17 +17,36 @@ knitr::opts_chunk$set(
 
 library(tidyverse)
 library(grid)
-
+library(ggmosaic)
 data(cancer)
+happy <- data(happy)
+happy <- head(happy, n = 10)
+```
+
+# height <- P(A)
+
+- Borrow from ggmosaic
+
+```{r}
+ggplot(data = happy) + 
+  geom_bloc(aes(x = product(health), fill = health))
+```
+
+```{r}
+ggplot(happy) + 
+  geom_mosaic(aes(x = product(health), fill = health))
 ```
 
 
-# height <- P(test)
+
+
+# x <- A, height <- P(A)
 
 ```{r}
 ggplot(data=cancer) + 
   geom_bloc(aes(x = (test), 
-              y = stat(width * density)))
+              y = stat(width * density)),
+            binwidth = 1)
             
 
 ```
