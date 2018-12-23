@@ -25,18 +25,12 @@ happy <- head(happy, n = 10)
 
 # height <- P(A)
 
-- Borrow from ggmosaic
+- Borrowed from ggmosaic
 
 ```{r}
 ggplot(data = happy) + 
-  geom_bloc(aes(x = product(health), fill = health))
+  geom_bloc(aes(width = P(health), fill = health))
 ```
-
-```{r}
-ggplot(happy) + 
-  geom_mosaic(aes(x = product(health), fill = health))
-```
-
 
 
 
@@ -48,6 +42,5 @@ ggplot(data=cancer) +
               y = stat(width * density)),
             binwidth = 1)
             
-
 ```
 
