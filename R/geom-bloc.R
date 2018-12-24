@@ -15,16 +15,6 @@ geom_bloc <- function(mapping = NULL, data = NULL,
   # pick layer based on aesthetics combo
   aes_names <- names(mapping)
 
-  browser()
-  # generate fill based on conditional P(A|B)
-  if (is.null(mapping$fill)){
-
-    # extract what P() is conditioned on
-
-    fill_expr <- expr(happy)
-    fill_env <- quo_get_env(mapping[[1]])
-    mapping$fill <- new_quosure(fill_expr, env = fill_env)
-  }
 
 
 
@@ -32,6 +22,19 @@ geom_bloc <- function(mapping = NULL, data = NULL,
     if (grepl("x = ~discrete", quo_text(mapping)) &
         grepl("height", quo_text(mapping))){
       # geom_bar
+
+      # generate fill based on conditional P(A|B)
+      if (is.null(mapping$fill)){
+        # extract what P() is conditioned on
+        browser()
+        cond <- get_conditional(quo_get_expr(mapping$height))
+        fill_expr <- expr(!!cond)
+
+        # fill_expr <- expr(happy)
+        fill_env <- quo_get_env(mapping[[1]])
+        mapping$fill <- new_quosure(fill_expr, env = fill_env)
+      }
+
 
       height_quosure <- mapping[["height"]]
       mapping[["height"]] <- quo_set_expr(mapping[["height"]], expr((..count..)/sum(..count..)))
@@ -82,6 +85,21 @@ geom_bloc <- function(mapping = NULL, data = NULL,
   } else if (!("x" %in% aes_names ) & !("y" %in% aes_names))  {
     # mosaic plot
     # P(A) -> product(A)
+
+    # generate fill based on conditional P(A|B)
+    if (is.null(mapping$fill)){
+      # extract what P() is conditioned on
+      cond <- get_conditional(quo_get_expr(mapping$height))
+      fill_expr <- expr(!!cond)
+
+      # fill_expr <- expr(happy)
+      fill_env <- quo_get_env(mapping[[1]])
+      mapping$fill <- new_quosure(fill_expr, env = fill_env)
+    }
+
+    # remove height argument since ggmosaic doesn't understand
+    mapping$height <- NULL
+
 
     width_quosure <- mapping[["width"]]
     PA_expr <- quo_get_expr(width_quosure)

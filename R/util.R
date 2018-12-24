@@ -22,6 +22,27 @@ ggname <- function(prefix, grob) {
 #   mapping
 # }
 
+# walks the ast to find what variable it's conditioned on
+# P(_|B), find B
+get_conditional <- function(e){
+  get_conditional_recur <- function(x){
+    if (is.atomic(x) || is.symbol(x) || is.expression(x)){
+      x
+    } else if (is.call(x) || is.pairlist(x)){
+      unlist(lapply(x, get_conditional_recur))
+    } else {
+      stop("Don't know how to handle type ", typeof(x),
+           call. = FALSE)
+    }
+  }
+
+  l <- get_conditional_recur(e)
+  l[[length(l)]]
+
+}
+
+
+
 
 mod_position <- function(aes_names){
   if ("x" %in% aes_names | "y" %in% aes_names){
