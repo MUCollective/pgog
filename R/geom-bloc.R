@@ -16,8 +16,6 @@ geom_bloc <- function(mapping = NULL, data = NULL,
   aes_names <- names(mapping)
 
 
-
-
   if ("x" %in% aes_names & "height" %in% aes_names){
     if (grepl("x = ~discrete", quo_text(mapping)) &
         grepl("height", quo_text(mapping))){
@@ -34,7 +32,6 @@ geom_bloc <- function(mapping = NULL, data = NULL,
         fill_env <- quo_get_env(mapping[[1]])
         mapping$fill <- new_quosure(fill_expr, env = fill_env)
       }
-
 
       height_quosure <- mapping[["height"]]
       mapping[["height"]] <- quo_set_expr(mapping[["height"]], expr((..count..)/sum(..count..)))
@@ -82,34 +79,41 @@ geom_bloc <- function(mapping = NULL, data = NULL,
                      show.legend = show.legend,
                      inherit.aes = inherit.aes)
     }
-  } else if (!("x" %in% aes_names ) & !("y" %in% aes_names))  {
-    # mosaic plot
+  } else if (!("x" %in% aes_names ) && !("y" %in% aes_names)) {
+    # mosaic plot, either has width or height aes, or both?
     # P(A) -> product(A)
+    if ("width" %in% aes_names && "height" %in% aes_names){
+      stop(paste("unsupported aesthetics mapping:", as.character(mapping)))
+    } else if ("width" %in% aes_names){
 
-    # generate fill based on conditional P(A|B)
-    if (is.null(mapping$fill)){
-      # extract what P() is conditioned on
-      cond <- get_conditional(quo_get_expr(mapping$height))
-      fill_expr <- expr(!!cond)
+      # generate fill based on conditional P(A|B)
+      if (is.null(mapping$fill)){
+        # extract what P() is conditioned on
+        cond <- get_conditional(quo_get_expr(mapping$height))
+        fill_expr <- expr(!!cond)
 
-      # fill_expr <- expr(happy)
-      fill_env <- quo_get_env(mapping[[1]])
-      mapping$fill <- new_quosure(fill_expr, env = fill_env)
+        # fill_expr <- expr(happy)
+        fill_env <- quo_get_env(mapping[[1]])
+        mapping$fill <- new_quosure(fill_expr, env = fill_env)
+      }
+
+      # remove height argument since ggmosaic doesn't understand
+      mapping$height <- NULL
+
+      # change width -> x
+      width_quosure <- mapping[["width"]]
+      PA_expr <- quo_get_expr(width_quosure)
+      PA_expr[[1]] <- expr(product)
+      mapping$width <- quo_set_expr(mapping[["width"]], PA_expr)
+
+      # Replace width with x
+      replaced <- replace(names(mapping), match("width", aes_names), "x")
+      names(mapping) <- replaced
+    } else if ("height" %in% aes_names){
+     stop("height/y spec not supported by ggmosaic")
+    } else {
+      stop(paste("unsupported aesthetics mapping:", as.character(mapping)))
     }
-
-    # remove height argument since ggmosaic doesn't understand
-    mapping$height <- NULL
-
-
-    width_quosure <- mapping[["width"]]
-    PA_expr <- quo_get_expr(width_quosure)
-    PA_expr[[1]] <- expr(product)
-    mapping$width <- quo_set_expr(mapping[["width"]], PA_expr)
-
-    # Replace width with x
-    replaced <- replace(names(mapping), match("width", aes_names), "x")
-    names(mapping) <- replaced
-
     # yay
 
     geom_mosaic(mapping=mapping)

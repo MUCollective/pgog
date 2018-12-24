@@ -8,19 +8,6 @@ ggname <- function(prefix, grob) {
   grob
 }
 
-# swap_mapping <- function(mapping, aesthetics, new_aes, new_expr){
-#
-#   # change expr
-#   old_quosure <- mapping[[(aesthetics)]]
-#   old_expr <- quo_get_expr(old_quosure)
-#   old_expr[[1]] <- new_expr
-#   mapping[[(aesthetics)]] <- quo_set_expr( mapping[[(aesthetics)]], old_expr)
-#
-#   replaced <- replace(names(mapping), match(as.character(aesthetics), new_aes))
-#   names(mapping) <- replaced
-#
-#   mapping
-# }
 
 # walks the ast to find what variable it's conditioned on
 # P(_|B), find B
@@ -37,12 +24,15 @@ get_conditional <- function(e){
   }
 
   l <- get_conditional_recur(e)
+  # █─expr
+  # └─█─P
+  # └─█─`|`
+  # ├─A
+  # └─B
+  # Want A, so the second last in the list
   l[[length(l) - 1]]
 
 }
-
-
-
 
 mod_position <- function(aes_names){
   if ("x" %in% aes_names | "y" %in% aes_names){
