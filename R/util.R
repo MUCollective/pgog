@@ -8,6 +8,21 @@ ggname <- function(prefix, grob) {
   grob
 }
 
+# swap_mapping <- function(mapping, aesthetics, new_aes, new_expr){
+#
+#   # change expr
+#   old_quosure <- mapping[[(aesthetics)]]
+#   old_expr <- quo_get_expr(old_quosure)
+#   old_expr[[1]] <- new_expr
+#   mapping[[(aesthetics)]] <- quo_set_expr( mapping[[(aesthetics)]], old_expr)
+#
+#   replaced <- replace(names(mapping), match(as.character(aesthetics), new_aes))
+#   names(mapping) <- replaced
+#
+#   mapping
+# }
+
+
 mod_position <- function(aes_names){
   if ("x" %in% aes_names | "y" %in% aes_names){
     position_array(aes_names = aes_names)
@@ -42,37 +57,44 @@ factor_w_h <- function(n){
 #' @importFrom rlang env
 #' @importFrom rlang caller_env
 P <- function(x) {
-  e <- rlang::env(
-    caller_env(),
-    # override | in this environment
-    # https://adv-r.hadley.nz/meta.html
-    `|` = function(a, b) {
-      len <- length(a)
-      cond_unnormalized <- a[as.logical(b)]
+    e <- rlang::env(
+      caller_env(),
+      # override | in this environment
+      # https://adv-r.hadley.nz/meta.html
+      `|` = function(a, b) {
+        len <- length(a)
+        cond_unnormalized <- a[as.logical(b)]
 
-      # secretly rescale so that check_aesthetics(evaled, n) won't complain
-      tbl <- table(cond_unnormalized)
-      counts <- sum(tbl)
-      factor <- len %/% counts
+        # secretly rescale so that check_aesthetics(evaled, n) won't complain
+        tbl <- table(cond_unnormalized)
+        counts <- sum(tbl)
+        factor <- len %/% counts
 
-      # TODO: this does not consider three or more variables
-      # TODO: this returns a char vec, not the original data type
-      res <- c(rep(names(tbl)[1], times = factor * tbl[1]), rep(names(tbl)[2], times = len - factor * tbl[1]))
-      # attributes(res)$is_conditional <- TRUE
-      # browser()
-      res
-    }
-  )
-  # browser()
+        # TODO: this does not consider three or more variables
+        # TODO: this returns a char vec, not the original data type
+        res <- c(rep(names(tbl)[1], times = factor * tbl[1]), rep(names(tbl)[2], times = len - factor * tbl[1]))
+        # attributes(res)$is_conditional <- TRUE
+        # browser()
+        res
+      }
+    )
+    # browser()
 
-  args <- enexpr(x)
-  is_conditional <- "|" %in% as.character(args)
-  res <- eval(args, e)
-  attributes(res)$is_conditional <- is_conditional
-  # browser()
-  res
+    args <- enexpr(x)
+    is_conditional <- "|" %in% as.character(args)
+    res <- eval(args, e)
+    attributes(res)$is_conditional <- is_conditional
+    # browser()
+    res
+
 }
 
+discrete <- function (x) x
+
+#' @importFrom ggplot2 stat
+P1 <- function(x){
+  expr(stat(width * density))
+}
 
 #' oops copied from P()
 RandomVar <- P

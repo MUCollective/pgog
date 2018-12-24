@@ -32,15 +32,48 @@ ggplot(data = happy) +
   geom_bloc(aes(width = P(health), fill = health))
 ```
 
+# x <- A, height = P(A|B)
+
+TODO
+
+```{r}
+ggplot(data = happy) + 
+  geom_bloc(aes(width = P(health), fill = sex))
+```
 
 
 # x <- A, height <- P(A)
 
+## continuous
+
+- discrete: geom_bar (but can't call it yet)
+- continuous: geom_histogram
+
 ```{r}
-ggplot(data=cancer) + 
-  geom_bloc(aes(x = (test), 
-              y = stat(width * density)),
+ggplot(data= cancer) + 
+  geom_bloc(aes(x = test, 
+              height = P(.), # height = P(test)
+              fill = (test)),
             binwidth = 1)
-            
+```
+
+
+## discrete
+
+```{r}
+ggplot(data= cancer) + 
+  geom_bloc(aes(x = discrete(test), 
+              height = P(.), # height = P(test)
+              fill = (test)),
+            binwidth = 1)
+```
+
+
+# x <- A, height <- P(B|A) 
+This is wrong
+
+```{r}
+ggplot(data= happy) + 
+  geom_bar(aes(x = sex, y = (..count..)/sum(..count..), fill = happy))
 ```
 
