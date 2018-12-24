@@ -41,7 +41,7 @@ x <- A, width <- P(A), height <- P(A|B)
 ```{r}
 ggplot(data = happy) + 
   # geom_bloc(aes(width = P(health), fill = sex))
-  geom_bloc(aes(width = P(health), height = P(.|sex)))
+  geom_bloc(aes(width = P(health), height = P(sex | .)))
 ```
 
 
@@ -75,7 +75,7 @@ ggplot(data= happy) +
 
 ```{r}
 ggplot(data=happy) + 
-  geom_bloc(aes(x = discrete(sex), height = P(.|happy)))
+  geom_bloc(aes(x = discrete(sex), height = P(happy|.)))
 ```
 
 

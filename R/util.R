@@ -37,7 +37,7 @@ get_conditional <- function(e){
   }
 
   l <- get_conditional_recur(e)
-  l[[length(l)]]
+  l[[length(l) - 1]]
 
 }
 
