@@ -34,7 +34,9 @@ ggplot(data = happy) +
 
 # x <- A, height = P(A|B)
 
-TODO
+TODO: should it be
+
+x <- A, width <- P(A), height <- P(A|B)
 
 ```{r}
 ggplot(data = happy) + 
@@ -53,24 +55,28 @@ ggplot(data = happy) +
 ggplot(data= cancer) + 
   geom_bloc(aes(x = test, 
               height = P(.), # height = P(test)
-              fill = (test)),
-            binwidth = 1)
+              fill = (test)))
 ```
 
 
 ## discrete
 
+geom_bar under the hood
+
 ```{r}
-ggplot(data= cancer) + 
-  geom_bloc(aes(x = discrete(test), 
-              height = P(.), # height = P(test)
-              fill = (test)),
-            binwidth = 1)
+ggplot(data= happy) + 
+  geom_bloc(aes(x = discrete(sex), 
+              height = P(.),
+              fill = (sex)))
 ```
 
-
 # x <- A, height <- P(B|A) 
-This is wrong
+
+```{r}
+ggplot(data=happy) + 
+  geom_bloc(aes(x = discrete(sex), height = P(.|happy)))
+```
+
 
 ```{r}
 ggplot(data= happy) + 
