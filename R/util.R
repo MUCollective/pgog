@@ -9,6 +9,14 @@ ggname <- function(prefix, grob) {
 }
 
 
+# From http://adv-r.had.co.nz/Expressions.html
+make_function <- function(args, body, env = parent.frame()) {
+  args <- as.pairlist(args)
+
+  eval(call("function", args, body), env)
+}
+
+
 # walks the ast to find what variable it's conditioned on
 # P(_|B), find B
 get_conditional <- function(e){
@@ -30,8 +38,12 @@ get_conditional <- function(e){
   # ├─A
   # └─B
   # Want A, so the second last in the list
-  l[[length(l) - 1]]
 
+  if ("|" %in% l){ #if P(B|A)
+    l[[length(l) - 1]]
+  } else { # if P(A)
+    l[[length(l)]]
+  }
 }
 
 mod_position <- function(aes_names){

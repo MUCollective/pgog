@@ -15,16 +15,14 @@ geom_bloc <- function(mapping = NULL, data = NULL,
   # pick layer based on aesthetics combo
   aes_names <- names(mapping)
 
-
   if ("x" %in% aes_names & "height" %in% aes_names){
     if (grepl("x = ~discrete", quo_text(mapping)) &
         grepl("height", quo_text(mapping))){
       # geom_bar
-
       # generate fill based on conditional P(A|B)
       if (is.null(mapping$fill)){
         # extract what P() is conditioned on
-        browser()
+        # browser()
         cond <- get_conditional(quo_get_expr(mapping$height))
         fill_expr <- expr(!!cond)
 
@@ -33,23 +31,46 @@ geom_bloc <- function(mapping = NULL, data = NULL,
         mapping$fill <- new_quosure(fill_expr, env = fill_env)
       }
 
-      height_quosure <- mapping[["height"]]
-      mapping[["height"]] <- quo_set_expr(mapping[["height"]], expr((..count..)/sum(..count..)))
+      if (!identical(quo_get_expr(mapping$height)[[2]], quo_get_expr(mapping$fill))){
+        # x = A, height = P(B|.)
+        height_quosure <- mapping[["height"]]
+        mapping[["height"]] <- quo_set_expr(mapping[["height"]], expr((..count..)/sum(..count..)))
 
-      replaced <- replace(names(mapping), match("height", aes_names), "y")
-      names(mapping) <- replaced
+        replaced <- replace(names(mapping), match("height", aes_names), "y")
+        names(mapping) <- replaced
 
-      if (is.null(stat)){
-        stat <- "count"
+        if (is.null(stat)){
+          stat <- "count"
+        }
+
+        geom_bar(mapping = mapping,
+                 stat = stat,
+                 position = position,
+                 ...,
+                 na.rm = na.rm,
+                 show.legend = show.legend,
+                 inherit.aes = inherit.aes)
+      } else {
+        # x = discrete(happy), height = P(B) -> aes(x = product(happy), fill=happy, conds=product(sex))
+
+        # make product(A) expr
+        x_fill_aes <- get_conditional(quo_get_expr(mapping$x))
+        prod_expr <- expr(product(!!x_fill_aes))
+        mapping$x <- quo_set_expr(mapping$x, prod_expr)
+        mapping$fill <- quo_set_expr(mapping$fill, expr(!!x_fill_aes))
+
+        # build cond mapping
+        conds_aes <- get_conditional(quo_get_expr(mapping$height))
+        mapping$conds <- new_quosure(expr = expr(product(!!conds_aes)), quo_get_env(mapping$x))
+
+        # delete extra mapping
+        mapping$height <- NULL
+
+        browser()
+
+
+        geom_mosaic(mapping = mapping)
       }
-
-      geom_bar(mapping = mapping,
-               stat = stat,
-               position = position,
-               ...,
-               na.rm = na.rm,
-               show.legend = show.legend,
-               inherit.aes = inherit.aes)
 
     } else {
       # geom_histogram
@@ -82,9 +103,7 @@ geom_bloc <- function(mapping = NULL, data = NULL,
   } else if (!("x" %in% aes_names ) && !("y" %in% aes_names)) {
     # mosaic plot, either has width or height aes, or both?
     # P(A) -> product(A)
-    if ("width" %in% aes_names && "height" %in% aes_names){
-      stop(paste("unsupported aesthetics mapping:", as.character(mapping)))
-    } else if ("width" %in% aes_names){
+    if ("width" %in% aes_names){
 
       # generate fill based on conditional P(A|B)
       if (is.null(mapping$fill)){
