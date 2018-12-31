@@ -56,17 +56,23 @@ ggplot(happy) +
 
 
 ```{r}
-ggplot(data = happy) +
-  geom_mosaic(
-    aes(x = product(happy), 
-        fill=happy, 
-        conds=product(sex))) 
+# ggplot(data = happy) +
+#   geom_mosaic(
+#     aes(x = product(happy), 
+#         fill=happy, 
+#         conds=product(sex))) 
 ```
 
 
 # x <- A, height <- P(A)
 
 ## continuous
+
+
+
+
+
+## continuous with binning
 
 - discrete: geom_bar (but can't call it yet)
 - continuous: geom_histogram
