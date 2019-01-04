@@ -184,8 +184,8 @@ Examples from the paper
 
 
 ```{r}
-# prodplot(happy,~ happy , c("hspine"), na.rm = TRUE)
-# prodplot(happy,~ marital, c("hspine"))
+prodplot(happy,~ happy , c("hspine"), na.rm = TRUE)
+prodplot(happy,~ marital, c("hspine"))
 # prodplot(happy, ~marital+sex + happy, c("hspine", "hspine", "vspine"))
 # prodplot(happy, ~happy + sex + marital, c("vspine", "hspine", "hspine"))
 ```
@@ -275,3 +275,34 @@ cancer %>%
 ```
 
 
+# Density
+```{r}
+mtcars <- head(mtcars, n = 10)
+```
+
+```{r}
+ggplot(mapping = aes(x = mpg)) + 
+  geom_density(data = filter(mtcars, cyl == 6))  + 
+  geom_density(data = filter(mtcars, cyl == 4)) + 
+  geom_density(data = filter(mtcars, cyl == 8))
+
+# count = density * n
+```
+
+```{r}
+
+ggplot(mapping = aes(x = mpg, y = stat(count))) + 
+  geom_density(data = filter(mtcars, cyl == 6))  + 
+  geom_density(data = filter(mtcars, cyl == 4)) + 
+  geom_density(data = filter(mtcars, cyl == 8))
+
+
+ggplot(mtcars, mapping = aes(x = mpg, fill = factor(cyl), alpha = 0.4)) + 
+  geom_histogram(binwidth = 1, position = "identity")
+  
+  
+```
+
+```{r}
+ggplot(mtcars, aes(x = mpg)) + geom_density(adjust = 1/2)
+```

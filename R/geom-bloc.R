@@ -1,7 +1,8 @@
 #' @export
 #' @importFrom ggmosaic geom_mosaic
 #' @importFrom ggmosaic product
-#' @importFrom rlang eval_tidy
+#' @import rlang
+#'
 geom_bloc <- function(mapping = NULL, data = NULL,
                      stat = NULL,
                      position = "stack",
@@ -16,7 +17,26 @@ geom_bloc <- function(mapping = NULL, data = NULL,
   aes_names <- names(mapping)
 
   if ("x" %in% aes_names & "height" %in% aes_names){
-    if (grepl("x = ~discrete", quo_text(mapping)) &
+    if (grepl("height = ~density", quo_text(mapping))){
+      # geom_density
+      # * `x`      -> `mpg`
+      # * `height` -> `density(cyl | .)`
+      mapping_env <- quo_get_env(mapping[[1]])
+      y_expr <- expr(stat(density * n))
+      mapping[["y"]] <- new_quosure(y_expr, env = mapping_env)
+      browser()
+      fill_expr <- expr(factor(!!get_conditional(quo_get_expr(mapping$height))))
+      mapping[["fill"]] <- new_quosure(fill_expr, env = mapping_env)
+      mapping$height <- NULL
+
+      # TODO: position is either stack or fill
+
+      geom_density(mapping = mapping,
+                   data = data,
+                   stat = "density",
+                   position = "stack",... ,na.rm = na.rm, show.legend = show.legend, inherit.aes = inherit.aes)
+
+    } else if (grepl("x = ~discrete", quo_text(mapping)) &
         grepl("height", quo_text(mapping))){
       # geom_bar
       # generate fill based on conditional P(A|B)
@@ -51,7 +71,9 @@ geom_bloc <- function(mapping = NULL, data = NULL,
                  show.legend = show.legend,
                  inherit.aes = inherit.aes)
       } else {
-        # x = discrete(happy), height = P(B) -> aes(x = product(happy), fill=happy, conds=product(sex))
+        # ggmosaic
+        # given  x = discrete(happy), height = P(B)
+        # -> aes(x = product(happy), fill=happy, conds=product(sex))
 
         # make product(A) expr
         x_fill_aes <- get_conditional(quo_get_expr(mapping$x))
@@ -133,7 +155,6 @@ geom_bloc <- function(mapping = NULL, data = NULL,
     } else {
       stop(paste("unsupported aesthetics mapping:", as.character(mapping)))
     }
-    # yay
 
     geom_mosaic(mapping=mapping)
   }

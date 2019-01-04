@@ -38,8 +38,7 @@ get_conditional <- function(e){
   # ├─A
   # └─B
   # Want A, so the second last in the list
-
-  if ("|" %in% l){ #if P(B|A)
+  if ("|" %in% sapply(l, as.character)){ #if P(B|A)
     l[[length(l) - 1]]
   } else { # if P(A)
     l[[length(l)]]

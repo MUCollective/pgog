@@ -68,6 +68,31 @@ ggplot(happy) +
 
 ## continuous
 
+```{r}
+ggplot(mtcars) + 
+  geom_bloc(aes(x = mpg, height = density(cyl | .)))
+```
+
+
+
+```{r}
+ggplot(mtcars, aes(x = mpg, fill = factor(cyl))) + 
+  geom_density(position = "stack")
+
+# count = density * n
+# the one with correct marginal distribution
+
+ggplot(mtcars, aes(x = mpg, y = stat(density * n), fill = factor(cyl))) + 
+  geom_density(position = "stack")
+
+# conditional
+ggplot(mtcars, aes(x = mpg, y = stat(density * n), fill = factor(cyl))) + 
+  geom_density(position = "fill")
+```
+
+
+
+
 
 
 
@@ -104,8 +129,8 @@ ggplot(data=happy) +
 
 
 ```{r}
-# ggplot(data= happy) + 
-#   geom_bar(aes(x = sex, y = (..count..)/sum(..count..), fill = happy))
+ggplot(data= happy) +
+  geom_bar(aes(x = sex, y = (..count..)/sum(..count..), fill = happy))
 ```
 
 # y <- A, width <- P(A)
