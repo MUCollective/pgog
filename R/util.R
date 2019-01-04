@@ -17,20 +17,26 @@ make_function <- function(args, body, env = parent.frame()) {
 }
 
 
-# walks the ast to find what variable it's conditioned on
-# P(_|B), find B
-get_conditional <- function(e){
-  get_conditional_recur <- function(x){
-    if (is.atomic(x) || is.symbol(x) || is.expression(x)){
-      x
-    } else if (is.call(x) || is.pairlist(x)){
-      unlist(lapply(x, get_conditional_recur))
-    } else {
-      stop("Don't know how to handle type ", typeof(x),
-           call. = FALSE)
-    }
+# ========== parse those P(B, .), P(B|.) expressions
+get_conditional_recur <- function(x){
+  if (is.atomic(x) || is.symbol(x) || is.expression(x)){
+    x
+  } else if (is.call(x) || is.pairlist(x)){
+    unlist(lapply(x, get_conditional_recur))
+  } else {
+    stop("Don't know how to handle type ", typeof(x),
+         call. = FALSE)
   }
+}
 
+get_joint <- function(e){
+  l <- get_conditional_recur(e)
+  l[[length(l) - 1]]
+}
+
+# walks the ast to find what variable it's conditioned on
+# P(|_), find B
+get_conditional <- function(e){
   l <- get_conditional_recur(e)
   # █─expr
   # └─█─P
@@ -43,6 +49,18 @@ get_conditional <- function(e){
   } else { # if P(A)
     l[[length(l)]]
   }
+}
+
+is_joint <- function(e){
+  l <- get_conditional_recur(e)
+
+  length(l) > 2 && (!is_conditional(e))
+}
+
+is_conditional <- function(e){
+
+  l <- get_conditional_recur(e)
+  "|" %in% sapply(l, as.character)
 }
 
 mod_position <- function(aes_names){

@@ -70,12 +70,27 @@ ggplot(happy) +
 
 ```{r}
 ggplot(mtcars) + 
+  geom_bloc(aes(x = cyl, height = density(.)))
+```
+
+```{r}
+ggplot(mtcars) +
+  geom_bloc(aes(x = mpg, height = density(cyl, .)))
+```
+
+
+```{r}
+ggplot(mtcars) + 
   geom_bloc(aes(x = mpg, height = density(cyl | .)))
 ```
 
 
 
 ```{r}
+
+ggplot(mtcars, aes(x = cyl)) + 
+  geom_density(position = "stack")
+
 ggplot(mtcars, aes(x = mpg, fill = factor(cyl))) + 
   geom_density(position = "stack")
 

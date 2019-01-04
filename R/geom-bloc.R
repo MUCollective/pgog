@@ -25,16 +25,55 @@ geom_bloc <- function(mapping = NULL, data = NULL,
       y_expr <- expr(stat(density * n))
       mapping[["y"]] <- new_quosure(y_expr, env = mapping_env)
       browser()
-      fill_expr <- expr(factor(!!get_conditional(quo_get_expr(mapping$height))))
-      mapping[["fill"]] <- new_quosure(fill_expr, env = mapping_env)
-      mapping$height <- NULL
+
+      # only specify fill when needed (conditional)?
+      if (is_conditional(quo_get_expr(mapping$height)) ||
+          is_joint(quo_get_expr(mapping$height))){
+
+        if (is_conditional(quo_get_expr(mapping$height))){
+          fill_expr_dot <- get_conditional(quo_get_expr(mapping$height))
+          fill_expr <- expr(factor(!!fill_expr_dot))
+
+          mapping[["fill"]] <- new_quosure(fill_expr, env = mapping_env)
+          mapping$height <- NULL
+          geom_density(mapping = mapping,
+                       data = data,
+                       stat = "density",
+                       position = "fill",... ,
+                       na.rm = na.rm,
+                       show.legend = show.legend,
+                       inherit.aes = inherit.aes)
+        } else {
+          fill_expr_dot <- get_joint(quo_get_expr(mapping$height))
+          fill_expr <- expr(factor(!!fill_expr_dot))
+
+          mapping[["fill"]] <- new_quosure(fill_expr, env = mapping_env)
+          mapping$height <- NULL
+
+          mapping$height <- NULL
+          geom_density(mapping = mapping,
+                       data = data,
+                       stat = "density",
+                       position = "stack",... ,
+                       na.rm = na.rm,
+                       show.legend = show.legend,
+                       inherit.aes = inherit.aes)
+        }
+
+      } else {
+        mapping$height <- NULL
+        geom_density(mapping = mapping,
+                     data = data,
+                     stat = "density",
+                     position = "stack",... ,
+                     na.rm = na.rm,
+                     show.legend = show.legend,
+                     inherit.aes = inherit.aes)
+
+      }
+
 
       # TODO: position is either stack or fill
-
-      geom_density(mapping = mapping,
-                   data = data,
-                   stat = "density",
-                   position = "stack",... ,na.rm = na.rm, show.legend = show.legend, inherit.aes = inherit.aes)
 
     } else if (grepl("x = ~discrete", quo_text(mapping)) &
         grepl("height", quo_text(mapping))){
