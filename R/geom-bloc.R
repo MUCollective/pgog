@@ -5,7 +5,7 @@
 #'
 geom_bloc <- function(mapping = NULL, data = NULL,
                      stat = NULL,
-                     position = "stack",
+                     position = NULL,
                      ...,
                      binwidth = NULL,
                      bins = NULL,
@@ -15,6 +15,28 @@ geom_bloc <- function(mapping = NULL, data = NULL,
 
   # pick layer based on aesthetics combo
   aes_names <- names(mapping)
+
+  if (reduce(c("x", "y", "width") %in% aes_names, `&&`) &&
+      grepl("width = ~density", quo_text(mapping))){
+      # violin plot
+  mapping$width <- NULL
+
+  # geom_violin defaults
+  if (is.null(stat)){
+    stat = "ydensity"
+  }
+
+  if (is.null(position)){
+    position = "dodge"
+  }
+
+
+  return(
+    geom_violin(mapping = mapping, data = data, stat = stat, position = position, ... )
+  )
+  }
+
+
 
   if ("x" %in% aes_names & "height" %in% aes_names){
     if (grepl("height = ~density", quo_text(mapping))){
@@ -71,8 +93,6 @@ geom_bloc <- function(mapping = NULL, data = NULL,
                      inherit.aes = inherit.aes)
 
       }
-
-
       # TODO: position is either stack or fill
 
     } else if (grepl("x = ~discrete", quo_text(mapping)) &

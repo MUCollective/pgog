@@ -148,8 +148,25 @@ ggplot(data= happy) +
   geom_bar(aes(x = sex, y = (..count..)/sum(..count..), fill = happy))
 ```
 
-# y <- A, width <- P(A)
 
-coord flip will do, but....
+# x <- A, y <- B, width <- P(B|A)
+
+## density
+
+```{r}
+ggplot(mtcars) +
+  geom_bloc(aes(
+    x = factor(cyl),
+    y = mpg,
+    width = density(cyl |.)
+  ))
+
+```
+
+
+```{r}
+ggplot(mtcars) + 
+  geom_violin(aes(factor(cyl), mpg))
+```
 
 
