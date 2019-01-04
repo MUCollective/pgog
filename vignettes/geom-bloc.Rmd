@@ -170,3 +170,15 @@ ggplot(mtcars) +
 ```
 
 
+# x <- A, y <- B, height <- density()
+
+```{r}
+ggplot(mtcars) + 
+  geom_bloc(aes(
+    x = mpg,
+    y = factor(cyl),
+    height = density(.)
+  ))
+```
+
+

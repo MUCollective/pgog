@@ -2,6 +2,7 @@
 #' @importFrom ggmosaic geom_mosaic
 #' @importFrom ggmosaic product
 #' @import rlang
+#' @importFrom ggridges geom_density_ridges
 #'
 geom_bloc <- function(mapping = NULL, data = NULL,
                      stat = NULL,
@@ -16,27 +17,39 @@ geom_bloc <- function(mapping = NULL, data = NULL,
   # pick layer based on aesthetics combo
   aes_names <- names(mapping)
 
+  # violin plot
   if (reduce(c("x", "y", "width") %in% aes_names, `&&`) &&
       grepl("width = ~density", quo_text(mapping))){
-      # violin plot
-  mapping$width <- NULL
+    mapping$width <- NULL
 
-  # geom_violin defaults
-  if (is.null(stat)){
-    stat = "ydensity"
+    # geom_violin defaults
+    if (is.null(stat)){
+      stat = "ydensity"
+    }
+
+    if (is.null(position)){
+      position = "dodge"
+    }
+
+  return(geom_violin(mapping = mapping, data = data, stat = stat, position = position, ... ))
   }
 
-  if (is.null(position)){
-    position = "dodge"
+  # ggridges
+  if (reduce(c("x", "y", "height") %in% aes_names, `&&`) &&
+      grepl("height = ~density", quo_text(mapping))){
+    mapping$height <- NULL
+
+    # geom_violin defaults
+    if (is.null(stat)){
+      stat = "density_ridges"
+    }
+
+    if (is.null(position)){
+      position = "points_sina"
+    }
+
+    return(geom_density_ridges(mapping = mapping, data = data, stat = stat, position = position, ... ))
   }
-
-
-  return(
-    geom_violin(mapping = mapping, data = data, stat = stat, position = position, ... )
-  )
-  }
-
-
 
   if ("x" %in% aes_names & "height" %in% aes_names){
     if (grepl("height = ~density", quo_text(mapping))){
