@@ -23,7 +23,8 @@ library(ggplot2)
 library(ggridges)
 library(scales)
 library(productplots)
-library(ggmosaic)
+# library(ggmosaic)
+library(ggwaffle)
 ```
 
 # TODO: examples from the four papers
@@ -71,9 +72,20 @@ plot_icons(prev = .1, sens = .70, spec =   NA, fart = .090, N = 100,
 
 # Icon array with ggplot?
 
+## waffles
+
+"Because of the inner mechanisms of ggplot2, some of the necessary data transformations have to be completed outside of a standard plot creation"
+
 
 ```{r}
+iris$Species <- as.character(iris$Species)
+waffle_data <- waffle_iron(iris, aes_d(group = Species))
 
+ggplot(waffle_data, aes(x, y, fill = group)) + 
+  geom_waffle() + 
+  coord_equal() + 
+  scale_fill_waffle() + 
+  theme_waffle()
 ```
 
 
@@ -185,10 +197,37 @@ Examples from the paper
 
 ```{r}
 prodplot(happy,~ happy , c("hspine"), na.rm = TRUE)
-prodplot(happy,~ marital, c("hspine"))
+prodplot(happy,~ marital | happy + sex + degree, c("fluct", "fluct"))
 # prodplot(happy, ~marital+sex + happy, c("hspine", "hspine", "vspine"))
 # prodplot(happy, ~happy + sex + marital, c("vspine", "hspine", "hspine"))
 ```
+```{r}
+
+```
+
+
+## Figure 7 in prod plot paper
+
+```{r}
+prodplot(happy, ~ sex + happy, c("vspine", "hbar"),na.rm = TRUE)
+prodplot(happy, ~ age + marital, c("hbar", "vspine"))
+```
+
+
+## Figure 8; conditioning
+
+```{r}
+prodplot(happy, ~ happy + health + finrela, c("vspine","fluct"))
+prodplot(happy, ~ happy | health + finrela, c("vspine", "fluct"))
+```
+
+
+## FLUCT
+
+```{r}
+prodplot(happy, ~ 1|age + marital , c("fluct"))
+```
+
 
 
 # ggmsaic
