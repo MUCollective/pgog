@@ -37,7 +37,7 @@ ggplot(data = happy) +
 Doesn't seem to be supported with ggmosaic hmmm
 
 
-# x <- A, height = P(B|A)
+# x <- A, height = P(B|.)
 
 TODO: should it be
 

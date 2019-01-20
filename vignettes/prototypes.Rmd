@@ -201,8 +201,13 @@ prodplot(happy,~ marital | happy + sex + degree, c("fluct", "fluct"))
 # prodplot(happy, ~marital+sex + happy, c("hspine", "hspine", "vspine"))
 # prodplot(happy, ~happy + sex + marital, c("vspine", "hspine", "hspine"))
 ```
-```{r}
 
+
+## Figure 6
+
+
+```{r}
+prodplot(happy, ~ happy + marital + sex + degree, c("vspine", "hbar", "hspine", "hbar"))
 ```
 
 
@@ -225,7 +230,10 @@ prodplot(happy, ~ happy | health + finrela, c("vspine", "fluct"))
 ## FLUCT
 
 ```{r}
-prodplot(happy, ~ 1|age + marital , c("fluct"))
+prodplot(happy, ~ degree + sex, c("vspine", "hbar"))
+prodplot(happy, ~ sex + degree, c("hbar", "vspine"))
+prodplot(happy, ~ degree + sex, c("hbar", "vspine"))
+prodplot(happy, ~ sex + degree, c("vspine", "hbar"))
 ```
 
 
@@ -299,6 +307,38 @@ ggplot(data = happy) +
 
 ```
 
+## 1 ~ X + Y | Z
+
+
+```{r}
+ggplot(data=happy) + 
+  geom_mosaic(aes(x = product(happy, sex), 
+                  fill = happy, 
+                  conds = product(finrela)),
+              na.rm = TRUE, divider = c("hspine", "vspine", "hbar"))
+```
+
+```{r}
+
+ggplot(data=happy) + 
+  geom_mosaic(aes(x = product(happy), fill = happy,
+                  conds = product(sex, polviews, degree)),
+              na.rm = TRUE)
+```
+
+```{r}
+
+ggplot(data=happy) + 
+  geom_mosaic(aes(x = product(polviews, sex), fill = polviews),
+              na.rm = TRUE, divider = c("hbar", "vspine"))
+```
+
+
+```{r}
+ggplot(happy) + 
+  geom_mosaic(aes(x = product(happy, marital, sex), fill = happy), divider = c("hbar", "fluct"), na.rm = TRUE)  +
+  coord_fixed()
+```
 
 
 # Dotplots
