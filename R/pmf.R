@@ -1,4 +1,5 @@
 #' @param p a single expression like P(A, B | C, D)
+#' @return a list of marginals and conditionals
 parse_pmf <- function(p){
 
   l <- as.character(p)
@@ -50,9 +51,37 @@ parse_pmf <- function(p){
 #' @param length a list of pmfs assigned to the length aesthetics
 #' @param area a list of pmfs assigned to the area aesthetics
 #' @return marginals and conditionals
-parse_pmfs <- function(length, area){
+parse_pmfs <- function(one_d = NULL, two_d = NULL){
+  # number of terms in the aesthetics
+  res$length = length(one_d) + length(two_d)
+  res$marginals <- list()
+  res$conditionals <- list()
 
 
+  if (!is.null(one_d)){
+    all <- one_d
+    if (!is.null(two_d)){
+      all <- paste(all, two_d)
+    }
+  } else {
+    stopifnot(!is.null(two_d))
+    all <- two_d
+  }
+
+
+
+
+  for (i in 1:length(all)){
+    res$marginals <- c(res$marginal, parse_pmf(all[[i]])$marginals)
+
+    cond <- parse_pmf(all[[i]])$conditionals
+    if (! is.null(cond)){
+      res$conditionals <- c(res$conditionals,cond)
+    }
+  }
+
+  browser()
+  # collect all marginals and conditionals
 }
 
 
