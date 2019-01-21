@@ -53,6 +53,7 @@ parse_pmf <- function(p){
 #' @return marginals and conditionals
 parse_pmfs <- function(one_d = NULL, two_d = NULL){
   # number of terms in the aesthetics
+  res <- list()
   res$length = length(one_d) + length(two_d)
   res$marginals <- list()
   res$conditionals <- list()
@@ -69,8 +70,6 @@ parse_pmfs <- function(one_d = NULL, two_d = NULL){
   }
 
 
-
-
   for (i in 1:length(all)){
     res$marginals <- c(res$marginal, parse_pmf(all[[i]])$marginals)
 
@@ -80,13 +79,27 @@ parse_pmfs <- function(one_d = NULL, two_d = NULL){
     }
   }
 
-  browser()
-  # collect all marginals and conditionals
+
+  pmf <- combine_pmfs(res)
+
+
 }
 
 
 #' tries to merge a list of pmfs
+#' @param marginals a list of expressions like A, B, C
 #' @return a list of
-combine_pmfs <- function(marginals, conditionals){
+#' @importFrom dplyr intersect
+combine_pmfs <- function(res){
+  browser()
+
+  common_rv <- intersect(res$marginals, res$conditionals)
+
+  stopifnot(length(common_rv) + 1 == res$length) #TODO: >2 pmfs?
+
+  # res$marginals <- c(res$marginals, common_rv) # this is wrong
+  rv_idx <- which(common_rv %in% res$conditionals)
+  res$conditionals <- res$conditionals[-rv_idx]
+
 
 }
