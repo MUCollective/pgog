@@ -85,21 +85,34 @@ parse_pmfs <- function(one_d = NULL, two_d = NULL){
 
 }
 
+pprint_pmf <- function(res){
+
+
+  s <- "P("
+  s <- paste(s, paste(res$marginals, collapse = ", ") )
+  if (length(res$conditionals) != 0){
+    s <- paste(s, "|", paste(res$conditionals, collapse = ", "))
+  }
+
+  s <- paste(s, ")")
+  print(s)
+}
 
 #' tries to merge a list of pmfs
 #' @param marginals a list of expressions like A, B, C
 #' @return a list of
 #' @importFrom dplyr intersect
 combine_pmfs <- function(res){
-  browser()
 
   common_rv <- intersect(res$marginals, res$conditionals)
 
-  stopifnot(length(common_rv) + 1 == res$length) #TODO: >2 pmfs?
+  stopifnot(res$length >1 & length(common_rv)  != 0) #TODO: >2 pmfs?
 
+  # browser()
   # res$marginals <- c(res$marginals, common_rv) # this is wrong
-  rv_idx <- which(common_rv %in% res$conditionals)
+  rv_idx <- which(res$conditionals %in% common_rv )
   res$conditionals <- res$conditionals[-rv_idx]
+  res$conditionals <- unique(res$conditionals)
 
-
+  pprint_pmf(res)
 }
