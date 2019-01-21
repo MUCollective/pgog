@@ -80,7 +80,7 @@ parse_pmfs <- function(one_d = NULL, two_d = NULL){
   }
 
 
-  pmf <- combine_pmfs(res)
+  combine_pmfs(res)
 
 
 }
@@ -88,14 +88,12 @@ parse_pmfs <- function(one_d = NULL, two_d = NULL){
 pprint_pmf <- function(res){
 
 
-  s <- "P("
-  s <- paste(s, paste(res$marginals, collapse = ", ") )
+  s <- paste("", paste(res$marginals, collapse = "+"), sep = "")
   if (length(res$conditionals) != 0){
-    s <- paste(s, "|", paste(res$conditionals, collapse = ", "))
+    s <- paste(s, "|", paste(res$conditionals, collapse = "+"), sep = "")
   }
 
-  s <- paste(s, ")")
-  print(s)
+  s
 }
 
 #' tries to merge a list of pmfs
