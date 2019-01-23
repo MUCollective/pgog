@@ -4,10 +4,14 @@
 parse_aes <- function(mapping){
 
   flat_mapping <- flatten_aes(mapping)
-  prob_aes <- filter(flat_mapping)
+  prob_aes <- filter_prob_aes(flat_mapping)
 
-
-
+  # initialize the common conditionals
+  all_conds <- list()
+  for (i in seq_along(prob_aes)){
+    all_conds[[i]] <- parse_pmf(prob_aes[[i]])$conditionals
+  }
+  conds <- Reduce(intersect, all_conds)
 
 
 }
@@ -25,7 +29,6 @@ filter_prob_aes <- function(mapping){
         idx <- c(idx, i)
       }
     }
-
   }
 
   mapping[idx]
@@ -44,8 +47,7 @@ flatten_aes <- function(mapping){
     }
   }
   names(new_mapping) <- new_names
-  # browser()
-  print(new_mapping)
+  # print(new_mapping)
   new_mapping
 
 }
