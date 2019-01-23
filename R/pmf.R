@@ -97,7 +97,7 @@ pprint_pmf <- function(res){
 }
 
 #' tries to merge a list of pmfs
-#' @param marginals a list of expressions like A, B, C
+#' @param res a list of expressions like A, B, C
 #' @return a list of
 #' @importFrom dplyr intersect
 combine_pmfs <- function(res){

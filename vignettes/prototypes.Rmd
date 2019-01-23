@@ -196,10 +196,9 @@ Examples from the paper
 
 
 ```{r}
-prodplot(happy,~ happy , c("hspine"), na.rm = TRUE)
-prodplot(happy,~ marital | happy + sex + degree, c("fluct", "fluct"))
-# prodplot(happy, ~marital+sex + happy, c("hspine", "hspine", "vspine"))
-# prodplot(happy, ~happy + sex + marital, c("vspine", "hspine", "hspine"))
+prodplot(happy,~ ~ marital+sex + happy, c("fluct", "hspine"))
+prodplot(happy, ~ marital+sex + happy, c("vspine", "hspine", "hbar"))
+prodplot(happy, ~~ marital+sex + happy, c("vspine", "hspine", "hspine"))
 ```
 
 
@@ -227,11 +226,11 @@ prodplot(happy, ~ happy | health + finrela, c("vspine", "fluct"))
 ```
 
 
-## FLUCT
+## P(A) P(B|A) v.s. P(B) P(A|B)
 
 ```{r}
-prodplot(happy, ~ degree + sex, c("vspine", "hbar"))
-prodplot(happy, ~ sex + degree, c("hbar", "vspine"))
+prodplot(happy, ~ degree + sex, c("vspine", "hbar")) # hbar = P(sex) * vspine = P(degree | sex)
+prodplot(happy, ~ sex + degree, c("hbar", "vspine")) # vspine = P(degree) * hbar = P(sex | degree)
 prodplot(happy, ~ degree + sex, c("hbar", "vspine"))
 prodplot(happy, ~ sex + degree, c("vspine", "hbar"))
 ```
@@ -318,6 +317,35 @@ ggplot(data=happy) +
               na.rm = TRUE, divider = c("hspine", "vspine", "hbar"))
 ```
 
+## X + Y + Z: 3 ways of factoring
+
+### f(x,y|z) * f(z)
+```{r}
+ggplot(happy) + 
+  geom_mosaic(aes(
+    x = product(marital, sex, happy),
+    fill = marital,
+  ), divider = c("fluct", "vbar"),
+  na.rm = TRUE)
+```
+
+
+### f(x|y,z) * f(y,z)
+
+```{r}
+ggplot(happy) + 
+  geom_mosaic(aes(
+    x = product(marital, sex, happy),
+    fill = happy,
+  ), divider = c("vbar", "fluct"),
+  na.rm = TRUE)
+```
+
+
+
+
+
+
 ```{r}
 
 ggplot(data=happy) + 
@@ -340,6 +368,11 @@ ggplot(happy) +
   coord_fixed()
 ```
 
+```{r}
+ggplot(happy) + 
+  geom_mosaic(aes(x = product(happy, marital, sex), fill = happy), divider = c("hbar", "vspine", "hspine"), na.rm = TRUE)  +
+  coord_fixed()
+```
 
 # Dotplots
 
