@@ -13,8 +13,45 @@ parse_aes <- function(mapping){
   }
   conds <- Reduce(intersect, all_conds)
 
+  # save em to a matrix for easy indexing
+  mtx <- aes_to_mtx(prob_aes)
+  # sort by conditionals length
+
+  mtx
 
 }
+
+aes_to_mtx <- function(mapping){
+
+  mtx_w <- length(mapping)
+  mtx_h <- 3 # marginal, cond, aes name
+
+  mtx <- matrix(list(rep(NULL, mtx_h * mtx_w)), mtx_h, mtx_w)
+
+  aes_names <- names(mapping)
+
+  for (j in seq_len(mtx_w)){
+    m <- parse_pmf(mapping[[j]])$marginals
+    if (!is.list(m)){
+      m <- list(m)
+    }
+    mtx[1, j][[1]] <- m
+
+    c <- parse_pmf(mapping[[j]])$conditionals
+    if (! is.list(c)){
+      c <- list(c)
+    }
+    mtx[2, j][[1]] <- c
+    mtx[3, j] <- aes_names[j]
+  }
+
+  # more meaningful names
+
+  row.names(mtx) <- c("marginals", "conditionals", "aes")
+
+  mtx
+}
+
 
 
 filter_prob_aes <- function(mapping){
