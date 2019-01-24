@@ -2,10 +2,16 @@ context("parse")
 library(rlang)
 
 
+# legit mapping
 
-mapping <- list()
-mapping$width <- list(expr(P(B|A)), expr(P(A)), expr(P(C|A)))
-mapping$x <- list(expr(A))
+m1 <- list()
+m1$width <- list(expr(P(B|A)), expr(P(A)), expr(P(C|A,B)))
+m1$x <- list(expr(A))
+
+# bad mapping
+m2 <- m1
+m2$width <- list(expr(P(A)), expr(P(C)))
+
 
 # test_that("flatten_aes", {
 #
@@ -14,7 +20,14 @@ mapping$x <- list(expr(A))
 # })
 
 
-test_that("parse_aes", {
-  expect_output(parse_aes(mapping), "")
+test_that("parse_aes succeed", {
+
+  expect_null(parse_aes(m1))
+
+})
+
+
+test_that("parse_aes fail", {
+  expect_error(parse_aes(m2))
 
 })

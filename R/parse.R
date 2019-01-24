@@ -1,4 +1,3 @@
-# new version of pmf.R???
 
 #' @param mapping aesthetics mapping, a list of expressions (used to be quosures)
 parse_aes <- function(mapping){
@@ -20,18 +19,17 @@ parse_aes <- function(mapping){
   cond_lengths <- sapply(mtx$conditionals, length)
   mtx <- mtx[order(cond_lengths), ]
 
-
-
-
   # check if the conditionals and marginals multiply into a single pmf
-  print(mtx_check(mtx))
-  browser()
+  stopifnot(mtx_check(mtx))
 
+
+  NULL
 
 }
 
 #' Goes thru the matrix to check if it's a legit factorization of a pmf
 #' @param mtx rows: pmf terms, cols: marginals, conditionals, aesthetics names
+#'
 mtx_check <- function(m){
 
   legit <- TRUE
