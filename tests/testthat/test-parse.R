@@ -4,7 +4,7 @@ library(rlang)
 
 
 mapping <- list()
-mapping$width <- list(expr(P(A|C)), expr(P(B|C,A)))
+mapping$width <- list(expr(P(B|A, D)), expr(P(A|D)), expr(P(C|D,A,B)))
 mapping$x <- list(expr(A))
 
 # test_that("flatten_aes", {

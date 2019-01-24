@@ -16,40 +16,45 @@ parse_aes <- function(mapping){
   # save em to a matrix for easy indexing
   mtx <- aes_to_mtx(prob_aes)
   # sort by conditionals length
+  cond_lengths <- sapply(mtx$conditionals, length)
+  idx <- order(cond_lengths)
+  mtx$conditionals <- mtx$conditionals[idx]
 
-  mtx
+  browser()
+
 
 }
 
 aes_to_mtx <- function(mapping){
 
-  mtx_w <- length(mapping)
-  mtx_h <- 3 # marginal, cond, aes name
+  mtx_nrow <- length(mapping)
+  mtx_ncol <- 3 # marginal, cond, aes name
 
-  mtx <- matrix(list(rep(NULL, mtx_h * mtx_w)), mtx_h, mtx_w)
+  mtx <- matrix(list(rep(NULL, mtx_nrow * mtx_ncol)), nrow = mtx_nrow, ncol = mtx_ncol)
+  # mtx <- data.frame(mtx)
 
   aes_names <- names(mapping)
 
-  for (j in seq_len(mtx_w)){
-    m <- parse_pmf(mapping[[j]])$marginals
+  for (i in seq_len(mtx_nrow)){
+    m <- parse_pmf(mapping[[i]])$marginals
     if (!is.list(m)){
       m <- list(m)
     }
-    mtx[1, j][[1]] <- m
+    mtx[i, 1][[1]] <- m
 
-    c <- parse_pmf(mapping[[j]])$conditionals
+    c <- parse_pmf(mapping[[i]])$conditionals
     if (! is.list(c)){
       c <- list(c)
     }
-    mtx[2, j][[1]] <- c
-    mtx[3, j] <- aes_names[j]
+    mtx[i, 2][[1]] <- c
+    mtx[i, 3] <- aes_names[i]
   }
 
   # more meaningful names
 
-  row.names(mtx) <- c("marginals", "conditionals", "aes")
+  colnames(mtx) <- c("marginals", "conditionals", "aes")
 
-  mtx
+  data.frame(mtx)
 }
 
 
