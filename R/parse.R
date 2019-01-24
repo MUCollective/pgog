@@ -7,6 +7,7 @@ parse_aes <- function(mapping){
   prob_aes <- filter_prob_aes(flat_mapping)
 
   # initialize the common conditionals
+  # (no longer necessary tho)
   all_conds <- list()
   for (i in seq_along(prob_aes)){
     all_conds[[i]] <- parse_pmf(prob_aes[[i]])$conditionals
@@ -17,12 +18,35 @@ parse_aes <- function(mapping){
   mtx <- aes_to_mtx(prob_aes)
   # sort by conditionals length
   cond_lengths <- sapply(mtx$conditionals, length)
-  idx <- order(cond_lengths)
-  mtx$conditionals <- mtx$conditionals[idx]
+  mtx <- mtx[order(cond_lengths), ]
 
+
+
+
+  # check if the conditionals and marginals multiply into a single pmf
+  print(mtx_check(mtx))
   browser()
 
 
+}
+
+#' Goes thru the matrix to check if it's a legit factorization of a pmf
+#' @param mtx rows: pmf terms, cols: marginals, conditionals, aesthetics names
+mtx_check <- function(m){
+
+  legit <- TRUE
+
+  for (i in seq_len(nrow(m))){
+    cond <- m[i, 2][[1]]
+    marg <- m[i, 1][[1]]
+
+    if (i < nrow(m)){
+      next_cond <- m[i + 1, 2][[1]]
+      combi <- c(cond, marg)
+      legit <- setequal(next_cond, combi)
+    }
+  }
+  legit
 }
 
 aes_to_mtx <- function(mapping){
@@ -30,7 +54,7 @@ aes_to_mtx <- function(mapping){
   mtx_nrow <- length(mapping)
   mtx_ncol <- 3 # marginal, cond, aes name
 
-  mtx <- matrix(list(rep(NULL, mtx_nrow * mtx_ncol)), nrow = mtx_nrow, ncol = mtx_ncol)
+  mtx <- matrix(list(NULL), nrow = mtx_nrow, ncol = mtx_ncol)
   # mtx <- data.frame(mtx)
 
   aes_names <- names(mapping)
@@ -44,9 +68,15 @@ aes_to_mtx <- function(mapping){
 
     c <- parse_pmf(mapping[[i]])$conditionals
     if (! is.list(c)){
-      c <- list(c)
+      if (! is.null(c)){
+        c <- list(c)
+      }
     }
-    mtx[i, 2][[1]] <- c
+
+    if (! is.null(c)){ # this leaves NULL in matrix, which is what we want???
+      mtx[i, 2][[1]] <- c
+    }
+
     mtx[i, 3] <- aes_names[i]
   }
 
