@@ -22,8 +22,8 @@ library(tidyverse)
 library(ggplot2)
 library(ggridges)
 library(scales)
-library(productplots)
-# library(ggmosaic)
+# library(productplots)
+library(ggmosaic)
 library(ggwaffle)
 ```
 
@@ -236,6 +236,13 @@ prodplot(happy, ~ sex + degree, c("vspine", "hbar"))
 ```
 
 
+## conditinoals
+
+```{r}
+prodplot(happy, ~ happy+degree|health+sex, divider = c("hspine", "vspine", "fluct"))
+```
+
+
 
 # ggmsaic
 
@@ -248,7 +255,7 @@ Using mapping:
 
 ```{r}
 ggplot(happy) +
-  geom_mosaic(aes(x = product(happy), fill = happy), na.rm = TRUE) +
+  geom_mosaic(aes(x = product(marital), fill = happy), na.rm = TRUE) +
   theme(panel.grid.major = element_blank(), 
         panel.grid.minor = element_blank(),
         panel.background = element_blank())
@@ -285,8 +292,7 @@ is this confusion a consequence of not placing probs as first-class citizens?
 ggplot(data = happy) +
   geom_mosaic(
     aes(x = product(happy), 
-        fill=happy, 
-        conds=product(sex)), 
+        fill=sex),
     na.rm=TRUE
   ) 
 
@@ -342,10 +348,121 @@ ggplot(happy) +
 ```
 
 
+## Details about fill aes
+
+```{r}
+ggplot(happy) + 
+  geom_mosaic(aes(x = product(finrela, happy), fill = finrela), 
+              divider = c("vspine", "hbar"),
+              na.rm = TRUE)
+```
 
 
 
+## Conditionals 
 
+```{r}
+ggplot(happy) +
+  geom_mosaic(aes(x = product(happy), fill=happy, conds = product(sex,degree)), divider = c("vspine", "hbar", "hspine"))
+```
+
+```{r}
+ggplot(happy) +
+  geom_mosaic(aes(x = product(happy), 
+                  fill = happy,
+                  conds = product(sex, degree)), 
+              divider = c("vspine", "hbar", "hspine")) # changing the last two aes don't seem to matter
+
+# ggplot(happy) +
+#   geom_mosaic(aes(x = product(happy), 
+#                   fill = happy,
+#                   conds = product(sex, degree)), 
+#               divider = c("vspine", "hspine", "hbar"))
+# 
+# 
+# ggplot(happy) +
+#   geom_mosaic(aes(x = product(happy), 
+#                   fill = happy,
+#                   conds = product(sex, degree)), 
+#               divider = c("vspine", "hspine", "hspine"))
+
+
+ggplot(happy) +
+  geom_mosaic(aes(x = product(happy), 
+                  fill = happy,
+                  conds = product(sex, degree)), 
+              divider = c("vspine", "vbar", "hbar"))
+
+
+ggplot(happy) +
+  geom_mosaic(aes(x = product(happy), 
+                  fill = happy,
+                  conds = product(sex, degree, finrela)), 
+              divider = c("vspine", "fluct", "hbar"))
+```
+
+### P(A,B|C,D)
+`prodplot(happy, ~ happy+degree|health+sex, divider = c("hspine", "vspine", "fluct"))`
+
+```{r}
+ggplot(happy) + 
+  geom_mosaic(aes(x = product(happy, degree), 
+              fill = degree,
+              conds = product(health, sex)),
+              na.rm = TRUE, 
+              divider = c("fluct", "hspine", "vspine"))
+
+```
+
+
+### P(B) P(1|A)???
+
+
+```{r}
+ggplot(happy) +
+  geom_mosaic(aes(x=product(happy), conds = product(happy)), divider = c("vbar", "hspine"))
+```
+
+
+```{r}
+ggplot(happy) +
+  geom_mosaic(aes(x = product(happy),
+                   fill = happy,
+                   conds = product(sex)),
+               divider = c("hbar", "vspine"),
+              na.rm = TRUE)
+```
+
+```{r}
+ggplot(happy) +
+  geom_mosaic(aes(x = product(happy),
+                   fill = happy,
+                   conds = product(sex)),
+               divider = c("hbar", "vspine"),
+              na.rm = TRUE)
+```
+
+```{r}
+ggplot(happy) +
+  geom_mosaic(aes(x = product(sex),
+                   fill = sex,
+                   conds = product(happy)),
+               divider = c("vspine", "hbar"),
+              na.rm = TRUE)
+```
+
+
+```{r}
+ggplot(happy) + 
+  geom_mosaic(aes(x = product(happy), 
+                  fill = happy,
+                  conds = product(happy)),
+              divider = c("hbar", "hspine"),
+              na.rm = TRUE)
+```
+
+
+###? 
 ```{r}
 
 ggplot(data=happy) + 
@@ -373,6 +490,37 @@ ggplot(happy) +
   geom_mosaic(aes(x = product(happy, marital, sex), fill = happy), divider = c("hbar", "vspine", "hspine"), na.rm = TRUE)  +
   coord_fixed()
 ```
+
+
+## Nested bars
+
+Joint v.s. conditional 
+
+```{r}
+happy %>%
+  ggplot() + 
+  geom_mosaic(aes(x = product(happy), conds = product(sex)), divider = c("hbar", "hbar"))
+
+happy %>%
+  ggplot() + 
+  geom_mosaic(aes(x = product(happy, sex)), divider = c("hbar", "hbar"))
+```
+
+## faceting?
+
+```{r}
+happy %>%
+  ggplot() + 
+  geom_mosaic(aes(x = product(happy)), na.rm = TRUE) + 
+  facet_wrap(. ~ sex + finrela)
+  
+```
+
+```{r}
+prodplot(happy, ~ happy|sex+finrela, divider = c("vbar", "fluct"))
+```
+
+
 
 # Dotplots
 
@@ -417,4 +565,27 @@ ggplot(mtcars, mapping = aes(x = mpg, fill = factor(cyl), alpha = 0.4)) +
 
 ```{r}
 ggplot(mtcars, aes(x = mpg)) + geom_density(adjust = 1/2)
+```
+
+
+```{r}
+
+ggplot(mtcars, aes(x = cyl)) + 
+  geom_density(position = "stack")
+
+ggplot(mtcars, aes(x = mpg, fill = factor(cyl))) + 
+  geom_density(position = "stack")
+
+ggplot(mtcars, aes(x = mpg, fill = factor(cyl))) + 
+  geom_density() + facet_grid(cyl~ .)
+
+# count = density * n
+# the one with correct marginal distribution
+
+ggplot(mtcars, aes(x = mpg, y = stat(density * n), fill = factor(cyl))) + 
+  geom_density(position = "stack")
+
+# conditional
+ggplot(mtcars, aes(x = mpg, y = stat(density * n), fill = factor(cyl))) + 
+  geom_density(position = "fill")
 ```
