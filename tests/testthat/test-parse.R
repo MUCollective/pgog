@@ -13,11 +13,7 @@ m2 <- m1
 m2$width <- list(expr(P(A)), expr(P(C)))
 
 
-# test_that("flatten_aes", {
-#
-#   expect_output(flatten_aes(mapping), "") # TODO
-#
-# })
+
 
 
 test_that("parse_aes succeed", {

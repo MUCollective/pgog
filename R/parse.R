@@ -1,5 +1,7 @@
 
+#' parses and checks aesthetics mapping
 #' @param mapping aesthetics mapping, a list of expressions (used to be quosures)
+#' @export
 parse_aes <- function(mapping){
 
   flat_mapping <- flatten_aes(mapping)
@@ -7,27 +9,28 @@ parse_aes <- function(mapping){
 
   # initialize the common conditionals
   # (no longer necessary tho)
-  all_conds <- list()
-  for (i in seq_along(prob_aes)){
-    all_conds[[i]] <- parse_pmf(prob_aes[[i]])$conditionals
-  }
-  conds <- Reduce(intersect, all_conds)
+  # all_conds <- list()
+  # for (i in seq_along(prob_aes)){
+  #   all_conds[[i]] <- parse_pmf(prob_aes[[i]])$conditionals
+  # }
+  # conds <- Reduce(intersect, all_conds)
 
   # save em to a matrix for easy indexing
-  mtx <- aes_to_mtx(prob_aes)
+  prob_mtx <- aes_to_mtx(prob_aes)
   # sort by conditionals length
-  cond_lengths <- sapply(mtx$conditionals, length)
-  mtx <- mtx[order(cond_lengths), ]
-
+  cond_lengths <- sapply(prob_mtx$conditionals, length)
+  prob_mtx <- prob_mtx[order(cond_lengths), ]
   # check if the conditionals and marginals multiply into a single pmf
-  stopifnot(mtx_check(mtx))
+  stopifnot(mtx_check(prob_mtx))
 
+
+  browser()
 
   NULL
 
 }
 
-#' Goes thru the matrix to check if it's a legit factorization of a pmf
+#' Helper func: Goes thru the matrix to check if it's a legit factorization of a pmf
 #' @param mtx rows: pmf terms, cols: marginals, conditionals, aesthetics names
 #'
 mtx_check <- function(m){
@@ -47,6 +50,15 @@ mtx_check <- function(m){
   legit
 }
 
+
+
+
+#' Helper function
+#'
+#' @param mapping
+#'
+#' @return a dataframe of aes:variables
+#'
 aes_to_mtx <- function(mapping){
 
   mtx_nrow <- length(mapping)
@@ -105,6 +117,7 @@ filter_prob_aes <- function(mapping){
 
 }
 
+#' helper function
 #' @param mapping: list $x = [], $width = []
 #' @return flattened mapping: $x1 = , $width1 = , $width2 =
 flatten_aes <- function(mapping){
