@@ -5,9 +5,13 @@
 parse_aes <- function(mapping){
 
   flat_mapping <- flatten_aes(mapping)
-  prob_aes <- filter_prob_aes(flat_mapping)
+  prob_aes_names <- c("width", "height", "area")
+  prob_aes <- filter_prob_aes(prob_aes_names, flat_mapping)
+  coord_aes <- filter_prob_aes(c("x", "y"), flat_mapping)
 
+  browser()
   # initialize the common conditionals
+
   # (no longer necessary tho)
   # all_conds <- list()
   # for (i in seq_along(prob_aes)){
@@ -24,7 +28,6 @@ parse_aes <- function(mapping){
   stopifnot(mtx_check(prob_mtx))
 
 
-  browser()
 
   NULL
 
@@ -99,14 +102,13 @@ aes_to_mtx <- function(mapping){
 
 
 
-filter_prob_aes <- function(mapping){
-  prob_aes <- c("width", "height", "area")
+filter_prob_aes <- function(aes_names, mapping){
+  # prob_aes <- c("width", "height", "area")
   mapping_names <- names(mapping)
 
   idx <- numeric()
   for (i in seq_along(mapping_names)){
-    for (aes in prob_aes){
-
+    for (aes in aes_names){
       if (grepl(aes, x = mapping_names[i])){
         idx <- c(idx, i)
       }
@@ -114,7 +116,6 @@ filter_prob_aes <- function(mapping){
   }
 
   mapping[idx]
-
 }
 
 #' helper function

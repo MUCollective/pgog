@@ -13,17 +13,25 @@ m2 <- m1
 m2$width <- list(expr(P(A)), expr(P(C)))
 
 
+# conditinoal pmf
+m3 <- list()
+m3$width <- list(expr(P(B|A)))
+m3$x <- list(expr(A))
+
+# test_that("parse_aes succeed", {
+#
+#   expect_null(parse_aes(m1))
+#
+# })
+#
+#
+# test_that("parse_aes fail", {
+#   expect_error(parse_aes(m2))
+#
+# })
 
 
 
-test_that("parse_aes succeed", {
-
-  expect_null(parse_aes(m1))
-
-})
-
-
-test_that("parse_aes fail", {
-  expect_error(parse_aes(m2))
-
+test_that("parse_aes conditional pmf", {
+  expect_null(parse_aes(m3))
 })
