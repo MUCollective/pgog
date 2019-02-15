@@ -24,16 +24,72 @@ parse_aes <- function(mapping){
   # check if the conditionals and marginals multiply into a single pmf
   stopifnot(mtx_check(prob_mtx))
 
-  prob_mtx <- complete_conditionals(prob_mtx)
   # 3. completes conditionals like P(1|A)
+  prob_mtx <- complete_conditionals(prob_mtx)
 
+  # 4. check and combine with coord aesthetics
+
+  mtx <- add_coord_aes(prob_mtx, coord_aes)
+
+
+  pprint(mtx)
 
 
   NULL
 
 }
 
-#' Helper function
+#' Helper func
+#' @param prob_mtx
+#' @param coord_mtx
+#'
+#' @return
+#'
+add_coord_aes <- function(prob_mtx, coord_aes){
+
+
+  for (i in seq_along(coord_aes)){
+    aes <- names(coord_aes)[[i]]
+    pvar <- as.character(coord_aes[[i]])
+
+    for (j in seq_len(nrow(prob_mtx))){
+      # P(B|A) or P(1|A)
+      if (as.character(prob_mtx$marginals[[j]][[1]]) == pvar ||
+          as.character(prob_mtx$conditionals[[j]][[1]]) == pvar){
+        supplied_aes <- prob_mtx$aes[[j]]
+
+        # browser()
+        # fix NULL <- P(1|A)
+        if (is.list(supplied_aes)){
+          if (is.null(supplied_aes[[1]])){
+            if (aes == "x"){
+              supplied_aes <- "height"
+            } else {
+              supplied_aes <- "width"
+            }
+          }
+        }
+
+        prob_mtx$aes[[j]] <- paste(aes, ".", supplied_aes, sep = "")
+        break
+      }
+
+
+    }
+  }
+
+  browser()
+  # check for underspecified, i.e. there's still NULL aesthetics mapping
+  stopifnot(!sum(sapply(flatten(prob_mtx$aes),is.null)))
+
+  prob_mtx
+
+}
+
+
+
+
+#' Helper function: add in the implied P(1|A), etc
 #'
 #' @param prob_mtx probability matrix as specified
 #'
@@ -53,7 +109,6 @@ complete_conditionals <- function(prob_mtx){
     }
   }
 
-  pprint(prob_mtx)
   prob_mtx
 
 }
