@@ -11,11 +11,10 @@ parse_aes <- function(mapping){
   prob_aes <- filter_prob_aes(prob_aes_names, flat_mapping)
   coord_aes <- filter_prob_aes(c("x", "y"), flat_mapping)
 
-  # merge coord aes with prob ones
-  # by having a new column
-
   # save em to a matrix for easy indexing
+  # also checks aes mapping (1D, 2D)
   prob_mtx <- aes_to_mtx(prob_aes)
+
   # 2. sort by conditionals length
   cond_lengths <- sapply(prob_mtx$conditionals, length)
   # TODO: cond_lengths works with P(A) where cond = NULL, but not with
@@ -78,7 +77,6 @@ add_coord_aes <- function(prob_mtx, coord_aes){
     }
   }
 
-  browser()
   # check for underspecified, i.e. there's still NULL aesthetics mapping
   stopifnot(!sum(sapply(flatten(prob_mtx$aes),is.null)))
 
@@ -136,8 +134,6 @@ mtx_check <- function(m){
 }
 
 
-
-
 #' Helper function
 #'
 #' @param mapping
@@ -174,15 +170,25 @@ aes_to_mtx <- function(mapping){
     }
 
     mtx[i, 3] <- aes_names[i]
+
+    # check mapping for width <- P(A, B)
+    stopifnot(check_aes(m, aes_names[i]))
   }
 
   # more meaningful names
-
   colnames(mtx) <- c("marginals", "conditionals", "aes")
-
   data.frame(mtx)
 }
 
+check_aes <- function(marg, aes){
+  browser()
+  # dimension is right
+  aes_dimension <- 1
+  if (aes == "area"){
+    aes_dimension <- 2
+  }
+  aes_dimension == length(marg)
+}
 
 
 filter_prob_aes <- function(aes_names, mapping){
