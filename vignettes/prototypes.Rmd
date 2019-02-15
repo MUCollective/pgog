@@ -242,6 +242,11 @@ prodplot(happy, ~ sex + degree, c("vspine", "hbar"))
 prodplot(happy, ~ happy+degree|health+sex, divider = c("hspine", "vspine", "fluct"))
 ```
 
+## Tree maps
+
+```{r}
+prodplot(happy, ~ happy + degree, divider = c("tile", "hbar"))
+```
 
 
 # ggmsaic
@@ -287,6 +292,10 @@ is this confusion a consequence of not placing probs as first-class citizens?
 
 ```{r}
 
+```
+
+```{r}
+
 # or change "health" to "sex"
 
 ggplot(data = happy) +
@@ -302,14 +311,24 @@ ggplot(data = happy) +
 This version is more intuitive but it's not using the `conds` argument
 
 ```{r}
+
+# maybeb this is wrong
 ggplot(data = happy) +
   geom_mosaic(
     aes(x = product(happy, sex), 
         fill=happy
     ),
+    divider = c("vbar", "hspine"),
     na.rm=TRUE
   ) 
 
+
+# what's wrong with this one?
+
+ggplot(happy) + 
+  geom_mosaic(aes(x = product(happy), conds = product(sex), fill =happy),
+              divider = c("vspine", "hbar"),
+              na.rm = TRUE)
 ```
 
 ## 1 ~ X + Y | Z
@@ -519,6 +538,7 @@ happy %>%
 ```{r}
 prodplot(happy, ~ happy|sex+finrela, divider = c("vbar", "fluct"))
 ```
+
 
 
 

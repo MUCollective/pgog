@@ -1,37 +1,64 @@
 
 #' parses and checks aesthetics mapping
-#' @param mapping aesthetics mapping, a list of expressions (used to be quosures)
+#' @param mapping aesthetics mapping, a list of expressions (used to be
+#' quosures)
 #' @export
 parse_aes <- function(mapping){
 
+  # 1. get a list of prob and coord aesthetics
   flat_mapping <- flatten_aes(mapping)
   prob_aes_names <- c("width", "height", "area")
   prob_aes <- filter_prob_aes(prob_aes_names, flat_mapping)
   coord_aes <- filter_prob_aes(c("x", "y"), flat_mapping)
 
-  browser()
-  # initialize the common conditionals
-
-  # (no longer necessary tho)
-  # all_conds <- list()
-  # for (i in seq_along(prob_aes)){
-  #   all_conds[[i]] <- parse_pmf(prob_aes[[i]])$conditionals
-  # }
-  # conds <- Reduce(intersect, all_conds)
+  # merge coord aes with prob ones
+  # by having a new column
 
   # save em to a matrix for easy indexing
   prob_mtx <- aes_to_mtx(prob_aes)
-  # sort by conditionals length
+  # 2. sort by conditionals length
   cond_lengths <- sapply(prob_mtx$conditionals, length)
+  # TODO: cond_lengths works with P(A) where cond = NULL, but not with
+  # P(1|A)
   prob_mtx <- prob_mtx[order(cond_lengths), ]
   # check if the conditionals and marginals multiply into a single pmf
   stopifnot(mtx_check(prob_mtx))
+
+  prob_mtx <- complete_conditionals(prob_mtx)
+  # 3. completes conditionals like P(1|A)
 
 
 
   NULL
 
 }
+
+#' Helper function
+#'
+#' @param prob_mtx probability matrix as specified
+#'
+#' @return the matrix with probability aesthetics, including
+#'
+#' @examples
+complete_conditionals <- function(prob_mtx){
+
+  # if first cond != null (or first marg != 1)
+  extra_conds <- prob_mtx$conditionals[[1]]
+  if (! is.null(extra_conds)){
+    for (cond in extra_conds){
+      prob_mtx <- rbind(rep(0, 3), prob_mtx)
+      prob_mtx$marginals[[1]] <- list(expr(1))
+      prob_mtx$conditionals[[1]] <- list(cond)
+      prob_mtx$aes[[1]] <- list(NULL)
+    }
+  }
+
+  pprint(prob_mtx)
+  prob_mtx
+
+}
+
+
 
 #' Helper func: Goes thru the matrix to check if it's a legit factorization of a pmf
 #' @param mtx rows: pmf terms, cols: marginals, conditionals, aesthetics names
@@ -64,6 +91,7 @@ mtx_check <- function(m){
 #'
 aes_to_mtx <- function(mapping){
 
+  # browser()
   mtx_nrow <- length(mapping)
   mtx_ncol <- 3 # marginal, cond, aes name
 
@@ -103,7 +131,6 @@ aes_to_mtx <- function(mapping){
 
 
 filter_prob_aes <- function(aes_names, mapping){
-  # prob_aes <- c("width", "height", "area")
   mapping_names <- names(mapping)
 
   idx <- numeric()
@@ -118,16 +145,20 @@ filter_prob_aes <- function(aes_names, mapping){
   mapping[idx]
 }
 
-#' helper function
-#' @param mapping: list $x = [], $width = []
-#' @return flattened mapping: $x1 = , $width1 = , $width2 =
+#' helper function: number those aesthetics since
+#' @param mapping: list $x = c(A), $width = c(P(B|A), P(A))
+#' @return flattened mapping: $width1 = , $width2 =
 flatten_aes <- function(mapping){
+
+  # browser()
+
   new_mapping <- unlist(mapping)
   aes_names <- names(mapping)
   new_names <- character()
   for (i in seq_along(mapping)){
     for (j in seq_along(mapping[[i]])){
-      new_names <- c(new_names, paste(aes_names[[i]], j, sep = ""))
+      # new_names <- c(new_names, paste(aes_names[[i]], j, sep = ""))
+      new_names <- c(new_names, aes_names[[i]])
     }
   }
   names(new_mapping) <- new_names
