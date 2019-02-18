@@ -30,11 +30,13 @@ parse_aes <- function(mapping){
 
   mtx <- add_coord_aes(prob_mtx, coord_aes)
 
+  # 5. number the levels
+  mtx$level <- seq_len(nrow(mtx))
 
   pprint(mtx)
 
 
-  NULL
+  mtx
 
 }
 
@@ -57,7 +59,6 @@ add_coord_aes <- function(prob_mtx, coord_aes){
           as.character(prob_mtx$conditionals[[j]][[1]]) == pvar){
         supplied_aes <- prob_mtx$aes[[j]]
 
-        # browser()
         # fix NULL <- P(1|A)
         if (is.list(supplied_aes)){
           if (is.null(supplied_aes[[1]])){
@@ -152,12 +153,15 @@ aes_to_mtx <- function(mapping){
   aes_names <- names(mapping)
 
   for (i in seq_len(mtx_nrow)){
+
+    # marginal
     m <- parse_pmf(mapping[[i]])$marginals
     if (!is.list(m)){
       m <- list(m)
     }
     mtx[i, 1][[1]] <- m
 
+    # conditional
     c <- parse_pmf(mapping[[i]])$conditionals
     if (! is.list(c)){
       if (! is.null(c)){
@@ -169,6 +173,7 @@ aes_to_mtx <- function(mapping){
       mtx[i, 2][[1]] <- c
     }
 
+    # aesthetics
     mtx[i, 3] <- aes_names[i]
 
     # check mapping for width <- P(A, B)
@@ -181,7 +186,6 @@ aes_to_mtx <- function(mapping){
 }
 
 check_aes <- function(marg, aes){
-  browser()
   # dimension is right
   aes_dimension <- 1
   if (aes == "area"){

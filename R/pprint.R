@@ -1,6 +1,6 @@
 pprint <- function(aes_mtx){
   cat("\n")
-  cat(paste(c("marg", "cond", "aes"), collapse = "\t"))
+  cat(paste(c("marg", "cond", "aes", "level"), collapse = "\t"))
   cat("\n")
   for (i in seq_len(nrow(aes_mtx))){
     for (j in seq_len(ncol(aes_mtx))){

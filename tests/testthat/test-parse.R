@@ -15,8 +15,9 @@ m2$width <- list(expr(P(A)), expr(P(C)))
 
 # conditinoal pmf
 m3 <- list()
-m3$width <- list(expr(P(B|A, D)), expr(P(A|D)))
-m3$x <- list(expr(A), expr(D))
+m3$area <- list(expr(P(C, B|A, D)))
+m3$x <- list(expr(A))
+m3$y <- list(expr(D))
 
 # test_that("parse_aes succeed", {
 #
