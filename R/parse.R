@@ -33,7 +33,7 @@ parse_aes <- function(mapping){
   # 5. number the levels
   mtx$level <- seq_len(nrow(mtx))
 
-  pprint(mtx)
+  # pprint(mtx)
 
 
   mtx
@@ -215,19 +215,46 @@ filter_prob_aes <- function(aes_names, mapping){
 #' @return flattened mapping: $width1 = , $width2 =
 flatten_aes <- function(mapping){
 
-  # browser()
+
+  # parse out the list inside the little quosure
+  for (i in seq_along(mapping)){
+    # mapping[[1]]
+    # <quosure>
+    #   expr: ^A
+    #   env:  0x11c0b6af8
+    pair <- mapping[[i]]
+    mapping_expr <- quo_get_expr(pair)
+    mapping_env <- quo_get_env(pair)
+    if (length(mapping_expr) > 1){
+      if (as.character(mapping_expr[[1]]) == "c"){
+        list_of_Ps <- c()
+        for (j in seq_along(mapping_expr)){
+          if (j != 1){ # skip the c()
+            # TODO: turn it back to a quosure?
+            list_of_Ps <- c(
+              new_quosure(mapping_expr[[j]], env = mapping_env),
+              list_of_Ps)
+          }
+        }
+        # quo_set_expr(mapping[[i]]) <- mapping_expr[2:length(mapping_expr)]
+        mapping[[i]] <- list_of_Ps
+      }
+    }
+  }
+
+  browser()
 
   new_mapping <- unlist(mapping)
   aes_names <- names(mapping)
   new_names <- character()
   for (i in seq_along(mapping)){
     for (j in seq_along(mapping[[i]])){
-      # new_names <- c(new_names, paste(aes_names[[i]], j, sep = ""))
       new_names <- c(new_names, aes_names[[i]])
     }
   }
   names(new_mapping) <- new_names
-  # print(new_mapping)
   new_mapping
 
 }
+
+
