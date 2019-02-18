@@ -120,6 +120,7 @@ complete_conditionals <- function(prob_mtx){
 mtx_check <- function(m){
 
   legit <- TRUE
+  browser()
 
   for (i in seq_len(nrow(m))){
     cond <- m[i, 2][[1]]
@@ -143,7 +144,7 @@ mtx_check <- function(m){
 #'
 aes_to_mtx <- function(mapping){
 
-  # browser()
+  browser()
   mtx_nrow <- length(mapping)
   mtx_ncol <- 3 # marginal, cond, aes name
 
@@ -232,7 +233,8 @@ flatten_aes <- function(mapping){
           if (j != 1){ # skip the c()
             # TODO: turn it back to a quosure?
             list_of_Ps <- c(
-              new_quosure(mapping_expr[[j]], env = mapping_env),
+              # new_quosure(mapping_expr[[j]], env = mapping_env),
+              mapping_expr[[j]],
               list_of_Ps)
           }
         }
@@ -242,7 +244,6 @@ flatten_aes <- function(mapping){
     }
   }
 
-  browser()
 
   new_mapping <- unlist(mapping)
   aes_names <- names(mapping)

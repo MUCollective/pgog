@@ -18,6 +18,7 @@ geom_test <- function(mapping = NULL, data = NULL,
   # extract expressions from quosures?
 
   parsed_mapping <- parse_aes(mapping)
+  pprint(parsed_mapping)
 
   # TODO: calculate weights, etc
   # TODO: look up var in dataframe... but `data` is not available until later???
