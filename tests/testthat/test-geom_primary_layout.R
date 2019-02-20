@@ -14,6 +14,7 @@ library(tidyverse)
 
 test_that("parsing things connect to ggplot", {
 
-  res <- ggplot(mtcars) + geom_test(aes(height = c(P(C|A,D), P(A|D)), x = c(A,D)))
-  expect_null()
+  res <- ggplot(mtcars) +
+    geom_bloc(aes(height = c(P(cyl|gear)), x = c(gear)))
+  expect_null(res)
 })

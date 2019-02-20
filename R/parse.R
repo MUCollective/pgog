@@ -6,7 +6,7 @@
 parse_aes <- function(mapping){
 
   # 1. get a list of prob and coord aesthetics
-  flat_mapping <- flatten_aes(mapping)
+  flat_mapping <- flatten_aes(mapping)$mapping
   prob_aes_names <- c("width", "height", "area")
   prob_aes <- filter_prob_aes(prob_aes_names, flat_mapping)
   coord_aes <- filter_prob_aes(c("x", "y"), flat_mapping)
@@ -120,7 +120,6 @@ complete_conditionals <- function(prob_mtx){
 mtx_check <- function(m){
 
   legit <- TRUE
-  browser()
 
   for (i in seq_len(nrow(m))){
     cond <- m[i, 2][[1]]
@@ -144,7 +143,7 @@ mtx_check <- function(m){
 #'
 aes_to_mtx <- function(mapping){
 
-  browser()
+  # browser()
   mtx_nrow <- length(mapping)
   mtx_ncol <- 3 # marginal, cond, aes name
 
@@ -254,7 +253,7 @@ flatten_aes <- function(mapping){
     }
   }
   names(new_mapping) <- new_names
-  new_mapping
+  list(mapping=new_mapping, env = mapping_env)
 
 }
 

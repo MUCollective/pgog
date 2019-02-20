@@ -4,7 +4,7 @@
 #' @import rlang
 #' @importFrom ggridges geom_density_ridges
 #'
-geom_bloc <- function(mapping = NULL, data = NULL,
+geom_bloc_old <- function(mapping = NULL, data = NULL,
                      stat = NULL,
                      position = NULL,
                      ...,
