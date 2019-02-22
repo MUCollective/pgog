@@ -20,7 +20,6 @@ library(tidyverse)
 
 
 ```{r}
-ggplot(mtcars) +
-    geom_bloc(aes(height = c(P(cyl|gear)), x = c(gear)))
+ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl|gear)), x = c(gear)))
 ```
 

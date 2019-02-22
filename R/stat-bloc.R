@@ -24,7 +24,8 @@ stat_bloc <- function(
     params = list(
       na.rm = na.rm,
       # divider = divider,
-      # offset = offset,
+      prob.struct,
+      offset = offset,
       ...
     )
   )
@@ -36,9 +37,13 @@ StatBloc <- ggplot2::ggproto(
   "StatBloc", ggplot2::Stat,
   non_missing_aes = "weight",
 
-  compute_panel = function(self, data, scales, na.rm = FALSE){
-    browser()
-    data
+  compute_panel = function(self, data, scales, na.rm = FALSE,
+                           prob.struct, offset = 0.01){
+
+    # just making sure that the thing draws
+    # dummy_rect(data)
+    base_layer(data, prob.struct, offset)
+
   }
 )
 

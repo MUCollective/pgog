@@ -40,6 +40,28 @@ parse_aes <- function(mapping){
 
 }
 
+
+#' Helper: returns the names of all random variables contained in a parsed
+#' mapping.
+#'
+#' @param mapping mapping parsed by `parse_aes`
+#'
+#' @return vector of strings containing random variable names
+#'
+get_all_rv <- function(mapping){
+
+  margs <- flatten(mapping$marginals)
+  conds <- flatten(mapping$conditionals)
+  alles <- c(margs, conds)
+  if (alles[[1]] == 1){
+    alles <- alles[2:length(alles)]
+  }
+  alles <- unique(alles)
+
+  alles
+
+}
+
 #' Helper func
 #' @param prob_mtx
 #' @param coord_mtx
