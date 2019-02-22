@@ -183,6 +183,7 @@ aes_to_mtx <- function(mapping){
     }
     mtx[i, 1][[1]] <- m
 
+
     # conditional
     c <- parse_pmf(mapping[[i]])$conditionals
     if (! is.list(c)){
