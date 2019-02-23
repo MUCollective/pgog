@@ -42,7 +42,9 @@ StatBloc <- ggplot2::ggproto(
 
     # just making sure that the thing draws
     # dummy_rect(data)
-    base_layer(data, prob.struct, offset)
+    res <- base_layer(data, prob.struct, offset)
+    res <- dplyr::rename(res, xmin=l, xmax=r, ymin=b, ymax=t)
+    res
 
   }
 )

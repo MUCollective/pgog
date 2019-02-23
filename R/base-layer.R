@@ -3,7 +3,6 @@
 #' @importMethodsFrom divide_once productplots
 base_layer <- function(data, prob.struct, offset, bounds = productplots:::bound()){
 
-  # browser()
   margin <- getFromNamespace("margin", "productplots")
 
   # stuff from prodcalc()
@@ -19,24 +18,38 @@ base_layer <- function(data, prob.struct, offset, bounds = productplots:::bound(
     return(data)
   }
 
-
-  margin <- getFromNamespace("margin", "productplots")
-
   first_aes <- prob.struct$aes[1]
   d <- if (first_aes == "area") 2 else 1
-  # browser()
+
+  margin <- getFromNamespace("margin", "productplots")
   parent_data <- margin(wt, rev(seq_len(d)))
 
-
-  # TODO: deal with bounds
   # TODO: recurse on base_layer
-  parent <- divide_once(parent_data, bounds, )
+  parent <- divide_base(parent_data, bounds, prob.struct[1,3], offset)
 
 
 
-  parent_data
+  parent
 }
 
+#' @references divide_once from prodplot
+divide_base <- function(data, bounds, aes, level=1, offset){
+  if (is.list(aes)){
+    aes <- aes[[1]]
+  }
+  d <- if (aes == "area") 2 else 1
+  stopifnot(d == 1) # TODO: deal with 2d aes
+
+  wt <- data$.wt
+  wt <- wt/sum(wt, na.rm = TRUE)
+
+  # those $l, $r, $b, $t things
+  divider <- aes_lookup(aes)
+  partition <- divider(wt, bounds)
+
+  cbind(data, partition, level = level)
+
+}
 
 
 #' Fill `data` with coordinates of a square $[0,1]x[0,1]$
