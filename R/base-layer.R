@@ -24,7 +24,7 @@ base_layer <- function(data, prob.struct, offset, bounds = productplots:::bound(
 
   first_aes <- prob.struct$aes[1]
   d <- if (first_aes == "area") 2 else 1
-  browser()
+  # browser()
   parent_data <- margin(wt, rev(seq_len(d)))
 
 
