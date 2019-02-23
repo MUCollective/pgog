@@ -49,17 +49,35 @@ parse_aes <- function(mapping){
 #'
 get_all_rv <- function(mapping){
 
-  margs <- flatten(mapping$marginals)
-  browser()
-  # filter out the P(1|A) conds
-  alles <- rev(margs[sapply(margs, function(i) i !=1)])
-  # find P(1|A) conds
-  cond_inx <- sapply(margs, function(i) i == 1)
-  alles <- c(alles, rev(flatten(mapping$conditionals[cond_inx])))
+  # margs <- flatten(mapping$marginals)
+  # # browser()
+  # # filter out the P(1|A) conds
+  # alles <- get_margs(mapping)
+  # # find P(1|A) conds
+  # cond_inx <- sapply(margs, function(i) i == 1)
+  # alles <- c(alles, rev(flatten(mapping$conditionals[cond_inx])))
 
-  alles
+  # browser()
+  c(get_margs(mapping), get_conds(mapping))
 
 }
+
+
+get_margs <- function(mapping){
+  margs <- flatten(mapping$marginals)
+  alles <- rev(margs[sapply(margs, function(i) i !=1)])
+  alles
+}
+
+
+get_conds <- function(mapping){
+  margs <- flatten(mapping$marginals)
+  cond_inx <- sapply(margs, function(i) i == 1)
+  rev(flatten(mapping$conditionals[cond_inx]))
+
+}
+
+
 
 #' Helper func
 #' @param prob_mtx

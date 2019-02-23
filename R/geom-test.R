@@ -19,7 +19,7 @@ geom_bloc <- function(mapping = NULL, data = NULL,
   # parse prob structure
   parsed_mapping <- parse_aes(mapping)
   pprint(parsed_mapping)
-  browser()
+
 
   # hack the aes mapping so that ggplot selects the column in data
   rv_syms <- get_all_rv(parsed_mapping)
@@ -35,10 +35,15 @@ geom_bloc <- function(mapping = NULL, data = NULL,
   # TODO: put 1's in there
   mapping$x <- structure(1L, class = "pgog")
   mapping$y <- structure(1L, class = "pgog")
+  if (!is.null(mapping$height)){
+    mapping$height <- NULL
+  }
+  if (! is.null(mapping$width)){
+    mapping$width <- NULL
+  }
 
-
+  # browser()
   # TODO: calculate weights, etc
-  # TODO: look up var in dataframe... but `data` is not available until later???
 
   ggplot2::layer(
     data = data,

@@ -1,14 +1,15 @@
 
 #' @importMethodsFrom bound productplots
+#' @importMethodsFrom divide_once productplots
 base_layer <- function(data, prob.struct, offset, bounds = productplots:::bound()){
 
-  browser()
+  # browser()
   margin <- getFromNamespace("margin", "productplots")
 
   # stuff from prodcalc()
   # this is wrong... need unique()
-  marg_var <- paste0("p.", sapply(prob.struct[i, ]$marginals, as.character))
-  cond_var <- paste0("p.", sapply(prob.struct[i, ]$conditionals, as.character))
+  marg_var <- paste0("p.", sapply(get_margs(prob.struct), as.character))
+  cond_var <- paste0("p.", sapply(get_conds(prob.struct), as.character))
   wt <- margin(data, marg_var, cond_var)
 
   # stuff from divide()
@@ -23,7 +24,8 @@ base_layer <- function(data, prob.struct, offset, bounds = productplots:::bound(
 
   first_aes <- prob.struct$aes[1]
   d <- if (first_aes == "area") 2 else 1
-  parent_data <- margin(data, rev(seq_len(d)))
+  browser()
+  parent_data <- margin(wt, rev(seq_len(d)))
 
 
   # TODO: deal with bounds
