@@ -27,7 +27,6 @@ parse_aes <- function(mapping){
   prob_mtx <- complete_conditionals(prob_mtx)
 
   # 4. check and combine with coord aesthetics
-
   mtx <- add_coord_aes(prob_mtx, coord_aes)
 
   # 5. number the levels
