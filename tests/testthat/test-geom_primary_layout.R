@@ -15,6 +15,6 @@ library(tidyverse)
 test_that("parsing things connect to ggplot", {
 
   res <- ggplot(mtcars) +
-    geom_bloc(aes(height = c(P(cyl|gear)), x = c(gear)))
+    geom_bloc(aes(height = c(P(carb | gear, cyl), P(cyl|gear)), x = c(gear)))
   expect_null(res)
 })

@@ -6,6 +6,7 @@ base_layer <- function(data, prob.struct, offset, bounds = productplots:::bound(
   margin <- getFromNamespace("margin", "productplots")
 
   # stuff from prodcalc()
+  # this is wrong... need unique()
   marg_var <- paste0("p.", sapply(prob.struct[i, ]$marginals, as.character))
   cond_var <- paste0("p.", sapply(prob.struct[i, ]$conditionals, as.character))
   wt <- margin(data, marg_var, cond_var)
