@@ -42,7 +42,15 @@ StatBloc <- ggplot2::ggproto(
 
     # just making sure that the thing draws
     # dummy_rect(data)
-    res <- base_layer(data, prob.struct, offset)
+
+    margin <- getFromNamespace("margin", "productplots")
+    # stuff from prodcalc()
+    # this is wrong... need unique()
+    marg_var <- paste0("p.", sapply(get_margs(prob.struct), as.character))
+    cond_var <- paste0("p.", sapply(get_conds(prob.struct), as.character))
+    wt <- margin(data, marg_var, cond_var)
+
+    res <- base_layer(wt, prob.struct, offset)
     res <- dplyr::rename(res, xmin=l, xmax=r, ymin=b, ymax=t)
     res
 
