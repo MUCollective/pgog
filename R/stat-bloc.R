@@ -50,6 +50,7 @@ StatBloc <- ggplot2::ggproto(
     cond_var <- paste0("p.", sapply(get_conds(prob.struct), as.character))
     wt <- margin(data, marg_var, cond_var)
 
+    # base_layer <- function(data, prob.struct, offset, level=1, bounds = productplots:::bound()){
     res <- base_layer(wt, prob.struct, offset)
     res <- dplyr::rename(res, xmin=l, xmax=r, ymin=b, ymax=t)
     res

@@ -2,16 +2,16 @@
 % Please edit documentation in R/parse.R
 \name{flatten_aes}
 \alias{flatten_aes}
-\title{helper function}
+\title{helper function: number those aesthetics since}
 \usage{
 flatten_aes(mapping)
 }
 \arguments{
-\item{mapping:}{list $x = [], $width = []}
+\item{mapping:}{list $x = c(A), $width = c(P(B|A), P(A))}
 }
 \value{
-flattened mapping: $x1 = , $width1 = , $width2 =
+flattened mapping: $width1 = , $width2 =
 }
 \description{
-helper function
+helper function: number those aesthetics since
 }

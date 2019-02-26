@@ -7,7 +7,8 @@
 parse_aes(mapping)
 }
 \arguments{
-\item{mapping}{aesthetics mapping, a list of expressions (used to be quosures)}
+\item{mapping}{aesthetics mapping, a list of expressions (used to be
+quosures)}
 }
 \description{
 parses and checks aesthetics mapping

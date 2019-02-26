@@ -1,15 +1,12 @@
-
-#' @importMethodsFrom bound productplots
-#' @importMethodsFrom divide_once productplots
-#' @importMethodsFrom dlply plyr
-base_layer <- function(data, prob.struct, offset, bounds = productplots:::bound()){
-
-
-
+#' @importFrom plyr dlply ldply rbind.fill
+base_layer <- function(data, prob.struct, offset, level=1, bounds = productplots:::bound()){
   # stuff from divide()
   # but different logic: just want to get rid of x <- P(1|A), y <- P(1|B)
-  first_marg <- prob.struct[1,]$marginals[[1]]
-  if (!(first_marg == 1)){ # base case
+
+  if (nrow(prob.struct) == 0)
+    return(data)
+  first_marg <- prob.struct[1,]$marginals[[1]][[1]]
+  if (is.name(first_marg)){ # base case
     return(data)
   }
 
@@ -20,12 +17,26 @@ base_layer <- function(data, prob.struct, offset, bounds = productplots:::bound(
   parent_data <- margin(data, rev(seq_len(d)))
 
   # TODO: recurse on base_layer
-  parent <- divide_base(parent_data, bounds, prob.struct[1,3], offset)
-  # pieces <- as.list(dlply(data, seq_len(d)))
-  # browser()
+  parent <- divide_base(parent_data, bounds, prob.struct[1,3], level, offset)
+  pieces <- as.list(dlply(data, seq_len(d)))
+  parentc <- parent
 
+  children <- ldply(seq_along(pieces), function(i) {
+    piece <- pieces[[i]]
+    # base_layer <-function(data, prob.struct, offset, level=1, bounds = productplots:::bound()){
+    partition <- base_layer(data = piece[, -seq_len(d)],
+                            prob.struct = prob.struct[-1, ],
+                            offset = offset,
+                            level = level + 1,
+                            bounds = parentc[i,]
+                        # cascade = cascade, max_wt = max_wt,
+                        )
 
-  parent
+    labels <- piece[rep(1, nrow(partition)), 1:d, drop = FALSE]
+    cbind(labels, partition)
+  })
+
+  rbind.fill(parent, children)
 }
 
 #' @references divide_once from prodplot
