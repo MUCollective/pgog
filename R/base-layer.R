@@ -3,9 +3,6 @@ base_layer <- function(data, prob.struct, offset, level=1, bounds = productplots
   # stuff from divide()
   # but different logic: just want to get rid of x <- P(1|A), y <- P(1|B)
 
-  # browser()
-
-
   if (nrow(prob.struct) == 1)
     return(divide_base(data, bounds, prob.struct[1,3], level, offset))
 
