@@ -1,11 +1,55 @@
+
+#' @importFrom plyr dlply ldply rbind.fill
+bloc_divide <- function(data, prob.struct, offset, level=1, bounds = productplots:::bound()){
+
+  if (nrow(prob.struct) == 1)
+    return(divide_base(data, bounds, prob.struct[1,3], level, offset))
+
+  first_aes <- prob.struct$aes[1]
+  d <- if (first_aes == "area") 2 else 1
+
+  margin <- getFromNamespace("margin", "productplots")
+  parent_data <- margin(data, rev(seq_len(d)))
+
+  parent <- divide_base(parent_data, bounds, prob.struct[1,3], level, offset)
+  pieces <- as.list(dlply(data, seq_len(d)))
+  parentc <- parent
+
+  children <- ldply(seq_along(pieces), function(i) {
+    piece <- pieces[[i]]
+    # base_layer <-function(data, prob.struct, offset, level=1, bounds = productplots:::bound()){
+    partition <- bloc_divide(data = piece[, -seq_len(d)],
+                            prob.struct = prob.struct[-1, ],
+                            offset = offset,
+                            level = level + 1,
+                            bounds = parentc[i,]
+                            # cascade = cascade, max_wt = max_wt,
+                            )
+
+    labels <- piece[rep(1, nrow(partition)), 1:d, drop = FALSE]
+    cbind(labels, partition)
+  })
+
+  rbind.fill(parent, children)
+}
+
+
+
+
+
 #' @importFrom plyr dlply ldply rbind.fill
 base_layer <- function(data, prob.struct, offset, level=1, bounds = productplots:::bound()){
   # stuff from divide()
   # but different logic: just want to get rid of x <- P(1|A), y <- P(1|B)
 
   if (nrow(prob.struct) == 1)
-    return(divide_base(data, bounds, prob.struct[1,3], level, offset))
+    return(
+      list(data = divide_base(data, bounds, prob.struct[1,3], level, offset),
+      prob.struct = prob.struct,
+      offset = offset, level=level,
+      bounds = bounds))
 
+  # browser()
 
   first_aes <- prob.struct$aes[1]
   d <- if (first_aes == "area") 2 else 1
@@ -18,7 +62,11 @@ base_layer <- function(data, prob.struct, offset, level=1, bounds = productplots
   next_aes <- prob.struct[2,]$aes[[1]]
   if (!(startsWith(next_aes, "x.") | startsWith(next_aes, "y."))){
     # browser()
-    return(divide_base(parent_data, bounds, prob.struct[1,3], level, offset))
+    return(
+      list(data = divide_base(parent_data, bounds, prob.struct[1,3], level, offset),
+           prob.struct = prob.struct,
+           offset = offset, level=level,
+           bounds = bounds))
   }
 
   # TODO: recurse on base_layer
@@ -35,13 +83,14 @@ base_layer <- function(data, prob.struct, offset, level=1, bounds = productplots
                             level = level + 1,
                             bounds = parentc[i,]
                         # cascade = cascade, max_wt = max_wt,
-                        )
+                        )$data
 
     labels <- piece[rep(1, nrow(partition)), 1:d, drop = FALSE]
     cbind(labels, partition)
   })
 
-  rbind.fill(parent, children)
+  list(data = rbind.fill(parent, children), prob.struct = prob.struct,
+       offset = offset, level=level, bounds = bounds)
 }
 
 #' @references divide_once from prodplot
