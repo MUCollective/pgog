@@ -3,18 +3,26 @@ base_layer <- function(data, prob.struct, offset, level=1, bounds = productplots
   # stuff from divide()
   # but different logic: just want to get rid of x <- P(1|A), y <- P(1|B)
 
-  if (nrow(prob.struct) == 0)
-    return(data)
-  first_marg <- prob.struct[1,]$marginals[[1]][[1]]
-  if (is.name(first_marg)){ # base case
-    return(data)
-  }
+  # browser()
+
+
+  if (nrow(prob.struct) == 1)
+    return(divide_base(data, bounds, prob.struct[1,3], level, offset))
+
 
   first_aes <- prob.struct$aes[1]
   d <- if (first_aes == "area") 2 else 1
 
   margin <- getFromNamespace("margin", "productplots")
   parent_data <- margin(data, rev(seq_len(d)))
+
+  # here, nrow(prob.struct ) > 1
+  # just return if the next aes is not a coord one
+  next_aes <- prob.struct[2,]$aes[[1]]
+  if (!(startsWith(next_aes, "x.") | startsWith(next_aes, "y."))){
+    # browser()
+    return(divide_base(parent_data, bounds, prob.struct[1,3], level, offset))
+  }
 
   # TODO: recurse on base_layer
   parent <- divide_base(parent_data, bounds, prob.struct[1,3], level, offset)
@@ -52,7 +60,8 @@ divide_base <- function(data, bounds, aes, level=1, offset){
 
   # those $l, $r, $b, $t things
   divider <- aes_lookup(aes)
-  partition <- divider(wt, bounds)
+  # divider(data, bounds, offset = offset, max = NULL)
+  partition <- divider(wt, bounds, offset)
 
   cbind(data, partition, level = level)
 

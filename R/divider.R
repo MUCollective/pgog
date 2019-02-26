@@ -64,6 +64,7 @@ spine <- function(data, bounds, offset = offset, max = NULL) {
 #' @param max maximum value
 #' @export
 hspine <- function(data, bounds, offset = offset, max = NULL) {
+  # browser()
   n <- length(data)
   # n + 1 offsets
 

@@ -19,6 +19,15 @@ library(tidyverse)
 ```
 
 
+
+```{r}
+ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl|gear)), x = c(gear)))
+```
+
+```{r}
+ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl)), x = c(cyl)))
+```
+
 ```{r}
 ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl|gear, carb)), x = c(gear, carb)))
 ```

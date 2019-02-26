@@ -83,7 +83,7 @@ GeomBloc <- ggplot2::ggproto(
                              linewidth=.1, weight = 1, x = NULL, y = NULL, conds = NULL),
 
   draw_panel = function(data, panel_scales, coord) {
-    browser()
+    # browser()
     # if (all(is.na(data$colour)))
       # data$colour <- scales::alpha(data$fill, data$alpha) # regard alpha in colour determination
 

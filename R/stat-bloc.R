@@ -46,8 +46,20 @@ StatBloc <- ggplot2::ggproto(
     margin <- getFromNamespace("margin", "productplots")
     # stuff from prodcalc()
     # this is wrong... need unique()
-    marg_var <- paste0("p.", sapply(get_margs(prob.struct), as.character))
-    cond_var <- paste0("p.", sapply(get_conds(prob.struct), as.character))
+    marg_var <- sapply(get_margs(prob.struct), as.character)
+    if (!(is.list(marg_var) & length(marg_var) == 0)) {
+      marg_var <- paste0("p.", marg_var)
+    } else {
+      marg_var <- c()
+    }
+
+    cond_var <- sapply(get_conds(prob.struct), as.character)
+    if (!(is.list(cond_var) & length(cond_var) == 0)){
+      cond_var <- paste0("p.", cond_var)
+    } else {
+      cond_var <- c()
+    }
+
     wt <- margin(data, marg_var, cond_var)
 
     # base_layer <- function(data, prob.struct, offset, level=1, bounds = productplots:::bound()){
