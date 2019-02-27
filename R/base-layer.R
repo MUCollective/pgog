@@ -121,7 +121,7 @@ divide_base <- function(data, bounds, aes, level=1, offset){
   # divider(data, bounds, offset = offset, max = NULL)
   partition <- divider(wt, bounds, offset)
 
-  browser()
+  # browser()
   cbind(data, partition, level = level)
 
 }

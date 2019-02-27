@@ -102,9 +102,9 @@ add_coord_aes <- function(prob_mtx, coord_aes){
         if (is.list(supplied_aes)){
           if (is.null(supplied_aes[[1]])){
             if (aes == "x"){
-              supplied_aes <- "height"
+              supplied_aes <- "cond"
             } else {
-              supplied_aes <- "width"
+              supplied_aes <- "cond"
             }
           }
         }
