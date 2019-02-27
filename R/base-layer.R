@@ -34,8 +34,10 @@ bloc_divide <- function(data, prob.struct, offset, level=1, bounds = productplot
 }
 
 
-pack_icons <- function(data, prob.struct, offset, level, bounds){
+pack_icons <- function(data, prob.struct, offset, level, bounds, n){
 
+  first_row <- seq(bounds$l, bounds$r, length.out = n)
+  col_coords <- seq(bounds$b, bounds$t, )
   browser()
 }
 
@@ -72,9 +74,15 @@ icon_divide <- function(data, prob.struct, offset, level=1, bounds = productplot
     # return(divide_base(parent_data, bounds, prob.struct[1,3], level, offset))
     base_layout <- divide_base(parent_data, bounds, prob.struct[1,3], level, offset)
 
+    # TODO: calculate how many dots per row/col
+    max_group_n <- max(parent_data$.N)
+    n_groups <- length(pieces)
+
+    icon_per_dim <- as.integer(sqrt(max_group_n) / 0.618)
+
     ldply(seq_along(pieces), function(i){
       piece <- pieces[[i]]
-      pack_icons(piece, prob.struct, offset, level+1, parentc[i,])
+      pack_icons(piece, prob.struct, offset, level+1, parentc[i,], icon_per_dim)
     })
   }
 
