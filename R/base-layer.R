@@ -34,14 +34,14 @@ bloc_divide <- function(data, prob.struct, offset, level=1, bounds = productplot
 }
 
 
-pack_icons <- function(data, prob.struct, offset, level, bounds, N){
+pack_icons <- function(data, prob.struct, offset, level, bounds){
 
   browser()
 }
 
 
 #' @importFrom plyr dlply ldply rbind.fill
-icon_divide <- function(data, prob.struct, offset, N, level=1, bounds = productplots:::bound()){
+icon_divide <- function(data, prob.struct, offset, level=1, bounds = productplots:::bound()){
   # stuff from divide()
   # but different logic: just want to get rid of x <- P(1|A), y <- P(1|B)
 
@@ -52,7 +52,7 @@ icon_divide <- function(data, prob.struct, offset, N, level=1, bounds = productp
   first_aes <- prob.struct$aes[1]
   d <- if (first_aes == "area") 2 else 1
 
-  margin <- getFromNamespace("margin", "productplots")
+  # margin <- getFromNamespace("margin", "productplots")
   parent_data <- margin(data, rev(seq_len(d)))
 
 
@@ -74,7 +74,7 @@ icon_divide <- function(data, prob.struct, offset, N, level=1, bounds = productp
 
     ldply(seq_along(pieces), function(i){
       piece <- pieces[[i]]
-      pack_icons(piece, prob.struct, offset, level+1, parentc[i,], N)
+      pack_icons(piece, prob.struct, offset, level+1, parentc[i,])
     })
   }
 

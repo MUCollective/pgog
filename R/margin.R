@@ -16,7 +16,26 @@ margin <- function(table, marginals = c(), conditionals = c()) {
     marg$.wt <- stats::ave(marg$.wt, id(cond), FUN = prop)
   }
 
+
   marg$.wt[is.na(marg$.wt)] <- 0
+
+
+  # add in N's
+  vars <- table[c(conditionals, marginals)]
+  vars[] <- lapply(vars, addNA, ifany = TRUE)
+  # ACHTUNG
+
+  if (".N" %in% colnames(table)){
+    counts <- table$.N
+  } else {
+    counts <- rep(1, nrow(vars))
+  }
+  sums <- tapply(counts, rev(vars), sum, na.rm=TRUE)
+
+  Ns <- as.data.frame.table(sums, responseName = ".N")
+  marg$.N <- Ns$.N
+  marg$.N[is.na(marg$.N)] <- 0
+
   marg
 }
 
@@ -27,9 +46,6 @@ weighted.table <- function(vars, wt = NULL) {
     wt <- prop(rep(1, nrow(vars)))
   }
 
-  # ACHTUNG
-  Ns <- as.data.frame(table(rev(vars)), responseName = ".N")
-
   # Ensure missing values are counted
   vars[] <- lapply(vars, addNA, ifany = TRUE)
 
@@ -39,12 +55,11 @@ weighted.table <- function(vars, wt = NULL) {
 
   df <- as.data.frame.table(sums, responseName = ".wt")
 
-  # ACHTUNG
-  df$.N <- Ns$.N
 
   # Missing values represent missing combinations in the original dataset,
   # i.e. they have zero weight
   df$.wt[is.na(df$.wt)] <- 0
   df[, c(rev(seq_len(ncol(df) - 1)), ncol(df)) ]
+
 }
 
