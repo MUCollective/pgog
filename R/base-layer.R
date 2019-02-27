@@ -1,7 +1,7 @@
 
 #' @importFrom plyr dlply ldply rbind.fill
 bloc_divide <- function(data, prob.struct, offset, level=1, bounds = productplots:::bound()){
-
+  # browser()
   if (nrow(prob.struct) == 1)
     return(divide_base(data, bounds, prob.struct[1,3], level, offset))
 
@@ -34,22 +34,20 @@ bloc_divide <- function(data, prob.struct, offset, level=1, bounds = productplot
 }
 
 
+pack_icons <- function(data, prob.struct, offset, level, bounds, N){
 
+  browser()
+}
 
 
 #' @importFrom plyr dlply ldply rbind.fill
-base_layer <- function(data, prob.struct, offset, level=1, bounds = productplots:::bound()){
+icon_divide <- function(data, prob.struct, offset, N, level=1, bounds = productplots:::bound()){
   # stuff from divide()
   # but different logic: just want to get rid of x <- P(1|A), y <- P(1|B)
 
   if (nrow(prob.struct) == 1)
-    return(
-      list(data = divide_base(data, bounds, prob.struct[1,3], level, offset),
-      prob.struct = prob.struct,
-      offset = offset, level=level,
-      bounds = bounds))
+    return(divide_base(data, bounds, prob.struct[1,3], level, offset))
 
-  # browser()
 
   first_aes <- prob.struct$aes[1]
   d <- if (first_aes == "area") 2 else 1
@@ -57,27 +55,34 @@ base_layer <- function(data, prob.struct, offset, level=1, bounds = productplots
   margin <- getFromNamespace("margin", "productplots")
   parent_data <- margin(data, rev(seq_len(d)))
 
-  # here, nrow(prob.struct ) > 1
-  # just return if the next aes is not a coord one
-  next_aes <- prob.struct[2,]$aes[[1]]
-  if (!(startsWith(next_aes, "x.") | startsWith(next_aes, "y."))){
-    # browser()
-    return(
-      list(data = divide_base(parent_data, bounds, prob.struct[1,3], level, offset),
-           prob.struct = prob.struct,
-           offset = offset, level=level,
-           bounds = bounds))
-  }
+
 
   # TODO: recurse on base_layer
+  print("parent <- divide_base")
   parent <- divide_base(parent_data, bounds, prob.struct[1,3], level, offset)
   pieces <- as.list(dlply(data, seq_len(d)))
   parentc <- parent
 
+
+  # here, nrow(prob.struct ) > 1
+  # just return if the next aes is not a coord one
+  next_aes <- prob.struct[2,]$aes[[1]]
+  if (!(startsWith(next_aes, "x.") | startsWith(next_aes, "y."))){
+
+    # return(divide_base(parent_data, bounds, prob.struct[1,3], level, offset))
+    base_layout <- divide_base(parent_data, bounds, prob.struct[1,3], level, offset)
+
+    ldply(seq_along(pieces), function(i){
+      piece <- pieces[[i]]
+      pack_icons(piece, prob.struct, offset, level+1, parentc[i,], N)
+    })
+  }
+
+
   children <- ldply(seq_along(pieces), function(i) {
     piece <- pieces[[i]]
     # base_layer <-function(data, prob.struct, offset, level=1, bounds = productplots:::bound()){
-    partition <- base_layer(data = piece[, -seq_len(d)],
+    partition <- icon_divide(data = piece[, -seq_len(d)],
                             prob.struct = prob.struct[-1, ],
                             offset = offset,
                             level = level + 1,
@@ -89,8 +94,7 @@ base_layer <- function(data, prob.struct, offset, level=1, bounds = productplots
     cbind(labels, partition)
   })
 
-  list(data = rbind.fill(parent, children), prob.struct = prob.struct,
-       offset = offset, level=level, bounds = bounds)
+  rbind.fill(parent, children)
 }
 
 #' @references divide_once from prodplot

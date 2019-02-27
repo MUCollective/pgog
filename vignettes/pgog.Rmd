@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 library(tidyverse)
 ```
 
-
+# geom_bloc
 
 ```{r}
 ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl|gear)), x = c(gear)))
@@ -34,5 +34,14 @@ ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl|gear, carb)), x = c(gear, carb))
 
 ```{r}
 ggplot(mtcars) + geom_bloc(aes(height = c(P(gear|carb), P(cyl|gear, carb)), x = c(gear, carb)))
+```
+
+
+# geom_icon
+
+Using `geom_bloc` first to get the base partition right
+
+```{r}
+ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl|gear)), x = c(gear)), stat = "icon")
 ```
 

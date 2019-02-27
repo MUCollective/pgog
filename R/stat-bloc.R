@@ -7,7 +7,8 @@ stat_bloc <- function(
   position = "identity",
   na.rm = FALSE,
   show.legend = NA,
-  inherit.aes = TRUE){
+  inherit.aes = TRUE,
+  ...){
   # custom params
   # offset = 0.01) {
 
