@@ -2,7 +2,9 @@
 aes_lookup <- function(aes_str){
   switch (aes_str,
     x.height = return(hbar),
+    x.width = return(hbar), # ACHTUNG
     y.width = return(vbar),
+    y.height = return(vbar), # ACHTUNG
     height = return(vspine),
     width = return(hspine)
   )

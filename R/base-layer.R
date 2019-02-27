@@ -37,7 +37,7 @@ bloc_divide <- function(data, prob.struct, offset, level=1, bounds = productplot
 pack_icons <- function(data, prob.struct, offset, level, bounds, n){
 
   first_row <- seq(bounds$l, bounds$r, length.out = n)
-  col_coords <- seq(bounds$b, bounds$t, )
+  # col_coords <- seq(bounds$b, bounds$t, )
   browser()
 }
 
@@ -60,30 +60,30 @@ icon_divide <- function(data, prob.struct, offset, level=1, bounds = productplot
 
 
   # TODO: recurse on base_layer
-  print("parent <- divide_base")
   parent <- divide_base(parent_data, bounds, prob.struct[1,3], level, offset)
   pieces <- as.list(dlply(data, seq_len(d)))
   parentc <- parent
 
+  # browser()
 
   # here, nrow(prob.struct ) > 1
   # just return if the next aes is not a coord one
   next_aes <- prob.struct[2,]$aes[[1]]
   if (!(startsWith(next_aes, "x.") | startsWith(next_aes, "y."))){
 
-    # return(divide_base(parent_data, bounds, prob.struct[1,3], level, offset))
-    base_layout <- divide_base(parent_data, bounds, prob.struct[1,3], level, offset)
-
+    return(divide_base(parent_data, bounds, prob.struct[1,3], level, offset))
+    # base_layout <- divide_base(parent_data, bounds, prob.struct[1,3], level, offset)
+    #
     # TODO: calculate how many dots per row/col
-    max_group_n <- max(parent_data$.N)
-    n_groups <- length(pieces)
-
-    icon_per_dim <- as.integer(sqrt(max_group_n) / 0.618)
-
-    ldply(seq_along(pieces), function(i){
-      piece <- pieces[[i]]
-      pack_icons(piece, prob.struct, offset, level+1, parentc[i,], icon_per_dim)
-    })
+    # max_group_n <- max(parent_data$.N)
+    # n_groups <- length(pieces)
+    #
+    # icon_per_dim <- as.integer(sqrt(max_group_n) / 0.618)
+    #
+    # ldply(seq_along(pieces), function(i){
+    #   piece <- pieces[[i]]
+    #   pack_icons(piece, prob.struct, offset, level+1, parentc[i,], icon_per_dim)
+    # })
   }
 
 
@@ -96,7 +96,7 @@ icon_divide <- function(data, prob.struct, offset, level=1, bounds = productplot
                             level = level + 1,
                             bounds = parentc[i,]
                         # cascade = cascade, max_wt = max_wt,
-                        )$data
+    )
 
     labels <- piece[rep(1, nrow(partition)), 1:d, drop = FALSE]
     cbind(labels, partition)
@@ -121,6 +121,7 @@ divide_base <- function(data, bounds, aes, level=1, offset){
   # divider(data, bounds, offset = offset, max = NULL)
   partition <- divider(wt, bounds, offset)
 
+  browser()
   cbind(data, partition, level = level)
 
 }

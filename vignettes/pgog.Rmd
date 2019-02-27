@@ -33,6 +33,10 @@ ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl|gear, carb)), x = c(gear, carb))
 ```
 
 ```{r}
+ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl|gear, carb)), x = c(gear), y=c(carb)))
+```
+
+```{r}
 ggplot(mtcars) + geom_bloc(aes(height = c(P(gear|carb), P(cyl|gear, carb)), x = c(gear, carb)))
 ```
 
@@ -47,4 +51,13 @@ ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl|gear)), x = c(gear)), stat = "ic
 
 ```{r}
 ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl|gear, vs), P(gear|vs)), x = c(gear, vs)), stat = "icon")
+```
+
+```{r}
+ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl|carb)), y=c(carb)), stat = "icon")
+```
+
+
+```{r}
+ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl|gear, vs)), x = c(gear), y=c(vs)), stat = "icon")
 ```
