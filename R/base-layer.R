@@ -48,7 +48,12 @@ icon_divide <- function(data, prob.struct, offset, level=1, bounds = productplot
   # but different logic: just want to get rid of x <- P(1|A), y <- P(1|B)
 
   if (nrow(prob.struct) == 1)
-    return(divide_base(data, bounds, prob.struct[1,3], level, offset))
+    return(divide_base(
+      data = parent_data, bounds = bounds,
+      aes = prob.struct[1,3],
+      level = level,
+      max_wt = NULL,
+      offset = offset))
 
 
   first_aes <- prob.struct$aes[1]
@@ -60,7 +65,13 @@ icon_divide <- function(data, prob.struct, offset, level=1, bounds = productplot
 
 
   # TODO: recurse on base_layer
-  parent <- divide_base(parent_data, bounds, prob.struct[1,3], level, offset)
+  parent <- divide_base(
+    data = parent_data, bounds = bounds,
+    aes = prob.struct[1,3],
+    level = level,
+    max_wt = NULL,
+    offset = offset)
+
   pieces <- as.list(dlply(data, seq_len(d)))
   parentc <- parent
 
@@ -71,7 +82,12 @@ icon_divide <- function(data, prob.struct, offset, level=1, bounds = productplot
   next_aes <- prob.struct[2,]$aes[[1]]
   if (!(startsWith(next_aes, "x.") | startsWith(next_aes, "y."))){
 
-    return(divide_base(parent_data, bounds, prob.struct[1,3], level, offset))
+    return(divide_base(
+      data = parent_data, bounds = bounds,
+      aes = prob.struct[1,3],
+      level = level,
+      max_wt = NULL,
+      offset = offset))
     # base_layout <- divide_base(parent_data, bounds, prob.struct[1,3], level, offset)
     #
     # TODO: calculate how many dots per row/col
@@ -106,7 +122,7 @@ icon_divide <- function(data, prob.struct, offset, level=1, bounds = productplot
 }
 
 #' @references divide_once from prodplot
-divide_base <- function(data, bounds, aes, level=1, offset){
+divide_base <- function(data, bounds, aes, level=1, max_wt = NULL, offset){
   if (is.list(aes)){
     aes <- aes[[1]]
   }
@@ -116,10 +132,14 @@ divide_base <- function(data, bounds, aes, level=1, offset){
   wt <- data$.wt
   wt <- wt/sum(wt, na.rm = TRUE)
 
+  if (is.null(max_wt)){
+    max_wt <- max(wt, na.rm = TRUE)
+  }
+
   # those $l, $r, $b, $t things
   divider <- aes_lookup(aes)
   # divider(data, bounds, offset = offset, max = NULL)
-  partition <- divider(wt, bounds, offset)
+  partition <- divider(wt, bounds, offset, max = max_wt)
 
   # browser()
   cbind(data, partition, level = level)
