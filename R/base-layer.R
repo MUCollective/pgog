@@ -3,15 +3,17 @@
 bloc_divide <- function(data, prob.struct, offset, level=1, bounds = productplots:::bound()){
   # browser()
   if (nrow(prob.struct) == 1)
-    return(divide_base(data, bounds, prob.struct[1,3], level, offset))
+    return(divide_base(data=data, bounds = bounds, aes = prob.struct[1,3],
+                       level = level, offset = offset))
 
   first_aes <- prob.struct$aes[1]
   d <- if (first_aes == "area") 2 else 1
 
-  margin <- getFromNamespace("margin", "productplots")
+  # margin <- getFromNamespace("margin", "productplots")
   parent_data <- margin(data, rev(seq_len(d)))
 
-  parent <- divide_base(parent_data, bounds, prob.struct[1,3], level, offset)
+  parent <- divide_base(data = parent_data, bounds = bounds,
+                        aes = prob.struct[1,3], level = level, offset = offset)
   pieces <- as.list(dlply(data, seq_len(d)))
   parentc <- parent
 
@@ -34,11 +36,24 @@ bloc_divide <- function(data, prob.struct, offset, level=1, bounds = productplot
 }
 
 
-pack_icons <- function(data, prob.struct, offset, level, bounds, n){
+pack_icons <- function(data, bounds, prob.struct, offset, level){
 
-  first_row <- seq(bounds$l, bounds$r, length.out = n)
+  # first_row <- seq(bounds$l, bounds$r)
   # col_coords <- seq(bounds$b, bounds$t, )
+  base_level <- bounds$level[1]
+
+  conds_var <- names(bounds)[grepl("p.", names(bounds))]
+
+  counts <- data %>%
+    filter(level > base_level)
+
+  # need parent bounding box
+  parent <- data %>%
+    filter(level = base_level)
+
+  pieces <- dlply(counts, .variables = conds_var)
   browser()
+
 }
 
 
@@ -46,6 +61,7 @@ pack_icons <- function(data, prob.struct, offset, level, bounds, n){
 icon_divide <- function(data, prob.struct, offset, level=1, bounds = productplots:::bound()){
   # stuff from divide()
   # but different logic: just want to get rid of x <- P(1|A), y <- P(1|B)
+  # browser()
 
   if (nrow(prob.struct) == 1)
     return(divide_base(
@@ -63,7 +79,6 @@ icon_divide <- function(data, prob.struct, offset, level=1, bounds = productplot
   parent_data <- margin(data, rev(seq_len(d)))
 
 
-
   # TODO: recurse on base_layer
   parent <- divide_base(
     data = parent_data, bounds = bounds,
@@ -73,23 +88,28 @@ icon_divide <- function(data, prob.struct, offset, level=1, bounds = productplot
     offset = offset)
 
   pieces <- as.list(dlply(data, seq_len(d)))
+
   parentc <- parent
 
-  # browser()
 
   # here, nrow(prob.struct ) > 1
   # just return if the next aes is not a coord one
   next_aes <- prob.struct[2,]$aes[[1]]
   if (!(startsWith(next_aes, "x.") | startsWith(next_aes, "y."))){
 
-    return(divide_base(
-      data = parent_data, bounds = bounds,
-      aes = prob.struct[1,3],
-      level = level,
-      max_wt = NULL,
-      offset = offset))
-    # base_layout <- divide_base(parent_data, bounds, prob.struct[1,3], level, offset)
-    #
+    base_layout <- divide_base(
+        data = parent_data, bounds = bounds,
+        aes = prob.struct[1,3],
+        level = level,
+        max_wt = NULL,
+        offset = offset)
+
+    # set_attrs(base_layout, pieces = pieces)
+    # browser()
+    # skips to drawing rectangles
+    return(base_layout)
+    # return(list(layout = base_layout, data = pieces))
+
     # TODO: calculate how many dots per row/col
     # max_group_n <- max(parent_data$.N)
     # n_groups <- length(pieces)
@@ -105,7 +125,6 @@ icon_divide <- function(data, prob.struct, offset, level=1, bounds = productplot
 
   children <- ldply(seq_along(pieces), function(i) {
     piece <- pieces[[i]]
-    # base_layer <-function(data, prob.struct, offset, level=1, bounds = productplots:::bound()){
     partition <- icon_divide(data = piece[, -seq_len(d)],
                             prob.struct = prob.struct[-1, ],
                             offset = offset,
@@ -118,7 +137,10 @@ icon_divide <- function(data, prob.struct, offset, level=1, bounds = productplot
     cbind(labels, partition)
   })
 
-  rbind.fill(parent, children)
+
+
+  # rbind.fill(parent, children)
+  children
 }
 
 #' @references divide_once from prodplot
