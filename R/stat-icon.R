@@ -54,15 +54,14 @@ StatIcon <- ggplot2::ggproto(
 
     base_layout <- icon_divide(data = wt, prob.struct = prob.struct, offset = offset)
     full_data <- bloc_divide(data = wt, prob.struct = prob.struct, offset = offset)
+    res <- pack_icons(data = full_data, bounds = base_layout, prob.struct = prob.struct, offset = offset)
 
-#    pack_icons <- function(data, bounds, prob.struct, offset, level){
-    res <- pack_icons(data= full_data, bounds = base_layout, prob.struct = prob.struct, offset = offset)
-
+    res$PANEL <- data$PANEL
+    res$group <- data$group
 
     # res <- base_layout
 
     # base_layer <- function(data, prob.struct, offset, level=1, bounds = productplots:::bound()){
-    res <- dplyr::rename(res, xmin=l, xmax=r, ymin=b, ymax=t)
     res
   }
 )

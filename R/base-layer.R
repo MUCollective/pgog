@@ -37,23 +37,54 @@ bloc_divide <- function(data, prob.struct, offset, level=1, bounds = productplot
 
 
 pack_icons <- function(data, bounds, prob.struct, offset, level){
-
-  # first_row <- seq(bounds$l, bounds$r)
-  # col_coords <- seq(bounds$b, bounds$t, )
   base_level <- bounds$level[1]
 
   conds_var <- names(bounds)[grepl("p.", names(bounds))]
-
   counts <- data %>%
     filter(level > base_level)
 
+  # TODO: calculate the max number of dots within a partition
+  # browser()
+  counts_by_group <- counts %>%
+    group_by_(.dots = conds_var) %>%
+    summarise_at(".N", sum)
+
+  max_count <- max(counts_by_group$.N)
+  icon_per_dim <- as.integer(sqrt(max_count) / 0.618)
+
   # need parent bounding box
-  parent <- data %>%
-    filter(level = base_level)
-
+  parent <- bounds %>%
+    filter(level == base_level)
   pieces <- dlply(counts, .variables = conds_var)
-  browser()
 
+  # schema of `coord`: x, y, <marg_var values>
+  ldply(seq_along(pieces), function(i) {
+    piece <- pieces[[i]]
+    bound <- parent[i, ]
+    pack_one_partition(piece, bound, icon_per_dim)
+  })
+
+}
+
+pack_one_partition <- function(counts, bound, N){
+
+    all_vars <- names(counts)[grepl("p", names(counts))]
+
+    x.coords <- seq(bound$l, bound$r, length.out = N)
+    y.coords <- seq(bound$b, bound$t, length.out = ceiling(sum(counts$.N))/N)
+
+    counts %<>%
+      select(c(.N, all_vars)) %>%
+      uncount(weights = .N)
+
+    grid <- expand.grid(x = rev(x.coords), y = rev(y.coords))
+    grid %<>%
+      group_by_("y") %>%
+      mutate(x = rev(x)) %>%
+      ungroup() %>%
+      head(n = nrow(counts))
+
+    cbind(counts, grid)
 }
 
 
