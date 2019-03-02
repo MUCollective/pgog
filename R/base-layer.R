@@ -37,6 +37,21 @@ bloc_divide <- function(data, prob.struct, offset, level=1, bounds = productplot
 
 
 pack_icons <- function(data, bounds, prob.struct, offset, level){
+
+  if (nrow(data) == nrow(bounds)){
+    icon_per_dim <- as.integer(sqrt(max(data$.N))/0.618)
+
+    res <- ldply(seq_len(nrow(data)), function(i){
+      piece <- data[i, ]
+      bound <- bounds[i, ]
+      pack_one_partition(piece, bound, icon_per_dim, offset)
+    })
+
+    return(res)
+
+  }
+
+
   base_level <- bounds$level[1]
 
   conds_var <- names(bounds)[grepl("p.", names(bounds))]
@@ -61,17 +76,18 @@ pack_icons <- function(data, bounds, prob.struct, offset, level){
   ldply(seq_along(pieces), function(i) {
     piece <- pieces[[i]]
     bound <- parent[i, ]
-    pack_one_partition(piece, bound, icon_per_dim)
+    pack_one_partition(piece, bound, icon_per_dim, offset)
   })
 
 }
 
-pack_one_partition <- function(counts, bound, N){
+pack_one_partition <- function(counts, bound, N, offset){
 
+    d <- offset / 2
     all_vars <- names(counts)[grepl("p", names(counts))]
 
-    x.coords <- seq(bound$l, bound$r, length.out = N)
-    y.coords <- seq(bound$b, bound$t, length.out = ceiling(sum(counts$.N))/N)
+    x.coords <- seq(bound$l + d, bound$r - d, length.out = N)
+    y.coords <- seq(bound$b + d, bound$t - d, length.out = ceiling(sum(counts$.N))/N)
 
     counts %<>%
       select(c(.N, all_vars)) %>%
@@ -92,11 +108,10 @@ pack_one_partition <- function(counts, bound, N){
 icon_divide <- function(data, prob.struct, offset, level=1, bounds = productplots:::bound()){
   # stuff from divide()
   # but different logic: just want to get rid of x <- P(1|A), y <- P(1|B)
-  # browser()
 
   if (nrow(prob.struct) == 1)
     return(divide_base(
-      data = parent_data, bounds = bounds,
+      data = data, bounds = bounds,
       aes = prob.struct[1,3],
       level = level,
       max_wt = NULL,

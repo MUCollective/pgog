@@ -65,7 +65,7 @@ StatBloc <- ggplot2::ggproto(
 
     # base_layer <- function(data, prob.struct, offset, level=1, bounds = productplots:::bound()){
     res <- bloc_divide(data = wt, prob.struct = prob.struct, offset = offset)
-    browser()
+    # browser()
     res <- dplyr::rename(res, xmin=l, xmax=r, ymin=b, ymax=t)
     res
   }

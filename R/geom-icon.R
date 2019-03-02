@@ -38,8 +38,46 @@ geom_icon <- function(mapping = NULL,
   if (! is.null(mapping$width)){
     mapping$width <- NULL
   }
+
+
+
+  ggplot2::layer(
+    data = data,
+    mapping = mapping,
+    stat = stat,
+    geom = GeomIcon,
+    position = position,
+    show.legend = show.legend,
+    check.aes = FALSE,
+    inherit.aes = FALSE, # only FALSE to turn the warning off
+    params = list(
+      na.rm = na.rm,
+      offset = offset,
+      prob.struct = parsed_mapping,
+      ...
+    )
+  )
 }
 
+
+#' @export
+#' @importFrom grid pointsGrob
+#' @importFrom grid gpar
+GeomIcon <- ggproto("GeomIcon", GeomPoint,
+                    required_aes = c("x", "y"),
+                    non_missing_aes = c("size", "shape", "colour"),
+                    default_aes = aes(
+                      shape = 16, colour = "gray", size = 10, fill = NA,
+                      alpha = NA, stroke = 0.5
+                    ),
+
+                    setup_data = function(data, params) {
+                      #browser()
+                      data
+                    }
+
+
+)
 
 # ===== old geom_icon
 
@@ -86,21 +124,4 @@ geom_icon <- function(mapping = NULL,
 #' }
 #'
 #'
-#' #' @export
-#' #' @importFrom grid pointsGrob
-#' #' @importFrom grid gpar
-#' GeomIcon <- ggproto("GeomIcon", GeomPoint,
-#'                     required_aes = c("x", "y"),
-#'                     non_missing_aes = c("size", "shape", "colour"),
-#'                     default_aes = aes(
-#'                       shape = 15, colour = "gray", size = 10, fill = NA,
-#'                       alpha = NA, stroke = 0.5
-#'                     ),
-#'
-#'                     setup_data = function(data, params) {
-#'                       #browser()
-#'                       data
-#'                     }
-#'
-#'
-#' )
+
