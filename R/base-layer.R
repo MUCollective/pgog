@@ -40,7 +40,6 @@ pack_icons <- function(data, bounds, prob.struct, offset){
 
   base_level <- bounds$level[1]
 
-  browser()
   base_aes <- prob.struct[base_level, 3][[1]]
   if (grepl("x.", base_aes) | grepl("height", base_aes)){
     direction <- "down"
@@ -48,20 +47,29 @@ pack_icons <- function(data, bounds, prob.struct, offset){
     direction <- "right"
   }
 
+  spacing <- calc_spacing(bounds, direction, offset)
+
+  if (direction == "down"){
+    width <- bounds$r[1] - bounds$l[1] - offset
+    icons_per_dim <- floor(width / spacing)
+  } else {
+    height <- bounds$t[1] - bounds$b[1] - offset
+    icons_per_dim <- floor(height/spacing)
+  }
+
 
   if (nrow(data) == nrow(bounds)){
-    icon_per_dim <- as.integer(sqrt(max(data$.N))/0.618)
+    # icon_per_dim <- as.integer(sqrt(max(data$.N))/0.618)
 
     res <- ldply(seq_len(nrow(data)), function(i){
       piece <- data[i, ]
       bound <- bounds[i, ]
-      pack_one_partition(piece, bound, icon_per_dim, offset, direction)
+      pack_one_partition(piece, bound, spacing, icons_per_dim, offset, direction)
     })
 
     return(res)
 
   }
-
 
   conds_var <- names(bounds)[grepl("p.", names(bounds))]
   counts <- data %>%
@@ -79,59 +87,91 @@ pack_icons <- function(data, bounds, prob.struct, offset){
     summarise_at(".N", sum)
 
   max_count <- max(counts_by_group$.N)
-  icon_per_dim <- as.integer(sqrt(max_count / length(pieces)) / 0.618)
-  icon_per_dim <- adjust_N(bounds, icon_per_dim, direction)
+  # icon_per_dim <- as.integer(sqrt(max_count / length(pieces)) / 0.618)
+  # icon_per_dim <- adjust_N(bounds, icon_per_dim, direction)
 
   # schema of `coord`: x, y, <marg_var values>
   ldply(seq_along(pieces), function(i) {
     piece <- pieces[[i]]
     bound <- parent[i, ]
-    pack_one_partition(piece, bound, icon_per_dim, offset, direction)
+    pack_one_partition(piece, bound, spacing, icons_per_dim, offset, direction)
   })
 
 }
 
-adjust_N <- function(bounds, icon_per_dim, direction){
+calc_spacing <- function(bounds, direction, offset){
+
   if (direction == "down"){
-    partition_width <- bounds$r[1] - bounds$l[1]
-    icon_spacing <- partition_width/icon_per_dim
+    bounds %<>%
+      mutate(n_icon_col = sqrt(.N * (r-l )/(t-b )))
+    n_icon_col <- ceiling(max(bounds$n_icon_col))
+    # ACHTUNG: hack
+    spacing <- (bounds$r[1] - bounds$l[1])/(n_icon_col + 1)
+    spacing
 
-    browser()
-    # if icon_spacing * max_number_rows > each partition height
-    # icon_spacing <- icon_spacing + 1
-
+  } else {
+    bounds %<>%
+      mutate(n_icon_row = sqrt(.N * (t-b)/(r - l)))
+    n_icon_row <- ceiling(max(bounds$n_icon_row))
+    spacing <- (bounds$t[1] - bounds$b[1]) / (n_icon_row + 1)
+    spacing
   }
 
 }
 
 
-pack_one_partition <- function(counts, bound, N, offset, direction){
+
+pack_one_partition <- function(counts, bound, spacing, N, offset, direction){
 
   d <- offset / 2
   all_vars <- names(counts)[grepl("p", names(counts))]
 
+
   if (direction == "down"){
-    x.coords <- head(seq(bound$l + d, bound$r - d, length.out = N + 1), -1)
-    y.coords <- seq(bound$b + d, bound$t - d, length.out = ceiling(sum(counts$.N))/N + 1)[-1]
+
+    # x.coords <- head(seq(bound$l + d, bound$r - d, length.out = N + 1), -1)
+    # y.coords <- seq(bound$b + d, bound$t - d, length.out = ceiling(sum(counts$.N))/N + 1)[-1]
+
+    x.coords <- seq(from = bound$l + spacing/2, by = spacing, length.out = N)
+    y.coords <- seq(from = bound$b + spacing/2, by = spacing, length.out = ceiling(sum(counts$.N)/N ))
+
+    counts %<>%
+      select(c(.N, all_vars)) %>%
+      uncount(weights = .N)
+
+    grid <- expand.grid(x = rev(x.coords), y = rev(y.coords))
+
+    grid %<>%
+      group_by_("y") %>%
+      mutate(x = rev(x)) %>%
+      ungroup() %>%
+      head(n = nrow(counts))
+
+    cbind(counts, grid)
+
   } else { # right
-    y.coords <- seq(bound$b + d, bound$t - d, length.out = N + 1)[-1]
-    x.coords <- head(seq(bound$l + d, bound$r - d, length.out = ceiling(sum(counts$.N))/N + 1), -1)
+
+    # y.coords <- seq(bound$b + d, bound$t - d, length.out = N + 1)[-1]
+    # x.coords <- head(seq(bound$l + d, bound$r - d, length.out = ceiling(sum(counts$.N))/N + 1), -1)
+    y.coords <- seq(from = bound$b + spacing/2, by = spacing, length.out = N)
+    x.coords <- seq(from = bound$l + spacing/2, by = spacing, length.out = ceiling(sum(counts$.N)/N))
+
+    counts %<>%
+      select(c(.N, all_vars)) %>%
+      uncount(weights = .N)
+
+    grid <- expand.grid(x = x.coords, y = rev(y.coords))
+
+    grid %<>%
+      arrange(x) %>%
+      head(n=nrow(counts))
+
+    cbind(counts, grid)
+
   }
 
 
-  counts %<>%
-    select(c(.N, all_vars)) %>%
-    uncount(weights = .N)
 
-  grid <- expand.grid(x = rev(x.coords), y = rev(y.coords))
-
-  grid %<>%
-    group_by_("y") %>%
-    mutate(x = rev(x)) %>%
-    ungroup() %>%
-    head(n = nrow(counts))
-
-  cbind(counts, grid)
 }
 
 
