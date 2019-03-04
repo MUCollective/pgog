@@ -65,13 +65,10 @@ ggplot(mtcars) + geom_icon(aes(height = c(P(cyl|carb)), y=c(carb)), stat = "icon
 ```{r}
 ggplot(mtcars) + 
   geom_icon(aes(height = c(P(cyl|gear, vs)), x = c(gear), y=c(vs))) +
-  geom_bloc(aes(height = c(P(cyl|gear, vs)), x = c(gear), y=c(vs)))
+  geom_bloc(aes(height = c(P(cyl|gear, vs)), x = c(gear), y=c(vs))) + 
+  coord_fixed()
 ```
 
-
-```{r}
-ggplot(mtcars) + geom_icon(aes(width = c(P(cyl))))
-```
 
 ## vspine
 

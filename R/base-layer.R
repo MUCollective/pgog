@@ -58,28 +58,10 @@ pack_icons <- function(data, bounds, prob.struct, offset){
   }
 
 
-  if (nrow(data) == nrow(bounds)){
-    # icon_per_dim <- as.integer(sqrt(max(data$.N))/0.618)
-
-    res <- ldply(seq_len(nrow(data)), function(i){
-      piece <- data[i, ]
-      bound <- bounds[i, ]
-      pack_one_partition(piece, bound, spacing, icons_per_dim, offset, direction)
-    })
-
-    return(res)
-
-  }
-
   conds_var <- names(bounds)[grepl("p.", names(bounds))]
   counts <- data %>%
     filter(level > base_level)
 
-
-  # need parent bounding box
-  parent <- bounds %>%
-    filter(level == base_level)
-  pieces <- dlply(counts, .variables = conds_var)
 
   # calculate the max number of dots within a partition
   counts_by_group <- counts %>%
@@ -87,6 +69,27 @@ pack_icons <- function(data, bounds, prob.struct, offset){
     summarise_at(".N", sum)
 
   max_count <- max(counts_by_group$.N)
+
+  if (nrow(data) == nrow(bounds)){
+    # icon_per_dim <- as.integer(sqrt(max(data$.N))/0.618)
+
+    res <- ldply(seq_len(nrow(data)), function(i){
+      piece <- data[i, ]
+      bound <- bounds[i, ]
+      pack_one_partition(piece, bound, spacing, icons_per_dim, offset, direction, max_count)
+    })
+
+    return(res)
+
+  }
+
+
+  # need parent bounding box
+  parent <- bounds %>%
+    filter(level == base_level)
+  pieces <- dlply(counts, .variables = conds_var)
+
+
   # icon_per_dim <- as.integer(sqrt(max_count / length(pieces)) / 0.618)
   # icon_per_dim <- adjust_N(bounds, icon_per_dim, direction)
 
@@ -94,7 +97,7 @@ pack_icons <- function(data, bounds, prob.struct, offset){
   ldply(seq_along(pieces), function(i) {
     piece <- pieces[[i]]
     bound <- parent[i, ]
-    pack_one_partition(piece, bound, spacing, icons_per_dim, offset, direction)
+    pack_one_partition(piece, bound, spacing, icons_per_dim, offset, direction, max_count)
   })
 
 }
@@ -121,7 +124,7 @@ calc_spacing <- function(bounds, direction, offset){
 
 
 
-pack_one_partition <- function(counts, bound, spacing, N, offset, direction){
+pack_one_partition <- function(counts, bound, spacing, N, offset, direction, max_count){
 
   d <- offset / 2
   all_vars <- names(counts)[grepl("p", names(counts))]
@@ -133,7 +136,7 @@ pack_one_partition <- function(counts, bound, spacing, N, offset, direction){
     # y.coords <- seq(bound$b + d, bound$t - d, length.out = ceiling(sum(counts$.N))/N + 1)[-1]
 
     x.coords <- seq(from = bound$l + spacing/2, by = spacing, length.out = N)
-    y.coords <- seq(from = bound$b + spacing/2, by = spacing, length.out = ceiling(sum(counts$.N)/N ))
+    y.coords <- seq(from = bound$b + spacing/2, by = spacing, length.out = ceiling(max_count/N ))
 
     counts %<>%
       select(c(.N, all_vars)) %>%
