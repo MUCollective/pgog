@@ -102,8 +102,8 @@ pack_icons <- function(data, bounds, prob.struct, offset){
     })
   }
 
-  # repack(res, direction, spacing)
-  res
+  repack(res, direction, spacing)
+  # res
 
 }
 
@@ -115,11 +115,29 @@ repack <- function(df, direction, spacing){
     t <- max(df$y)
     n_ycoords <- length(unique(df$y))
     new_ys <- seq(from=t, by = -1 * spacing, length.out = n_ycoords)
+    ys <- sort(unique(df$y), decreasing = TRUE)
 
-    browser()
-
+    match_ys <- function(i){
+      idx <- match(i, ys)
+      new_ys[idx]
+    }
+    df %<>% mutate(y = match_ys(y))
+    df
 
   } else {
+
+    l <- min(df$x)
+    n_xcoords <- length(unique(df$x))
+    new_xs <- seq(from = l, by = spacing, length.out = n_xcoords)
+    xs <- sort(unique(df$x))
+
+    match_xs <- function(i){
+      idx <- match(i, xs)
+      new_xs[idx]
+    }
+
+    df %<>% mutate(x = match_xs(x))
+    df
 
   }
 
