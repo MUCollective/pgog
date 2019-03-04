@@ -71,4 +71,11 @@ ggplot(mtcars) + geom_icon(aes(height = c(P(cyl|gear, vs)), x = c(gear), y=c(vs)
 ggplot(mtcars) + geom_icon(aes(width = c(P(cyl))))
 ```
 
-## with colors
+## vspine
+
+```{r}
+ggplot(mtcars) + 
+  geom_icon(aes(height = c(P(cyl)))) + 
+  coord_fixed()
+```
+

@@ -40,6 +40,7 @@ pack_icons <- function(data, bounds, prob.struct, offset){
 
   base_level <- bounds$level[1]
 
+  browser()
   base_aes <- prob.struct[base_level, 3][[1]]
   if (grepl("x.", base_aes) | grepl("height", base_aes)){
     direction <- "down"
@@ -79,6 +80,7 @@ pack_icons <- function(data, bounds, prob.struct, offset){
 
   max_count <- max(counts_by_group$.N)
   icon_per_dim <- as.integer(sqrt(max_count / length(pieces)) / 0.618)
+  icon_per_dim <- adjust_N(bounds, icon_per_dim, direction)
 
   # schema of `coord`: x, y, <marg_var values>
   ldply(seq_along(pieces), function(i) {
@@ -88,6 +90,20 @@ pack_icons <- function(data, bounds, prob.struct, offset){
   })
 
 }
+
+adjust_N <- function(bounds, icon_per_dim, direction){
+  if (direction == "down"){
+    partition_width <- bounds$r[1] - bounds$l[1]
+    icon_spacing <- partition_width/icon_per_dim
+
+    browser()
+    # if icon_spacing * max_number_rows > each partition height
+    # icon_spacing <- icon_spacing + 1
+
+  }
+
+}
+
 
 pack_one_partition <- function(counts, bound, N, offset, direction){
 
