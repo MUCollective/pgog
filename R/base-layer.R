@@ -64,11 +64,16 @@ pack_icons <- function(data, bounds, prob.struct, offset){
 
 
   # calculate the max number of dots within a partition
-  counts_by_group <- counts %>%
-    group_by_(.dots = conds_var) %>%
-    summarise_at(".N", sum)
+  if (nrow(counts) != 0){
 
-  max_count <- max(counts_by_group$.N)
+    counts_by_group <- counts %>%
+      group_by_(.dots = conds_var) %>%
+      summarise_at(".N", sum)
+
+    max_count <- max(counts_by_group$.N)
+  } else {
+    max_count <- max(bounds$.N)
+  }
 
   if (nrow(data) == nrow(bounds)){
     # icon_per_dim <- as.integer(sqrt(max(data$.N))/0.618)
@@ -79,26 +84,44 @@ pack_icons <- function(data, bounds, prob.struct, offset){
       pack_one_partition(piece, bound, spacing, icons_per_dim, offset, direction, max_count)
     })
 
-    return(res)
+  } else {
+    # need parent bounding box
+    parent <- bounds %>%
+      filter(level == base_level)
+    pieces <- dlply(counts, .variables = conds_var)
 
+
+    # icon_per_dim <- as.integer(sqrt(max_count / length(pieces)) / 0.618)
+    # icon_per_dim <- adjust_N(bounds, icon_per_dim, direction)
+
+    # schema of `coord`: x, y, <marg_var values>
+    res <- ldply(seq_along(pieces), function(i) {
+      piece <- pieces[[i]]
+      bound <- parent[i, ]
+      pack_one_partition(piece, bound, spacing, icons_per_dim, offset, direction, max_count)
+    })
   }
 
+  # repack(res, direction, spacing)
+  res
 
-  # need parent bounding box
-  parent <- bounds %>%
-    filter(level == base_level)
-  pieces <- dlply(counts, .variables = conds_var)
+}
 
 
-  # icon_per_dim <- as.integer(sqrt(max_count / length(pieces)) / 0.618)
-  # icon_per_dim <- adjust_N(bounds, icon_per_dim, direction)
+repack <- function(df, direction, spacing){
 
-  # schema of `coord`: x, y, <marg_var values>
-  ldply(seq_along(pieces), function(i) {
-    piece <- pieces[[i]]
-    bound <- parent[i, ]
-    pack_one_partition(piece, bound, spacing, icons_per_dim, offset, direction, max_count)
-  })
+  if (direction == "down"){
+
+    t <- max(df$y)
+    n_ycoords <- length(unique(df$y))
+    new_ys <- seq(from=t, by = -1 * spacing, length.out = n_ycoords)
+
+    browser()
+
+
+  } else {
+
+  }
 
 }
 
@@ -131,7 +154,6 @@ pack_one_partition <- function(counts, bound, spacing, N, offset, direction, max
 
 
   if (direction == "down"){
-
     # x.coords <- head(seq(bound$l + d, bound$r - d, length.out = N + 1), -1)
     # y.coords <- seq(bound$b + d, bound$t - d, length.out = ceiling(sum(counts$.N))/N + 1)[-1]
 
@@ -170,10 +192,7 @@ pack_one_partition <- function(counts, bound, spacing, N, offset, direction, max
       head(n=nrow(counts))
 
     cbind(counts, grid)
-
   }
-
-
 
 }
 
