@@ -42,8 +42,6 @@ geom_bloc <- function(mapping = NULL, data = NULL,
     mapping$width <- NULL
   }
 
-  # browser()
-  # TODO: calculate weights, etc
 
   ggplot2::layer(
     data = data,
@@ -83,10 +81,14 @@ GeomBloc <- ggplot2::ggproto(
                              linewidth=.1, weight = 1, x = NULL, y = NULL, conds = NULL),
 
   draw_panel = function(data, panel_scales, coord) {
-    # browser()
+
+    # stuff from ggmosaic; for colors
     # if (all(is.na(data$colour)))
       # data$colour <- scales::alpha(data$fill, data$alpha) # regard alpha in colour determination
 
+    # TODO: check if it's a density plot or not?
+
+    browser()
     GeomRect$draw_panel(subset(data, level==max(data$level)), panel_scales, coord)
   },
   draw_key = ggplot2::draw_key_rect

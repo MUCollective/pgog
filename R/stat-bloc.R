@@ -13,6 +13,7 @@ stat_bloc <- function(
   # offset = 0.01) {
 
 
+
   ggplot2::layer(
     data = data,
     mapping = mapping,
@@ -40,10 +41,6 @@ StatBloc <- ggplot2::ggproto(
 
   compute_panel = function(self, data, scales, na.rm = FALSE,
                            prob.struct, offset = 0.01){
-
-    # just making sure that the thing draws
-    # dummy_rect(data)
-
     margin <- getFromNamespace("margin", "productplots")
     # stuff from prodcalc()
     # this is wrong... need unique()
@@ -61,13 +58,31 @@ StatBloc <- ggplot2::ggproto(
       cond_var <- c()
     }
 
-    wt <- margin(data, marg_var, cond_var)
 
-    # base_layer <- function(data, prob.struct, offset, level=1, bounds = productplots:::bound()){
-    res <- bloc_divide(data = wt, prob.struct = prob.struct, offset = offset)
-    # browser()
-    res <- dplyr::rename(res, xmin=l, xmax=r, ymin=b, ymax=t)
-    res
+
+    all_rvs <- unique(c(marg_var, cond_var))
+    get_levels <- function(i) length(unique(i))
+    rv_levels <- sapply(data[, all_rvs], get_levels)
+    has_too_many_levels <- sum(rv_levels > 7)
+
+    browser()
+
+    if (! has_too_many_levels){
+      wt <- margin(data, marg_var, cond_var)
+
+      # base_layer <- function(data, prob.struct, offset, level=1, bounds = productplots:::bound()){
+      res <- bloc_divide(data = wt, prob.struct = prob.struct, offset = offset)
+      # browser()
+      res <- dplyr::rename(res, xmin=l, xmax=r, ymin=b, ymax=t)
+      res
+    } else {
+      message("Defaulting to density plots. Use `stat=mosaic` to force mosaic plots")
+      stop("density not implemented")
+
+    }
+
+
+
   }
 )
 
