@@ -53,7 +53,12 @@ ggplot(mtcars) + geom_bloc(aes(height = c(P(gear|carb), P(cyl|gear, carb)), x = 
 ## density plots
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(width = c(P(mpg))))
+ggplot(mtcars) + geom_bloc(aes(x = c(mpg), height = c(P(mpg))))
+```
+
+
+```{r}
+ggplot(mtcars) + geom_bloc(aes(x = c(mpg, cyl), height = c(P(mpg | cyl))))
 ```
 
 

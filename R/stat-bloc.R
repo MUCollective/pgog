@@ -62,25 +62,50 @@ StatBloc <- ggplot2::ggproto(
 
     # check if these variables are continuous
     all_rvs <- unique(c(marg_var, cond_var))
-    get_levels <- function(i) length(unique(i))
-    rv_levels <- sapply(data[, all_rvs], get_levels)
-    has_too_many_levels <- sum(rv_levels > 7)
+    is_continuous <- function(i) length(unique(i)) > 7
+    rv_levels <- sapply(as.tibble(data[, all_rvs]), is_continuous)
+    has_too_many_levels <- sum(rv_levels)
 
 
     if (! has_too_many_levels){
-      wt <- margin(data, marg_var, cond_var)
+      message("Defaulting to mosaic plots. Use `stat=blocdensity` to force density plots")
 
+      # the normal mosaic plot things
+      wt <- margin(data, marg_var, cond_var)
       # base_layer <- function(data, prob.struct, offset, level=1, bounds = productplots:::bound()){
       res <- bloc_divide(data = wt, prob.struct = prob.struct, offset = offset)
       # browser()
       res <- dplyr::rename(res, xmin=l, xmax=r, ymin=b, ymax=t)
       res
+
     } else {
       message("Defaulting to density plots. Use `stat=mosaic` to force mosaic plots")
 
+
+      # TODO: need to ignore the x.conds rows
+      n_prob_terms <- nrow(prob.struct)
+
+      if (n_prob_terms > 2){
+        stop("one simply does not draw density plots with such complexity")
+      }
+
+      if (n_prob_terms == 1){
+        the_marg <- prob.struct[1,1][[1]] # oh well
+
+        stopifnot(length(the_marg) == 1)
+
+        stopifnot(is_continuous(data[, marg_var]))
+        if (!is.null(cond_var)){
+          none_cond_continuous <- sum(sapply(as.tibble(data[, cond_var]), is_continuous)) == 0
+          stopifnot(none_cond_continuous)
+        }
+
+      } else {
+
+        browser()
+      }
+
     }
-
-
 
   }
 )
