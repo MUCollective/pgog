@@ -41,6 +41,7 @@ StatBloc <- ggplot2::ggproto(
 
   compute_panel = function(self, data, scales, na.rm = FALSE,
                            prob.struct, offset = 0.01){
+
     margin <- getFromNamespace("margin", "productplots")
     # stuff from prodcalc()
     # this is wrong... need unique()
@@ -59,13 +60,12 @@ StatBloc <- ggplot2::ggproto(
     }
 
 
-
+    # check if these variables are continuous
     all_rvs <- unique(c(marg_var, cond_var))
     get_levels <- function(i) length(unique(i))
     rv_levels <- sapply(data[, all_rvs], get_levels)
     has_too_many_levels <- sum(rv_levels > 7)
 
-    browser()
 
     if (! has_too_many_levels){
       wt <- margin(data, marg_var, cond_var)
@@ -77,7 +77,6 @@ StatBloc <- ggplot2::ggproto(
       res
     } else {
       message("Defaulting to density plots. Use `stat=mosaic` to force mosaic plots")
-      stop("density not implemented")
 
     }
 

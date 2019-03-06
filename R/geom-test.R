@@ -72,7 +72,9 @@ GeomBloc <- ggplot2::ggproto(
   setup_data = function(data, params){
     data
   },
-  required_aes = c("xmin", "xmax", "ymin", "ymax"),
+
+  # required_aes = c("xmin", "xmax", "ymin", "ymax"),
+  required_aes = c(),
 
   # from ggmosaic
   default_aes = ggplot2::aes(width = 0.75, linetype = "solid", fontsize=5,
@@ -87,10 +89,13 @@ GeomBloc <- ggplot2::ggproto(
       # data$colour <- scales::alpha(data$fill, data$alpha) # regard alpha in colour determination
 
     # TODO: check if it's a density plot or not?
-
-    browser()
-    GeomRect$draw_panel(subset(data, level==max(data$level)), panel_scales, coord)
+    if ("xmin" %in% names(data)){
+      GeomRect$draw_panel(subset(data, level==max(data$level)), panel_scales, coord)
+    } else {
+      stop("density plots not implemented")
+    }
   },
-  draw_key = ggplot2::draw_key_rect
+  # draw_key = ggplot2::draw_key_rect
+  draw_key = ggplot2::draw_key_polygon
 
 )
