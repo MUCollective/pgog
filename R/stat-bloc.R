@@ -92,9 +92,21 @@ StatBloc <- ggplot2::ggproto(
       }
 
       if (n_prob_terms == 1){
-        # the_marg <- prob.struct[1,1][[1]] # oh well
 
+        # there should only be 1 var in the marginals
         stopifnot(length(marg_var) == 1)
+
+        browser()
+        could_be_continuous <- tail(prob.struct$conditionals, n=1)[[1]][[1]]
+        if (is_continuous(could_be_continuous)){
+
+          # the rest of the conds should be discrete
+          should_be_discrete <- setdiff(marg_var, could_be_continuous)
+          stopifnot(is_continuous(data[, should_be_discrete]))
+          return()
+        }
+
+        # all the conds should be discrete except...
         stopifnot(is_continuous(data[, marg_var]))
         # the only ledit aes for P(A) or P(A | ...)
         stopifnot(grepl("x.height", tail(aeses, n = 1)) |
