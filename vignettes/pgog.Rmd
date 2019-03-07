@@ -67,6 +67,10 @@ ggplot(mtcars) + geom_bloc(aes(width = c(P(hp|mpg), P(mpg))))
 ```
 
 
+```{r}
+ggplot(mtcars) + geom_bloc(aes(width = c(P(hp|cyl), P(cyl))))
+```
+
 # geom_icon
 
 Using `geom_bloc` first to get the base partition right

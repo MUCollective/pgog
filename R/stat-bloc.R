@@ -81,25 +81,36 @@ StatBloc <- ggplot2::ggproto(
     } else {
       message("Defaulting to density plots. Use `stat=mosaic` to force mosaic plots")
 
-
-      # TODO: need to ignore the x.conds rows
-      n_prob_terms <- nrow(prob.struct)
+      # Need to ignore the x.conds rows
+      aeses <- unlist(prob.struct$aes, use.names = FALSE)
+      # the real number of terms in pmf, like P(B|A) P(A) has two terms
+      # but pmf = P(B | A) only has one
+      n_prob_terms <- sum(!grepl("cond", aeses))
 
       if (n_prob_terms > 2){
         stop("one simply does not draw density plots with such complexity")
       }
 
       if (n_prob_terms == 1){
-        the_marg <- prob.struct[1,1][[1]] # oh well
+        # the_marg <- prob.struct[1,1][[1]] # oh well
 
-        stopifnot(length(the_marg) == 1)
-
+        stopifnot(length(marg_var) == 1)
         stopifnot(is_continuous(data[, marg_var]))
+        # the only ledit aes for P(A) or P(A | ...)
+        stopifnot(grepl("x.height", tail(aeses, n = 1)) |
+          grepl("y.width", tail(aeses,n=1)))
+
+        # if it's the case P(A|B, C, ....)
         if (!is.null(cond_var)){
           none_cond_continuous <- sum(sapply(as.tibble(data[, cond_var]), is_continuous)) == 0
           stopifnot(none_cond_continuous)
-        }
 
+          # TODO: call mosaic plot partitions
+          stop("partitioning on the conditionals not implemented")
+        } else {
+          # else it's just P(A)
+          stop("simple density plot not implemented")
+        }
       } else {
 
         browser()
