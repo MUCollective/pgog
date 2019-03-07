@@ -91,40 +91,60 @@ StatBloc <- ggplot2::ggproto(
         stop("one simply does not draw density plots with such complexity")
       }
 
+      browser()
       if (n_prob_terms == 1){
 
         # there should only be 1 var in the marginals
         stopifnot(length(marg_var) == 1)
 
-        browser()
-        could_be_continuous <- tail(prob.struct$conditionals, n=1)[[1]][[1]]
-        if (is_continuous(could_be_continuous)){
 
+        if (is_continuous(data[, marg_var])){
+          # is it P(A|...?)
+          # all the conds should be discrete
+          if (!is.null(cond_var)){
+            none_cond_continuous <-
+              sum(sapply(as.tibble(data[, cond_var]), is_continuous)) == 0
+            stopifnot(none_cond_continuous)
+          }
+
+          # the last aes must be one of these
+          stopifnot(grepl("x.height", tail(aeses, n = 1)) |
+                      grepl("y.width", tail(aeses,n=1)))
+
+          stop("not implemented: P(A|...)")
+          return()
+
+        } else {
+          # is it P(B|A, ...)?
+          # A should be continuous, but
           # the rest of the conds should be discrete
-          should_be_discrete <- setdiff(marg_var, could_be_continuous)
-          stopifnot(is_continuous(data[, should_be_discrete]))
+
+          if (!is.null(cond_var)){
+            one_cond_continuous <-
+              sum(sapply(as.tibble(data[, cond_var]), is_continuous)) == 1
+            stopifnot(one_cond_continuous)
+          }
+
+          if (length(cond_var) == 1){
+            A <- cond_var
+          } else {
+            A <- cond_var[sapply(as.tibble(data[, cond_var]), is_continuous)]
+          }
+
+          # aes on P(B|A,...) must be height or width
+          stopifnot(grepl("height", tail(aeses, n=1)) |
+                      grepl("width", tail(aeses, n=1)))
+
+          stop("not implemented: P(B|A,...)")
           return()
         }
 
-        # all the conds should be discrete except...
-        stopifnot(is_continuous(data[, marg_var]))
-        # the only ledit aes for P(A) or P(A | ...)
-        stopifnot(grepl("x.height", tail(aeses, n = 1)) |
-          grepl("y.width", tail(aeses,n=1)))
+        # crap down there////////////////////////////////////////////////////
 
-        # if it's the case P(A|B, C, ....)
-        if (!is.null(cond_var)){
-          none_cond_continuous <- sum(sapply(as.tibble(data[, cond_var]), is_continuous)) == 0
-          stopifnot(none_cond_continuous)
 
-          # TODO: call mosaic plot partitions
-          stop("partitioning on the conditionals not implemented")
-        } else {
-          # else it's just P(A)
-          stop("simple density plot not implemented")
-        }
+
       } else {
-
+        # is it P(B, A|...)?
         browser()
       }
 

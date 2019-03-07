@@ -67,16 +67,21 @@ ggplot(mtcars) + geom_bloc(aes(x = c(mpg, cyl), height = c(P(mpg | cyl))))
 ```
 
 
+```{r}
+ggplot(mtcars) + geom_bloc(aes(x = c(mpg, cyl, gear), height = c(P(mpg | gear, cyl))))
+```
 
 ### P(B|A, ...)
 
-TODO: still need parsing
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(x = c(mpg, cyl), height = c(P(cyl | mpg))))
+ggplot(mtcars) + geom_bloc(aes(x = c(mpg), height = c(P(cyl | mpg))))
 ```
 
-TODO: more conds
+```{r}
+ggplot(mtcars) + geom_bloc(aes(x = c(mpg, gear), height = c(P(cyl | gear,mpg))))
+```
+
 
 ### P(B,A,...)
 
