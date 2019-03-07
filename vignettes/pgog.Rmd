@@ -86,7 +86,7 @@ ggplot(mtcars) + geom_bloc(aes(x = c(mpg, gear), height = c(P(cyl | gear,mpg))))
 ### P(B,A,...)
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(width = c(P(cyl|hp), P(hp))))
+ggplot(mtcars) + geom_bloc(aes(x = c(hp), height = c(P(cyl|hp), P(hp))))
 ```
 
 

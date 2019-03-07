@@ -91,7 +91,6 @@ StatBloc <- ggplot2::ggproto(
         stop("one simply does not draw density plots with such complexity")
       }
 
-      browser()
       if (n_prob_terms == 1){
 
         # there should only be 1 var in the marginals
@@ -139,17 +138,38 @@ StatBloc <- ggplot2::ggproto(
           return()
         }
 
-        # crap down there////////////////////////////////////////////////////
-
-
 
       } else {
         # is it P(B, A|...)?
         browser()
+        stopifnot(length(marg_var) == 2)
+
+        # B should be categorical
+        # A should be continuous
+        B <- marg_var[1]
+        A <- marg_var[2]
+
+        stopifnot(!is_continuous(data[, B]))
+        stopifnot(is_continuous(data[, A]))
+
+        if (tail(aeses, n =1) == "height"){
+          if (aeses[length(aeses) - 1] == "x.height"){
+            stop("not implemented: P(B,A|...), x")
+          } else {
+            stop("P(B, A|...)? check P(B|A) orientation")
+          }
+
+        } else if (tail(aeses, n=1) == "width"){
+          if (aeses[length(aeses) - 1] == "y.width"){
+            stop("not implemented: P(B,A|...), y")
+          } else {
+            stop("P(B, A|...)? check P(B|A) orientation")
+          }
+        } else {
+          stop("error")
+        }
       }
-
     }
-
   }
 )
 
