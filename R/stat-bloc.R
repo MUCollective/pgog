@@ -111,24 +111,19 @@ StatBloc <- ggplot2::ggproto(
                       grepl("y.width", tail(aeses,n=1)))
 
 
-          # partition: TODO
+          # partition
           if (is.null(cond_var)){
+            # P(A)
             # wt should not be calculated here
-            stop("not implemented: P(A|...)")
-            return()
-
+            base_layout <- data.frame(.wt = 1, l = 0, r = 1, b = 0, t = 1, level = 1)
           } else {
-
-            browser()
-
-            # need to remove the continuous marginal here
-
+            # P(A|...)
             wt <- margin(data, marg_var, cond_var)
             base_layout <- icon_divide(data = wt, prob.struct = prob.struct, offset = offset)
-            stop("not implemented: P(A|...)")
-            return()
           }
 
+          stop("not implemented: P(A|...)")
+          return()
 
 
         } else {
@@ -159,7 +154,6 @@ StatBloc <- ggplot2::ggproto(
 
       } else {
         # is it P(B, A|...)?
-        browser()
         stopifnot(length(marg_var) == 2)
 
         # B should be categorical
@@ -172,20 +166,34 @@ StatBloc <- ggplot2::ggproto(
 
         if (tail(aeses, n =1) == "height"){
           if (aeses[length(aeses) - 1] == "x.height"){
-            stop("not implemented: P(B,A|...), x")
+            # oops
           } else {
             stop("P(B, A|...)? check P(B|A) orientation")
           }
 
         } else if (tail(aeses, n=1) == "width"){
           if (aeses[length(aeses) - 1] == "y.width"){
-            stop("not implemented: P(B,A|...), y")
+            # oops
           } else {
             stop("P(B, A|...)? check P(B|A) orientation")
           }
         } else {
-          stop("error")
+          stop("Invalid aes mapping for P(B|A); only width and height are allowed")
         }
+
+
+        # partition
+        if (is.null(cond_var)){
+          # P(B,A)
+          # wt should not be calculated here
+          base_layout <- data.frame(.wt = 1, l = 0, r = 1, b = 0, t = 1, level = 1)
+        } else {
+          # P(B,A|...)
+          wt <- margin(data, marg_var, cond_var)
+          base_layout <- icon_divide(data = wt, prob.struct = prob.struct, offset = offset)
+        }
+
+        stop("not implemented: P(B,A|...), y")
       }
     }
   }
