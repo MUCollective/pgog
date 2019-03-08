@@ -92,7 +92,8 @@ GeomBloc <- ggplot2::ggproto(
     if ("xmin" %in% names(data)){
       GeomRect$draw_panel(subset(data, level==max(data$level)), panel_scales, coord)
     } else {
-      stop("density plots not implemented")
+      # stop("density plots not implemented")
+      GeomArea$draw_panel(data)
     }
   },
   # draw_key = ggplot2::draw_key_rect

@@ -116,14 +116,45 @@ StatBloc <- ggplot2::ggproto(
             # P(A)
             # wt should not be calculated here
             base_layout <- data.frame(.wt = 1, l = 0, r = 1, b = 0, t = 1, level = 1)
+
+
+
+
           } else {
             # P(A|...)
             wt <- margin(data, marg_var, cond_var)
             base_layout <- icon_divide(data = wt, prob.struct = prob.struct, offset = offset)
           }
 
-          stop("not implemented: P(A|...)")
-          return()
+
+          # =========== density ============
+          # params
+          # TODO: make those params geom arguments
+          adjust = 1
+          kernel = "gaussian"
+          n = 512
+          bw = "nrd0"
+          # trim = FALSE
+
+
+          range <- range(data[, marg_var], na.rm = TRUE)
+          res <- compute_density(data[, marg_var], data$weight,
+                          from = range[1],
+                          to = range[2],
+                          bw = bw,
+                          adjust = adjust,
+                          kernel = kernel,
+                          n=n)
+
+          # browser()
+
+          # stop("not implemented: P(A|...)")
+          # TODO: get rid of the bounding boxes and put in the x,ys
+
+          res$y <- base_layout$b
+          res$PANEL <- data$PANEL
+          res$group <- data$group
+          return(res)
 
 
         } else {
@@ -221,3 +252,35 @@ StatBloc <- ggplot2::ggproto(
 )
 
 
+
+compute_density <- function(x, w, from, to, bw = "nrd0", adjust = 1,
+                            kernel = "gaussian", n = 512) {
+  nx <- length(x)
+  if (is.null(w)) {
+    w <- rep(1 / nx, nx)
+  }
+  # if less than 2 points return data frame of NAs and a warning
+  if (nx < 2) {
+    warning("Groups with fewer than two data points have been dropped.", call. = FALSE)
+    return(new_data_frame(list(
+      x = NA_real_,
+      density = NA_real_,
+      scaled = NA_real_,
+      ndensity = NA_real_,
+      count = NA_real_,
+      n = NA_integer_
+    ), n = 1))
+  }
+
+
+  dens <- stats::density(x, weights = w, bw = bw, adjust = adjust,
+                         kernel = kernel, n = n, from = from, to = to)
+  new_data_frame(list(
+    x = dens$x,
+    density = dens$y,
+    scaled =  dens$y / max(dens$y, na.rm = TRUE),
+    ndensity = dens$y / max(dens$y, na.rm = TRUE),
+    count =   dens$y * nx,
+    n = nx
+  ), n = length(dens$x))
+}
