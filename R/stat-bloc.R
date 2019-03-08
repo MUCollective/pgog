@@ -141,11 +141,32 @@ StatBloc <- ggplot2::ggproto(
             A <- cond_var
           } else {
             A <- cond_var[sapply(as.tibble(data[, cond_var]), is_continuous)]
+            stopifnot(length(A) == 1)
           }
 
           # aes on P(B|A,...) must be height or width
           stopifnot(grepl("height", tail(aeses, n=1)) |
                       grepl("width", tail(aeses, n=1)))
+
+          # Partition
+          if (length(cond_var) == 1){
+            # P(B|A)
+            base_layout <- data.frame(.wt = 1, l = 0, r = 1, b = 0, t = 1, level = 1)
+
+          } else {
+            # P(B|A,...)
+            cond_mask <- !(sapply(as.tibble(data[, cond_var]), is_continuous))
+            wt <- margin(data, NULL, cond_var[cond_mask])
+
+            # TODO: get rid of A in the prob.struct
+            repeated_conds <- sapply(unlist(prob.struct$conditionals, use.names = FALSE),
+                                     function(i){paste0("p.", as.character(i))})
+            A_index <- match(A, unique(repeated_conds))
+            base_layout <- icon_divide(data = wt, prob.struct = prob.struct[-A_index,], offset = offset)
+
+          }
+
+          browser()
 
           stop("not implemented: P(B|A,...)")
           return()
