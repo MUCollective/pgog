@@ -110,8 +110,26 @@ StatBloc <- ggplot2::ggproto(
           stopifnot(grepl("x.height", tail(aeses, n = 1)) |
                       grepl("y.width", tail(aeses,n=1)))
 
-          stop("not implemented: P(A|...)")
-          return()
+
+          # partition: TODO
+          if (is.null(cond_var)){
+            # wt should not be calculated here
+            stop("not implemented: P(A|...)")
+            return()
+
+          } else {
+
+            browser()
+
+            # need to remove the continuous marginal here
+
+            wt <- margin(data, marg_var, cond_var)
+            base_layout <- icon_divide(data = wt, prob.struct = prob.struct, offset = offset)
+            stop("not implemented: P(A|...)")
+            return()
+          }
+
+
 
         } else {
           # is it P(B|A, ...)?

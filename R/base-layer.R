@@ -252,8 +252,8 @@ icon_divide <- function(data, prob.struct, offset, level=1, bounds = productplot
   # here, nrow(prob.struct ) > 1
   # just return if the next aes is not a coord one
   next_aes <- prob.struct[2,]$aes[[1]]
-  if (!(startsWith(next_aes, "x.") | startsWith(next_aes, "y."))){
-
+  # if (!(startsWith(next_aes, "x.") | startsWith(next_aes, "y."))){
+  if (!(startsWith(next_aes, "x.cond") | startsWith(next_aes, "y.cond"))){
     base_layout <- divide_base(
         data = parent_data, bounds = bounds,
         aes = prob.struct[1,3],

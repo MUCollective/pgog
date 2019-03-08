@@ -101,7 +101,8 @@ ggplot(mtcars) + geom_icon(aes(height = c(P(cyl|gear)), x = c(gear)), stat = "ic
 ```
 
 ```{r}
-ggplot(mtcars) + geom_icon(aes(height = c(P(cyl|gear, vs), P(gear|vs)), x = c(gear, vs)), stat = "icon")
+ggplot(mtcars) + geom_icon(aes(height = c(P(cyl|gear, vs), P(gear|vs)), x = c(gear, vs)), stat = "icon") +
+  coord_fixed()
 ```
 
 ```{r}
