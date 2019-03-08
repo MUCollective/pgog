@@ -152,6 +152,8 @@ StatBloc <- ggplot2::ggproto(
           # TODO: get rid of the bounding boxes and put in the x,ys
 
           res$y <- base_layout$b
+          res$ymin <- base_layout$b
+          res$ymax <- base_layout$t
           res$PANEL <- data$PANEL
           res$group <- data$group
           return(res)

@@ -82,7 +82,7 @@ GeomBloc <- ggplot2::ggproto(
                              size = .1, fill = "grey30", alpha = .8, stroke = 0.1,
                              linewidth=.1, weight = 1, x = NULL, y = NULL, conds = NULL),
 
-  draw_panel = function(data, panel_scales, coord) {
+  draw_panel = function(data, panel_params, panel_scales, coord) {
 
     # stuff from ggmosaic; for colors
     # if (all(is.na(data$colour)))
@@ -93,7 +93,8 @@ GeomBloc <- ggplot2::ggproto(
       GeomRect$draw_panel(subset(data, level==max(data$level)), panel_scales, coord)
     } else {
       # stop("density plots not implemented")
-      GeomArea$draw_panel(data)
+      browser()
+      GeomArea$draw_panel(data, panel_params = panel_params, coord = coord)
     }
   },
   # draw_key = ggplot2::draw_key_rect
