@@ -38,9 +38,14 @@ stat_bloc <- function(
 StatBloc <- ggplot2::ggproto(
   "StatBloc", ggplot2::Stat,
   non_missing_aes = "weight",
+  # default_aes = aes(y = stat(density)),
 
   compute_panel = function(self, data, scales, na.rm = FALSE,
-                           prob.struct, offset = 0.01){
+                           prob.struct, offset = 0.01,
+                           bw = "nrd0",
+                           adjust = 1,
+                           kernel = "gaussian",
+                           n = 512){
 
     margin <- getFromNamespace("margin", "productplots")
     # stuff from prodcalc()
@@ -130,10 +135,7 @@ StatBloc <- ggplot2::ggproto(
           # ============================= density ========================
           # params
           # TODO: make those params geom arguments
-          adjust = 1
-          kernel = "gaussian"
-          n = 512
-          bw = "nrd0"
+
           # trim = FALSE
 
 
@@ -155,6 +157,8 @@ StatBloc <- ggplot2::ggproto(
           # res$ymax <- base_layout$t
           res$PANEL <- data$PANEL
           res$group <- data$group
+          res$y <- res$density
+          # browser()
           return(res)
 
 
