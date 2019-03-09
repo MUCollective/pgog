@@ -77,26 +77,64 @@ GeomBloc <- ggplot2::ggproto(
   required_aes = c(),
 
   # from ggmosaic
-  default_aes = ggplot2::aes(width = 0.75, linetype = "solid", fontsize=5,
-                             shape = 19, colour = NA,
-                             size = .1, fill = "grey30", alpha = .8, stroke = 0.1,
-                             linewidth=.1, weight = 1, x = NULL, y = NULL, conds = NULL),
+  # default_aes = ggplot2::aes(width = 0.75, linetype = "solid", fontsize=5,
+  #                            shape = 19, colour = NA,
+  #                            size = .1, fill = "grey30", alpha = .8, stroke = 0.1,
+  #                            linewidth=.1, weight = 1, x = NULL, y = NULL, conds = NULL),
 
-  draw_panel = function(data, panel_params, panel_scales, coord) {
+  default_aes = aes(
+    colour = NA, fill = "grey20", size = 0.5,
+    linetype = 1, alpha = 1
+  ),
 
-    # stuff from ggmosaic; for colors
-    # if (all(is.na(data$colour)))
-      # data$colour <- scales::alpha(data$fill, data$alpha) # regard alpha in colour determination
+  # draw_panel = function(data, panel_scales, coord) {
+  draw_group = function(data, panel_params, coord) {
 
-    # TODO: check if it's a density plot or not?
-    if ("xmin" %in% names(data)){
-      GeomRect$draw_panel(subset(data, level==max(data$level)), panel_scales, coord)
+    if ("density" %in% names(data)){
+      # from  https://cran.r-project.org/web/packages/ggplot2/vignettes/extending-ggplot2.html
+      n <- nrow(data)
+      if (n <= 2) return(grid::nullGrob())
+
+      # ACHTUNG
+      data$y <- data$density
+
+      coords <- coord$transform(data, panel_params)
+      # A polygon can only have a single colour, fill, etc, so take from first row
+      first_row <- coords[1, , drop = FALSE]
+
+      grid::polygonGrob(
+        coords$x, coords$y,
+        default.units = "native",
+        gp = grid::gpar(
+          col = first_row$colour,
+          fill = scales::alpha(first_row$fill, first_row$alpha),
+          lwd = first_row$size * .pt,
+          lty = first_row$linetype
+        )
+      )
     } else {
-      # stop("density plots not implemented")
-      browser()
-      GeomArea$draw_panel(data, panel_params = panel_params, coord = coord)
+      stop("not implemented yet")
+          # GeomRect$draw_panel(subset(data, level==max(data$level)), panel_params, coord)
+
     }
-  },
+
+
+    },
+
+  #   # stuff from ggmosaic; for colors
+  #   # if (all(is.na(data$colour)))
+  #     # data$colour <- scales::alpha(data$fill, data$alpha) # regard alpha in colour determination
+  #
+  #   # TODO: check if it's a density plot or not?
+  #   if ("xmin" %in% names(data)){
+  #     browser()
+  #     GeomRect$draw_panel(subset(data, level==max(data$level)), panel_scales, coord)
+  #   } else {
+  #     # stop("density plots not implemented")
+  #     browser()
+  #     GeomArea$draw_panel(data, panel_params = panel_params, coord = coord)
+  #   }
+  # },
   # draw_key = ggplot2::draw_key_rect
   draw_key = ggplot2::draw_key_polygon
 
