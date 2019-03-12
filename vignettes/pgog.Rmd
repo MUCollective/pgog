@@ -62,10 +62,6 @@ ggplot(mtcars) + geom_bloc(aes(x = c(mpg), height = c(P(mpg))))
 # ggplot(mtcars) + geom_bloc(aes(x = c(mpg), height = c(P(mpg)))) + geom_hline(aes(yintercept = 0.02))
 ```
 
-```{r}
-ggplot(mtcars) + geom_density(aes(x = mpg))
-```
-
 
 ```{r}
 ggplot(mtcars) + geom_bloc(aes(x = c(mpg, cyl), height = c(P(mpg | cyl))))
@@ -73,7 +69,7 @@ ggplot(mtcars) + geom_bloc(aes(x = c(mpg, cyl), height = c(P(mpg | cyl))))
 
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(x = c(mpg, cyl, gear), height = c(P(mpg | gear, cyl))))
+ggplot(mtcars) + geom_bloc(aes(x = c(mpg,gear), y = c(cyl), height = c(P(mpg | gear, cyl))))
 ```
 
 ### P(B|A, ...)

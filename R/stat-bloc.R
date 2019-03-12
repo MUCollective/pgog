@@ -38,6 +38,8 @@ stat_bloc <- function(
 StatBloc <- ggplot2::ggproto(
   "StatBloc", ggplot2::Stat,
   non_missing_aes = "weight",
+
+  # this wouldn't work would it
   # default_aes = aes(y = stat(density)),
 
   compute_panel = function(self, data, scales, na.rm = FALSE,
@@ -122,9 +124,6 @@ StatBloc <- ggplot2::ggproto(
             # wt should not be calculated here
             base_layout <- data.frame(.wt = 1, l = 0, r = 1, b = 0, t = 1, level = 1)
 
-
-
-
           } else {
             # P(A|...)
             wt <- margin(data, marg_var, cond_var)
@@ -133,24 +132,40 @@ StatBloc <- ggplot2::ggproto(
 
 
           # ============================= density ========================
-          # params
-          # TODO: make those params geom arguments
-
-          # trim = FALSE
 
 
-          range <- range(data[, marg_var], na.rm = TRUE)
-          res <- compute_density(data[, marg_var], data$weight,
-                          from = range[1],
-                          to = range[2],
-                          bw = bw,
-                          adjust = adjust,
-                          kernel = kernel,
-                          n=n)
+
+
+
+          # want number of partitions on x,y axes
+          base_layout %<>%
+            mutate(x_rank = dense_rank(l), y_rank = dense_rank(b))
+
+
+          pieces <- as.list(dlply(data,cond_var))
+          bounds <- as.list(dlply(base_layout, cond_var))
+
+          densities <- ldply(seq_along(pieces), function(i) {
+            piece <- pieces[[i]]
+            bound <- bounds[[i]]
+
+            browser()
+
+            # TODO: check variable names
+            range <- range(piece[, marg_var], na.rm = TRUE)
+            res <- compute_density(data[, marg_var], piece$weight,
+                                   from = range[1],
+                                   to = range[2],
+                                   bw = bw,
+                                   adjust = adjust,
+                                   kernel = kernel,
+                                   n=n)
+
+          })
+
 
 
           # stop("not implemented: P(A|...)")
-          # TODO: get rid of the bounding boxes and put in the x,ys
 
           # res$y <- base_layout$b
           # res$ymin <- base_layout$b
