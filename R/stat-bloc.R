@@ -134,26 +134,26 @@ StatBloc <- ggplot2::ggproto(
           # ============================= density ========================
 
 
-
-
-
           # want number of partitions on x,y axes
           base_layout %<>%
             mutate(x_rank = dense_rank(l), y_rank = dense_rank(b))
 
-
           pieces <- as.list(dlply(data,cond_var))
           bounds <- as.list(dlply(base_layout, cond_var))
+
+          # TODO: get the range of continuous variable
+
+          continous_range <- range(select_(data, marg_var))
+          continuous_diff <- continous_range[2]- continous_range[1]
+
 
           densities <- ldply(seq_along(pieces), function(i) {
             piece <- pieces[[i]]
             bound <- bounds[[i]]
 
-            browser()
-
-            # TODO: check variable names
-            range <- range(piece[, marg_var], na.rm = TRUE)
-            res <- compute_density(data[, marg_var], piece$weight,
+            range <- range(select(piece, marg_var), na.rm = TRUE)
+            # TODO: what's that $weight
+            res <- compute_density(c(t(select(piece, marg_var))), NULL,
                                    from = range[1],
                                    to = range[2],
                                    bw = bw,
@@ -161,8 +161,19 @@ StatBloc <- ggplot2::ggproto(
                                    kernel = kernel,
                                    n=n)
 
-          })
+            # adjust positions to grids
 
+            # keep other vars
+            meta_data <- select(piece, -c("x", "y"))[1,]
+            meta_data$group <- i
+
+            if (! is.na(res$density)){
+              browser()
+              res$x <- res$x + (bound$x_rank - 1) * continuous_diff
+              res$density <- res$density + (bound$y_rank - 1)
+              cbind(res, meta_data, row.names = NULL)
+            }
+          })
 
 
           # stop("not implemented: P(A|...)")
@@ -170,11 +181,11 @@ StatBloc <- ggplot2::ggproto(
           # res$y <- base_layout$b
           # res$ymin <- base_layout$b
           # res$ymax <- base_layout$t
-          res$PANEL <- data$PANEL
-          res$group <- data$group
-          res$y <- res$density
+          # densities$PANEL <- data$PANEL
+          # densities$group <- data$group
+          densities$y <- densities$density
           # browser()
-          return(res)
+          return(densities)
 
 
         } else {
