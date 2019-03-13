@@ -43,6 +43,7 @@ geom_bloc <- function(mapping = NULL, data = NULL,
   }
 
 
+  browser()
   ggplot2::layer(
     data = data,
     mapping = mapping,

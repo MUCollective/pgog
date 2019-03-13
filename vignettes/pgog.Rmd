@@ -63,6 +63,7 @@ ggplot(mtcars) + geom_bloc(aes(x = c(mpg), height = c(P(mpg))))
 ```
 
 
+
 ```{r}
 ggplot(mtcars) + geom_bloc(aes(x = c(mpg, cyl), height = c(P(mpg | cyl))))
 ```
