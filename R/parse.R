@@ -50,7 +50,6 @@ parse_aes <- function(mapping){
 get_all_rv <- function(mapping){
 
   # margs <- flatten(mapping$marginals)
-  # # browser()
   # # filter out the P(1|A) conds
   # alles <- get_margs(mapping)
   # # find P(1|A) conds

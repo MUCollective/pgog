@@ -16,8 +16,14 @@ geom_bloc <- function(mapping = NULL, data = NULL,
                       offset = 0.01,
                       prob.struct = NULL) {
 
+  # TODO: only check probability related aesthetics
+  aes_p <- c("x", "y", "width", "height")
+  is_aes_p <- function(i) i %in% aes_p
+  mapping_p <- mapping[is_aes_p(names(mapping))]
+
+
   # parse prob structure
-  parsed_mapping <- parse_aes(mapping)
+  parsed_mapping <- parse_aes(mapping_p)
   pprint(parsed_mapping)
 
 
@@ -43,7 +49,6 @@ geom_bloc <- function(mapping = NULL, data = NULL,
   }
 
 
-  browser()
   ggplot2::layer(
     data = data,
     mapping = mapping,
