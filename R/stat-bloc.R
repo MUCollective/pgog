@@ -141,7 +141,7 @@ StatBloc <- ggplot2::ggproto(
           pieces <- as.list(dlply(data,cond_var))
           bounds <- as.list(dlply(base_layout, cond_var))
 
-          # TODO: get the range of continuous variable
+          # get the range of continuous variable
 
           continous_range <- range(select_(data, marg_var))
           continuous_diff <- continous_range[2]- continous_range[1]
@@ -161,14 +161,12 @@ StatBloc <- ggplot2::ggproto(
                                    kernel = kernel,
                                    n=n)
 
-            # adjust positions to grids
-
             # keep other vars
             meta_data <- select(piece, -c("x", "y"))[1,]
             meta_data$group <- i
 
             if (! is.na(res$density)){
-              browser()
+              # adjust positions to grids
               res$x <- res$x + (bound$x_rank - 1) * continuous_diff
               res$density <- res$density + (bound$y_rank - 1)
               cbind(res, meta_data, row.names = NULL)
@@ -178,13 +176,7 @@ StatBloc <- ggplot2::ggproto(
 
           # stop("not implemented: P(A|...)")
 
-          # res$y <- base_layout$b
-          # res$ymin <- base_layout$b
-          # res$ymax <- base_layout$t
-          # densities$PANEL <- data$PANEL
-          # densities$group <- data$group
           densities$y <- densities$density
-          # browser()
           return(densities)
 
 
