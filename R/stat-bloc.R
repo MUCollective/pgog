@@ -235,10 +235,8 @@ StatBloc <- ggplot2::ggproto(
 
           }
 
-          browser()
-
           stop("not implemented: P(B|A,...)")
-          return()
+          # return()
         }
 
 
@@ -289,6 +287,13 @@ StatBloc <- ggplot2::ggproto(
     }
   }
 )
+
+
+create_density <- function(base_layout, cont_var, group_var){
+
+
+}
+
 
 
 
