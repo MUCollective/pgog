@@ -17,13 +17,13 @@ geom_bloc <- function(mapping = NULL, data = NULL,
                       prob.struct = NULL) {
 
   # TODO: only check probability related aesthetics
-  aes_p <- c("x", "y", "width", "height")
-  is_aes_p <- function(i) i %in% aes_p
-  mapping_p <- mapping[is_aes_p(names(mapping))]
+  # aes_p <- c("x", "y", "width", "height")
+  # is_aes_p <- function(i) i %in% aes_p
+  # mapping_p <- mapping[is_aes_p(names(mapping))]
 
 
   # parse prob structure
-  parsed_mapping <- parse_aes(mapping_p)
+  parsed_mapping <- parse_aes(mapping)
   pprint(parsed_mapping)
 
 
@@ -89,7 +89,7 @@ GeomBloc <- ggplot2::ggproto(
   #                            linewidth=.1, weight = 1, x = NULL, y = NULL, conds = NULL),
 
   default_aes = aes(
-    colour = NA, fill = "grey20", size = 0.5,
+    colour = NA, fill = "white", size = 0.5,
     linetype = 1, alpha = 1
   ),
 

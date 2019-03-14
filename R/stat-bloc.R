@@ -92,7 +92,8 @@ StatBloc <- ggplot2::ggproto(
       aeses <- unlist(prob.struct$aes, use.names = FALSE)
       # the real number of terms in pmf, like P(B|A) P(A) has two terms
       # but pmf = P(B | A) only has one
-      n_prob_terms <- sum(!grepl("cond", aeses))
+      # n_prob_terms <- sum(!grepl("cond", aeses))
+      n_prob_terms <- length(marg_var)
 
       if (n_prob_terms > 2){
         stop("one simply does not draw density plots with such complexity")
@@ -114,12 +115,24 @@ StatBloc <- ggplot2::ggproto(
           }
 
           # the last aes must be one of these
-          stopifnot(grepl("x.height", tail(aeses, n = 1)) |
-                      grepl("y.width", tail(aeses,n=1)))
+          stopifnot("x.height" == tail(aeses, n = 1) |
+                      grepl("y.width", tail(aeses,n=1)) )
 
+          # base_layout does not consider color, etc aeses
+          # sub_prob.struct
+          # for (i in seq_len(nrow(prob.struct))){
+          #   cur_aes <- prob.struct[i,3][[1]]
+          #   if (grepl("colour", cur_aes)){
+          #     prob.struct <- prob.struct[-i, ]
+          #     break
+          #   }
+          # }
+
+          # TODO: condition check
 
           # partition
-          if (is.null(cond_var)){
+          # if (is.null(cond_var)){
+          if (nrow(prob.struct) == 1){
             # P(A)
             # wt should not be calculated here
             base_layout <- data.frame(.wt = 1, l = 0, r = 1, b = 0, t = 1, level = 1)
@@ -139,6 +152,7 @@ StatBloc <- ggplot2::ggproto(
             mutate(x_rank = dense_rank(l), y_rank = dense_rank(b))
 
           pieces <- as.list(dlply(data,cond_var))
+          browser()
           bounds <- as.list(dlply(base_layout, cond_var))
 
           # get the range of continuous variable
@@ -166,9 +180,10 @@ StatBloc <- ggplot2::ggproto(
             meta_data$group <- i
 
             if (! is.na(res$density)){
+              # ====== ACHTUNG =========
               # adjust positions to grids
-              res$x <- res$x + (bound$x_rank - 1) * continuous_diff
-              res$density <- res$density + (bound$y_rank - 1)
+              # res$x <- res$x + (bound$x_rank - 1) * continuous_diff
+              # res$density <- res$density + (bound$y_rank - 1)
               cbind(res, meta_data, row.names = NULL)
             }
           })
@@ -229,6 +244,7 @@ StatBloc <- ggplot2::ggproto(
 
       } else {
         # is it P(B, A|...)?
+        browser()
         stopifnot(length(marg_var) == 2)
 
         # B should be categorical

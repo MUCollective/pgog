@@ -58,14 +58,20 @@ ggplot(mtcars) + geom_bloc(aes(height = c(P(gear|carb), P(cyl|gear, carb)), x = 
 Sort of working... need implementation of the actual thing
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(x = c(mpg), height = c(P(mpg)), fill = mpg))
+ggplot(mtcars) + geom_bloc(aes(x = c(mpg), height = c(P(mpg)), color = mpg))
 ```
-
 
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(x = c(mpg, cyl), height = c(P(mpg | cyl)), fill = factor(cyl)))
+ggplot(mtcars) + geom_bloc(aes(x = c(mpg, cyl), height = c(P(mpg | cyl)), color = factor(cyl)))
 ```
+
+_Edge case:_
+
+```{r}
+ggplot(mtcars) + geom_bloc(aes(x = c(mpg), height = c(P(mpg | cyl)), color = factor(cyl)))
+```
+
 
 
 ```{r}
@@ -117,7 +123,7 @@ ggplot(mtcars) + geom_icon(aes(height = c(P(cyl|carb)), y=c(carb)), stat = "icon
 ```{r}
 ggplot(mtcars) + 
   geom_icon(aes(height = c(P(cyl|gear, vs)), x = c(gear), y=c(vs))) +
-  geom_bloc(aes(height = c(P(cyl|gear, vs)), x = c(gear), y=c(vs))) + 
+  # geom_bloc(aes(height = c(P(cyl|gear, vs)), x = c(gear), y=c(vs))) + 
   coord_fixed()
 ```
 
@@ -127,7 +133,7 @@ ggplot(mtcars) +
 ```{r}
 ggplot(mtcars) + 
   geom_icon(aes(height = c(P(cyl)))) + 
-  geom_bloc(aes(height = c(P(cyl)))) + 
+  # geom_bloc(aes(height = c(P(cyl)))) + 
   coord_fixed()
 ```
 

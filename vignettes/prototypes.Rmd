@@ -339,7 +339,7 @@ ggplot(data=happy) +
   geom_mosaic(aes(x = product(happy, sex), 
                   fill = happy, 
                   conds = product(finrela)),
-              na.rm = TRUE, divider = c("hspine", "vspine", "hbar"))
+              na.rm = TRUE, divider = c("vspine", "vspine", "hbar"))
 ```
 
 ## X + Y + Z: 3 ways of factoring

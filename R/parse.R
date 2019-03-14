@@ -8,8 +8,9 @@ parse_aes <- function(mapping){
   # 1. get a list of prob and coord aesthetics
   flat_mapping <- flatten_aes(mapping)$mapping
   prob_aes_names <- c("width", "height", "area")
+  # prob_aes_names <- c("width", "height", "area", "alpha", "color", "colour", "fill")
   prob_aes <- filter_prob_aes(prob_aes_names, flat_mapping)
-  coord_aes <- filter_prob_aes(c("x", "y"), flat_mapping)
+  coord_aes <- filter_prob_aes(c("x", "y", "alpha", "color", "colour", "fill"), flat_mapping)
 
   # save em to a matrix for easy indexing
   # also checks aes mapping (1D, 2D)
@@ -92,20 +93,23 @@ add_coord_aes <- function(prob_mtx, coord_aes){
     pvar <- as.character(coord_aes[[i]])
 
     for (j in seq_len(nrow(prob_mtx))){
-      # P(B|A) or P(1|A)
+      # P(B|A) or P(1|A) ????
       if (as.character(prob_mtx$marginals[[j]][[1]]) == pvar ||
           as.character(prob_mtx$conditionals[[j]][[1]]) == pvar){
         supplied_aes <- prob_mtx$aes[[j]]
-
-        # fix NULL <- P(1|A)
+        # fill NULL <- P(1|A)
         if (is.list(supplied_aes)){
           if (is.null(supplied_aes[[1]])){
-            if (aes == "x"){
+            if (aes == "x" || aes == "y"){
+              supplied_aes <- "cond"
+            } else if (aes %in% c("alpha", "color", "colour", "fill")) {
+              # prob_mtx$aes[[j]] <- aes
               supplied_aes <- "cond"
             } else {
-              supplied_aes <- "cond"
+              stop("unknown aesthetics on P(1|X)")
             }
           }
+        } else {
         }
 
         prob_mtx$aes[[j]] <- paste(aes, ".", supplied_aes, sep = "")
@@ -117,7 +121,8 @@ add_coord_aes <- function(prob_mtx, coord_aes){
   }
 
   # check for underspecified, i.e. there's still NULL aesthetics mapping
-  stopifnot(!sum(sapply(flatten(prob_mtx$aes),is.null)))
+  n_nulls <- sum(sapply(flatten(prob_mtx$aes),is.null))
+  stopifnot(n_nulls == 0)
 
   prob_mtx
 
@@ -270,15 +275,17 @@ flatten_aes <- function(mapping){
         for (j in seq_along(mapping_expr)){
           if (j != 1){ # skip the c()
             # TODO: turn it back to a quosure?
-            list_of_Ps <- c(
-              # new_quosure(mapping_expr[[j]], env = mapping_env),
-              mapping_expr[[j]],
-              list_of_Ps)
+            list_of_Ps <- c(mapping_expr[[j]],list_of_Ps)
           }
         }
         # quo_set_expr(mapping[[i]]) <- mapping_expr[2:length(mapping_expr)]
         mapping[[i]] <- list_of_Ps
+      } else {
+        # could be `factor(cyl)`
+        mapping[[i]] <- list(mapping_expr[[2]])
       }
+    } else {
+      mapping[[i]] <- list(mapping_expr)
     }
   }
 
@@ -286,12 +293,14 @@ flatten_aes <- function(mapping){
   new_mapping <- unlist(mapping)
   aes_names <- names(mapping)
   new_names <- character()
+
   for (i in seq_along(mapping)){
     for (j in seq_along(mapping[[i]])){
       new_names <- c(new_names, aes_names[[i]])
     }
   }
   names(new_mapping) <- new_names
+  # browser()
   list(mapping=new_mapping, env = mapping_env)
 
 }
