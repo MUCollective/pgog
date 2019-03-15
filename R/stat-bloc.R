@@ -115,7 +115,7 @@ StatBloc <- ggplot2::ggproto(
           }
 
           # the last aes must be one of these
-          stopifnot("x.height" == tail(aeses, n = 1) |
+          stopifnot(grepl("x.height", tail(aeses, n = 1)) |
                       grepl("y.width", tail(aeses,n=1)) )
 
           # base_layout does not consider color, etc aeses
