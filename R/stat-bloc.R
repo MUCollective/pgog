@@ -130,7 +130,11 @@ StatBloc <- ggplot2::ggproto(
           #   }
           # }
 
-          # TODO: condition check
+          # ===== P(A|...) =======
+
+          cont_var <- marg_var
+          group_var <- cond_var
+
 
           # partition
           # if (is.null(cond_var)){
@@ -146,55 +150,8 @@ StatBloc <- ggplot2::ggproto(
           }
 
 
-          # ============================= density ========================
-
-
-          # want number of partitions on x,y axes
-          base_layout %<>%
-            mutate(x_rank = dense_rank(l), y_rank = dense_rank(b))
-
-          pieces <- as.list(dlply(data,cond_var))
-          browser()
-          bounds <- as.list(dlply(base_layout, cond_var))
-
-          # get the range of continuous variable
-
-          continous_range <- range(select_(data, marg_var))
-          continuous_diff <- continous_range[2]- continous_range[1]
-
-
-          densities <- ldply(seq_along(pieces), function(i) {
-            piece <- pieces[[i]]
-            bound <- bounds[[i]]
-
-            range <- range(select(piece, marg_var), na.rm = TRUE)
-            # TODO: what's that $weight
-            res <- compute_density(c(t(select(piece, marg_var))), NULL,
-                                   from = range[1],
-                                   to = range[2],
-                                   bw = bw,
-                                   adjust = adjust,
-                                   kernel = kernel,
-                                   n=n)
-
-            # keep other vars
-            meta_data <- select(piece, -c("x", "y"))[1,]
-            meta_data$group <- i
-
-            if (! is.na(res$density)){
-              # ====== ACHTUNG =========
-              # adjust positions to grids
-              # res$x <- res$x + (bound$x_rank - 1) * continuous_diff
-              # res$density <- res$density + (bound$y_rank - 1)
-              cbind(res, meta_data, row.names = NULL)
-            }
-          })
-
-
           # stop("not implemented: P(A|...)")
 
-          densities$y <- densities$density
-          return(densities)
 
 
         } else {
@@ -219,6 +176,10 @@ StatBloc <- ggplot2::ggproto(
           stopifnot(grepl("height", tail(aeses, n=1)) |
                       grepl("width", tail(aeses, n=1)))
 
+          # ============== P(B|A...) =============
+          group_var <- marg_var # TODO: wrong
+          cont_var <- A
+
           # Partition
           if (length(cond_var) == 1){
             # P(B|A)
@@ -237,8 +198,7 @@ StatBloc <- ggplot2::ggproto(
 
           }
 
-          stop("not implemented: P(B|A,...)")
-          # return()
+          # stop("not implemented: P(B|A,...)")
         }
 
 
@@ -272,6 +232,10 @@ StatBloc <- ggplot2::ggproto(
           stop("Invalid aes mapping for P(B|A); only width and height are allowed")
         }
 
+        #  ======= P(B,A|...) ========
+
+        # stop()
+
 
         # partition
         if (is.null(cond_var)){
@@ -286,6 +250,60 @@ StatBloc <- ggplot2::ggproto(
 
         stop("not implemented: P(B,A|...), y")
       }
+
+
+      # ============================= density ========================
+
+
+      # want number of partitions on x,y axes
+      base_layout %<>%
+        mutate(x_rank = dense_rank(l), y_rank = dense_rank(b))
+
+      pieces <- as.list(dlply(data,group_var))
+
+      # if (group_var %in% names(base_layout)){
+      #   bounds <- as.list(dlply(base_layout, group_var))
+      # } else {
+      #
+      #
+      # }
+
+      # get the range of continuous variable
+
+      continous_range <- range(select_(data, cont_var))
+      continuous_diff <- continous_range[2]- continous_range[1]
+
+
+      densities <- ldply(seq_along(pieces), function(i) {
+        piece <- pieces[[i]]
+        # bound <- bounds[[i]]
+
+        range <- range(select(piece, cont_var), na.rm = TRUE)
+        # TODO: what's that $weight
+        res <- compute_density(c(t(select(piece, cont_var))), NULL,
+                               from = range[1],
+                               to = range[2],
+                               bw = bw,
+                               adjust = adjust,
+                               kernel = kernel,
+                               n=n)
+
+        # keep other vars
+        meta_data <- select(piece, -c("x", "y"))[1,]
+        meta_data$group <- i
+
+        if (! is.na(res$density)){
+          # ====== ACHTUNG =========
+          # adjust positions to grids
+          # res$x <- res$x + (bound$x_rank - 1) * continuous_diff
+          # res$density <- res$density + (bound$y_rank - 1)
+          cbind(res, meta_data, row.names = NULL)
+        }
+      })
+
+      densities$y <- densities$density
+      return(densities)
+
     }
   }
 )

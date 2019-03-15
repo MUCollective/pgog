@@ -58,12 +58,12 @@ ggplot(mtcars) + geom_bloc(aes(height = c(P(gear|carb), P(cyl|gear, carb)), x = 
 Sort of working... need implementation of the actual thing
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(x = c(mpg), height = c(P(mpg)), color = mpg))
+ggplot(mtcars) + geom_bloc(aes(x = c(mpg), height = c(P(mpg)))) + geom_density(aes(x = mpg))
 ```
 
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(x = c(mpg, cyl), height = c(P(mpg | cyl)), color = factor(cyl)))
+ggplot(mtcars) + geom_bloc(aes(x = c(mpg, cyl), height = c(P(mpg | cyl))))
 ```
 
 _Edge case:_
@@ -82,7 +82,7 @@ ggplot(mtcars) + geom_bloc(aes(x = c(mpg,gear), y = c(cyl), height = c(P(mpg | g
 
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(x = c(mpg), height = c(P(cyl | mpg))))
+ggplot(mtcars) + geom_bloc(aes(x = c(mpg), height = c(P(cyl | mpg)), color = factor(cyl)))
 ```
 
 ```{r}
