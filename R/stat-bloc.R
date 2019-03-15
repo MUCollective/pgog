@@ -86,6 +86,8 @@ StatBloc <- ggplot2::ggproto(
       res
 
     } else {
+
+      # ==================== density plots ======================
       message("Defaulting to density plots. Use `stat=mosaic` to force mosaic plots")
 
       # Need to ignore the x.conds rows
