@@ -93,6 +93,15 @@ GeomBloc <- ggplot2::ggproto(
     linetype = 1, alpha = 1
   ),
 
+  # from ggplot, geom-ribbon.r
+  setup_data = function(data, params){
+    if ("density" %in% names(data)) {
+      transform(data[order(data$PANEL, data$group, data$x), ], ymin = 0, ymax = y)
+    } else {
+      data
+    }
+  },
+
   # draw_panel = function(data, panel_scales, coord) {
   draw_group = function(data, panel_params, coord) {
 

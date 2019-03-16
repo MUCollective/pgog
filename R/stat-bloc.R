@@ -336,6 +336,7 @@ compute_density <- function(x, w, from, to, bw = "nrd0", adjust = 1,
     ), n = 1))
   }
 
+  browser()
 
   dens <- stats::density(x, weights = w, bw = bw, adjust = adjust,
                          kernel = kernel, n = n, from = from, to = to)
