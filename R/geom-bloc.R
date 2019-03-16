@@ -1,6 +1,7 @@
 #' @export
 #' @importFrom ggmosaic geom_mosaic
 #' @importFrom ggmosaic product
+#' @importFrom grid polygonGrob
 #' @import rlang
 #' @importFrom ggridges geom_density_ridges
 #'
@@ -103,30 +104,45 @@ GeomBloc <- ggplot2::ggproto(
   },
 
   # draw_panel = function(data, panel_scales, coord) {
-  draw_group = function(data, panel_params, coord) {
+  draw_group = function(data, panel_params, coord, na.rm = FALSE) {
 
     if ("density" %in% names(data)){
-      # from  https://cran.r-project.org/web/packages/ggplot2/vignettes/extending-ggplot2.html
-      n <- nrow(data)
-      if (n <= 2) return(grid::nullGrob())
 
-      # ACHTUNG
-      data$y <- data$density
+      # from ggplot, geom-ribbon.r
+      if (na.rm) data <- data[stats::complete.cases(data[c("x", "ymin", "ymax")]), ]
+      data <- data[order(data$group), ]
 
-      coords <- coord$transform(data, panel_params)
-      # A polygon can only have a single colour, fill, etc, so take from first row
-      first_row <- coords[1, , drop = FALSE]
+      # Check that aesthetics are constant
+      aes <- unique(data[c("colour", "fill", "size", "linetype", "alpha")])
+      if (nrow(aes) > 1) {
+        stop("Aesthetics can not vary with a ribbon")
+      }
+      aes <- as.list(aes)
 
-      grid::polygonGrob(
-        coords$x, coords$y,
+
+      missing_pos <- !stats::complete.cases(data[c("x", "ymin", "ymax")])
+      ids <- cumsum(missing_pos) + 1
+      ids[missing_pos] <- NA
+
+
+      data <- unclass(data) #for faster indexing
+      positions <- new_data_frame(list(
+        x = c(data$x, rev(data$x)),
+        y = c(data$ymax, rev(data$ymin)),
+        id = c(ids, rev(ids))
+      ))
+      munched <- coord_munch(coord, positions, panel_params)
+
+      browser()
+      ggname("geom_ribbon", grid::polygonGrob(
+        munched$x, munched$y, id = munched$id,
         default.units = "native",
-        gp = grid::gpar(
-          col = first_row$colour,
-          fill = scales::alpha(first_row$fill, first_row$alpha),
-          lwd = first_row$size * .pt,
-          lty = first_row$linetype
-        )
-      )
+        gp = gpar(
+          fill = alpha(aes$fill, aes$alpha),
+          col = aes$colour,
+          lwd = aes$size * .pt,
+          lty = aes$linetype)
+      ))
     } else {
       stop("not implemented yet")
           # GeomRect$draw_panel(subset(data, level==max(data$level)), panel_params, coord)
