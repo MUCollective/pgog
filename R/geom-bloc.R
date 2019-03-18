@@ -133,7 +133,7 @@ GeomBloc <- ggplot2::ggproto(
       ))
       munched <- coord_munch(coord, positions, panel_params)
 
-      browser()
+      # browser()
       ggname("geom_ribbon", grid::polygonGrob(
         munched$x, munched$y, id = munched$id,
         default.units = "native",

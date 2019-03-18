@@ -198,6 +198,8 @@ StatBloc <- ggplot2::ggproto(
 
           }
 
+          is_P_B_given_A <- TRUE
+
           # stop("not implemented: P(B|A,...)")
         }
 
@@ -237,6 +239,7 @@ StatBloc <- ggplot2::ggproto(
         # stop()
 
 
+        browser()
         # partition
         if (is.null(cond_var)){
           # P(B,A)
@@ -278,7 +281,7 @@ StatBloc <- ggplot2::ggproto(
         piece <- pieces[[i]]
         # bound <- bounds[[i]]
 
-        range <- range(select(piece, cont_var), na.rm = TRUE)
+        range <- continous_range
         # TODO: what's that $weight
         res <- compute_density(c(t(select(piece, cont_var))), NULL,
                                from = range[1],
@@ -301,7 +304,14 @@ StatBloc <- ggplot2::ggproto(
         }
       })
 
-      densities$y <- densities$density
+
+      if (!is.null(is_P_B_given_A)){
+        # stat(density * n)
+        densities$y <- densities$density * densities$n
+        browser()
+      } else {
+        densities$y <- densities$density
+      }
       return(densities)
 
     }
@@ -336,7 +346,7 @@ compute_density <- function(x, w, from, to, bw = "nrd0", adjust = 1,
     ), n = 1))
   }
 
-  browser()
+  # browser()
 
   dens <- stats::density(x, weights = w, bw = bw, adjust = adjust,
                          kernel = kernel, n = n, from = from, to = to)
