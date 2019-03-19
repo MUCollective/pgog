@@ -215,16 +215,19 @@ StatBloc <- ggplot2::ggproto(
 
         stopifnot(!is_continuous(data[, B]))
         stopifnot(is_continuous(data[, A]))
+        # browser()
 
-        if (tail(aeses, n =1) == "height"){
-          if (aeses[length(aeses) - 1] == "x.height"){
+        if (grepl("height", tail(aeses, n =2)[1])
+            && grepl("x", tail(aeses, n =2)[1])){
+          if (grepl("height", tail(aeses, n =1))){
             # oops
           } else {
             stop("P(B, A|...)? check P(B|A) orientation")
           }
 
-        } else if (tail(aeses, n=1) == "width"){
-          if (aeses[length(aeses) - 1] == "y.width"){
+        } else if (grepl("width", tail(aeses, n =1))
+                   && grepl("y", tail(aeses, n =2)[1])){
+          if (grepl("width", tail(aeses, n =2)[1])){
             # oops
           } else {
             stop("P(B, A|...)? check P(B|A) orientation")
@@ -239,6 +242,7 @@ StatBloc <- ggplot2::ggproto(
 
         cont_var <- A
         group_var <- B
+        is_P_B_given_A <- TRUE
 
         # partition
         if (is.null(cond_var)){

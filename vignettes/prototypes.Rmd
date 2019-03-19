@@ -602,7 +602,7 @@ ggplot(mtcars, aes(x = mpg, fill = factor(cyl))) +
 # count = density * n
 # the one with correct marginal distribution
 
-ggplot(mtcars, aes(x = mpg, y = stat(density * n), fill = factor(cyl))) + 
+ggplot(mtcars, aes(x = hp, y = stat(density * n), fill = factor(cyl))) + 
   geom_density(position = "stack")
 
 # conditional

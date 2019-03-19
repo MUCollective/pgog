@@ -97,6 +97,11 @@ ggplot(mtcars) + geom_bloc(aes(x = c(hp), height = c(P(cyl|hp), P(hp)), color = 
 ```
 
 ```{r}
+ggplot(mtcars) + geom_density(aes(x =hp))
+```
+
+
+```{r}
 ggplot(mtcars) + geom_bloc(aes(x = c(hp, gear), height = c(P(cyl|hp, gear), P(hp|gear))))
 ```
 

@@ -97,7 +97,7 @@ add_coord_aes <- function(prob_mtx, coord_aes){
       marg <- as.character(prob_mtx$marginals[[j]][[1]])
       cond <- as.character(prob_mtx$conditionals[[j]][[1]])
 
-      browser()
+      # browser()
       if (marg == pvar){
         supplied_aes <- prob_mtx$aes[[j]]
         prob_mtx$aes[[j]] <- paste(aes, ".", supplied_aes, sep = "")
