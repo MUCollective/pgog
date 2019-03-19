@@ -1,4 +1,4 @@
-StatDensityCommon <- ggproto("StatDensityCommon", Stat,
+StatDensityCommon <- ggplot2::ggproto("StatDensityCommon", ggplot2::Stat,
                              required_aes = "x",
 
                              setup_params = function(data, params) {

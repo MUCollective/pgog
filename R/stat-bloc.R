@@ -13,7 +13,6 @@ stat_bloc <- function(
   # offset = 0.01) {
 
 
-
   ggplot2::layer(
     data = data,
     mapping = mapping,
@@ -89,6 +88,7 @@ StatBloc <- ggplot2::ggproto(
 
       # ==================== density plots ======================
       message("Defaulting to density plots. Use `stat=mosaic` to force mosaic plots")
+      is_P_B_given_A <- FALSE
 
       # Need to ignore the x.conds rows
       aeses <- unlist(prob.struct$aes, use.names = FALSE)
@@ -206,7 +206,6 @@ StatBloc <- ggplot2::ggproto(
 
       } else {
         # is it P(B, A|...)?
-        browser()
         stopifnot(length(marg_var) == 2)
 
         # B should be categorical
@@ -238,8 +237,9 @@ StatBloc <- ggplot2::ggproto(
 
         # stop()
 
+        cont_var <- A
+        group_var <- B
 
-        browser()
         # partition
         if (is.null(cond_var)){
           # P(B,A)
@@ -251,7 +251,7 @@ StatBloc <- ggplot2::ggproto(
           base_layout <- icon_divide(data = wt, prob.struct = prob.struct, offset = offset)
         }
 
-        stop("not implemented: P(B,A|...), y")
+        # stop("not implemented: P(B,A|...), y")
       }
 
 
@@ -305,10 +305,10 @@ StatBloc <- ggplot2::ggproto(
       })
 
 
-      if (!is.null(is_P_B_given_A)){
+      if (is_P_B_given_A){
         # stat(density * n)
         densities$y <- densities$density * densities$n
-        browser()
+        # browser()
       } else {
         densities$y <- densities$density
       }

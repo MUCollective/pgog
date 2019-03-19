@@ -94,29 +94,19 @@ add_coord_aes <- function(prob_mtx, coord_aes){
 
     for (j in seq_len(nrow(prob_mtx))){
       # P(B|A) or P(1|A) ????
-      if (as.character(prob_mtx$marginals[[j]][[1]]) == pvar ||
-          as.character(prob_mtx$conditionals[[j]][[1]]) == pvar){
-        supplied_aes <- prob_mtx$aes[[j]]
-        # fill NULL <- P(1|A)
-        if (is.list(supplied_aes)){
-          if (is.null(supplied_aes[[1]])){
-            if (aes == "x" || aes == "y"){
-              supplied_aes <- "cond"
-            } else if (aes %in% c("alpha", "color", "colour", "fill")) {
-              # prob_mtx$aes[[j]] <- aes
-              supplied_aes <- "cond"
-            } else {
-              stop("unknown aesthetics on P(1|X)")
-            }
-          }
-        } else {
-        }
+      marg <- as.character(prob_mtx$marginals[[j]][[1]])
+      cond <- as.character(prob_mtx$conditionals[[j]][[1]])
 
+      browser()
+      if (marg == pvar){
+        supplied_aes <- prob_mtx$aes[[j]]
+        prob_mtx$aes[[j]] <- paste(aes, ".", supplied_aes, sep = "")
+        break
+      } else if (((length(cond) > 0) && cond == pvar)){
+        supplied_aes <- "cond"
         prob_mtx$aes[[j]] <- paste(aes, ".", supplied_aes, sep = "")
         break
       }
-
-
     }
   }
 

@@ -1,0 +1,46 @@
+Terminals
+
+x
+y
+width
+height
+area
+fill
+color
+alpha
+density
+
+P
+
+
+Non-terminals
+
+<categorical var> ::= “A” | “B”, etc.
+<categorical vars> ::= <categorical var> | <categorical var> <categorical vars>
+<1D prob variable> ::= TODO
+<2D Probabilistic variable> ::= TODO
+
+<coord aes> ::= x | y
+<1D recur prob aes> ::= height | width
+<1D non-recur prob aes> ::= fill | color | alpha | density
+<pretty aes> ::= fill | color | alpha | density
+<2D recur prob aes> ::= area
+
+<coord mapping> ::= <coord aes> <categorical vars>
+                  | x <categorical vars> y <categorical vars>
+
+<1D recur prob mapping> ::= <1D recur prob aes> <1D prob variable>
+<1D non-recur prob mapping> ::= <1D recur prob aes> <1D prob variable>
+                          | <1D non-recur prob aes> <1D prob variable>
+<1D bunch prob mapping> ::= <1D recur prob mapping> | <1D recur prob mapping> <1D bunch prob mapping>
+<prob mapping> ::= <1D base prob mapping>
+                 | <1D base prob mapping> <1D bunch prob mapping>
+
+<data mapping> ::= <prob mapping>
+            | <prob mapping> <coord mapping>
+
+<pretty mapping> ::= <pretty aes> <categorical var>
+                   | <pretty aes> <categorical var> <pretty mapping>
+
+<mapping> ::= <data mapping>
+            | <data mapping> <pretty mapping>

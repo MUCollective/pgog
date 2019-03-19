@@ -82,7 +82,7 @@ ggplot(mtcars) + geom_bloc(aes(x = c(mpg,gear), y = c(cyl), height = c(P(mpg | g
 
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(x = c(mpg), height = c(P(cyl | mpg)), color = factor(cyl)))
+ggplot(mtcars) + geom_bloc(aes(x = c(mpg), height = c(P(cyl | mpg)), color = factor(cyl)), position = "fill")
 ```
 
 ```{r}
@@ -93,7 +93,7 @@ ggplot(mtcars) + geom_bloc(aes(x = c(mpg, gear), height = c(P(cyl | gear,mpg))))
 ### P(B,A,...)
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(x = c(hp), height = c(P(cyl|hp), P(hp))))
+ggplot(mtcars) + geom_bloc(aes(x = c(hp), height = c(P(cyl|hp), P(hp)), color = factor(cyl)))
 ```
 
 ```{r}

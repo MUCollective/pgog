@@ -50,6 +50,14 @@ geom_bloc <- function(mapping = NULL, data = NULL,
   }
 
 
+
+
+  # hack to get position arg right
+  # ACHTUNG: but geom doesn't have data values yet
+
+  # position = "fill"
+  position = "stack"
+
   ggplot2::layer(
     data = data,
     mapping = mapping,
@@ -80,6 +88,9 @@ GeomBloc <- ggplot2::ggproto(
     data
   },
 
+
+
+
   # required_aes = c("xmin", "xmax", "ymin", "ymax"),
   required_aes = c(),
 
@@ -89,7 +100,7 @@ GeomBloc <- ggplot2::ggproto(
   #                            size = .1, fill = "grey30", alpha = .8, stroke = 0.1,
   #                            linewidth=.1, weight = 1, x = NULL, y = NULL, conds = NULL),
 
-  default_aes = aes(
+  default_aes = ggplot2::aes(
     colour = NA, fill = "white", size = 0.5,
     linetype = 1, alpha = 1
   ),
