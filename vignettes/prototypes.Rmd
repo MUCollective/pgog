@@ -596,6 +596,10 @@ ggplot(mtcars, aes(x = cyl)) +
 ggplot(mtcars, aes(x = mpg, fill = factor(cyl))) + 
   geom_density(position = "stack")
 
+
+ggplot(mtcars, aes(x = mpg, fill = factor(cyl))) + 
+  geom_density()
+
 ggplot(mtcars, aes(x = mpg, fill = factor(cyl))) + 
   geom_density() + facet_grid(cyl~ .)
 

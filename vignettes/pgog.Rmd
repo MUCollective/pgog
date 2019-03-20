@@ -55,18 +55,20 @@ ggplot(mtcars) + geom_bloc(aes(height = c(P(gear|carb), P(cyl|gear, carb)), x = 
 
 ### P(A|...)
 
-Sort of working... need implementation of the actual thing
+P(A)
 
 ```{r}
 ggplot(mtcars) +  geom_bloc(aes(x = c(mpg), height = c(P(mpg)))) 
 ```
 
+P(A|B)
+
+TODO: this spec is wrong
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(x = c(mpg, cyl), height = c(P(mpg | cyl))))
+ggplot(mtcars) + geom_bloc(aes(x = c(mpg, cyl), height = c(P(mpg | cyl)), colour = factor(cyl)))
 ```
 
-_Edge case:_
 
 ```{r}
 ggplot(mtcars) + geom_bloc(aes(x = c(mpg), height = c(P(mpg | cyl)), color = factor(cyl)))
