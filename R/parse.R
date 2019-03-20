@@ -57,7 +57,6 @@ get_all_rv <- function(mapping){
   # cond_inx <- sapply(margs, function(i) i == 1)
   # alles <- c(alles, rev(flatten(mapping$conditionals[cond_inx])))
 
-  # browser()
   c(get_margs(mapping), get_conds(mapping))
 
 }
@@ -97,14 +96,24 @@ add_coord_aes <- function(prob_mtx, coord_aes){
       marg <- as.character(prob_mtx$marginals[[j]][[1]])
       cond <- as.character(prob_mtx$conditionals[[j]][[1]])
 
-      # browser()
       if (marg == pvar){
         supplied_aes <- prob_mtx$aes[[j]]
         prob_mtx$aes[[j]] <- paste(aes, ".", supplied_aes, sep = "")
         break
       } else if (((length(cond) > 0) && cond == pvar)){
-        supplied_aes <- "cond"
-        prob_mtx$aes[[j]] <- paste(aes, ".", supplied_aes, sep = "")
+        supplied_aes <- prob_mtx$aes[[j]]
+        # browser()
+        if (is.list(supplied_aes))
+          if (is.null(supplied_aes[[1]])){
+            supplied_aes <- "cond"
+            if (aes == "x" | aes == "y"){
+              prob_mtx$aes[[j]] <- paste(aes, ".", supplied_aes, sep = "")
+            } else {
+              prob_mtx$aes[[j]] <- supplied_aes
+            }
+          } else {
+            prob_mtx$aes[[j]] <- paste(aes, ".", supplied_aes, sep = "")
+          }
         break
       }
     }

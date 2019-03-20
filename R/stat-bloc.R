@@ -116,7 +116,7 @@ StatBloc <- ggplot2::ggproto(
             stopifnot(none_cond_continuous)
           }
 
-          # the last aes must be one of these
+          # the last aes (for P(A|...)) must be one of these
           stopifnot(grepl("x.height", tail(aeses, n = 1)) |
                       grepl("y.width", tail(aeses,n=1)) )
 
@@ -142,18 +142,36 @@ StatBloc <- ggplot2::ggproto(
             # P(A)
             # wt should not be calculated here
             base_layout <- data.frame(.wt = 1, l = 0, r = 1, b = 0, t = 1, level = 1)
-
           } else {
             # P(A|...)
+            # is it P(A|B), color <- B or y <- B
+            is_ridges <- FALSE # defaults to P(A|B), color <- B
+
+            if (grepl("x",tail(aeses, n= 1))){ # A on x.height
+              if (grepl("y", tail(aeses, n=2)[1])){
+                # P(A|B), y <- B
+                is_ridges <- TRUE
+              } else if (grepl("x", tail(aeses, n=2)[1])){
+                stop(paste("Check aes mapping on the categorial variable ", group_var))
+              }
+            } else { # A on y.width
+              if (grepl("x", tail(aeses, n=2)[1])){
+                # P(A|B), x <- B
+                is_ridges <- TRUE
+              } else if (grepl("y", tail(aeses, n=2)[1])){
+                stop(paste("Check aes mapping on the categorial variable ", group_var))
+              }
+            }
+
+            # process
             wt <- margin(data, marg_var, cond_var)
             base_layout <- icon_divide(data = wt, prob.struct = prob.struct, offset = offset)
+
+            if (is_ridges){
+
+            }
+
           }
-
-
-          # stop("not implemented: P(A|...)")
-
-
-
         } else {
           # is it P(B|A, ...)?
           # A should be continuous, but
