@@ -89,6 +89,8 @@ StatBloc <- ggplot2::ggproto(
       # ==================== density plots ======================
       message("Defaulting to density plots. Use `stat=mosaic` to force mosaic plots")
       is_P_B_given_A <- FALSE
+      is_ridges <- FALSE # for P(A|B) defaults to P(A|B), color <- B
+
 
       # Need to ignore the x.conds rows
       aeses <- unlist(prob.struct$aes, use.names = FALSE)
@@ -145,7 +147,6 @@ StatBloc <- ggplot2::ggproto(
           } else {
             # P(A|...)
             # is it P(A|B), color <- B or y <- B
-            is_ridges <- FALSE # defaults to P(A|B), color <- B
 
             if (grepl("x",tail(aeses, n= 1))){ # A on x.height
               if (grepl("y", tail(aeses, n=2)[1])){
@@ -167,9 +168,7 @@ StatBloc <- ggplot2::ggproto(
             wt <- margin(data, marg_var, cond_var)
             base_layout <- icon_divide(data = wt, prob.struct = prob.struct, offset = offset)
 
-            if (is_ridges){
 
-            }
 
           }
         } else {
@@ -333,6 +332,14 @@ StatBloc <- ggplot2::ggproto(
         # browser()
       } else {
         densities$y <- densities$density
+      }
+
+      if (is_ridges){
+        browser()
+        # densities$y <-
+        densities %<>%
+          mutate_(y = group_var) %>%
+          mutate(height = density)
       }
       return(densities)
 
