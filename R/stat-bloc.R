@@ -335,7 +335,7 @@ StatBloc <- ggplot2::ggproto(
       }
 
       if (is_ridges){
-        browser()
+        # browser()
         # densities$y <-
         densities %<>%
           mutate_(y = group_var) %>%

@@ -102,14 +102,69 @@ GeomBloc <- ggplot2::ggproto(
 
   default_aes = ggplot2::aes(
     colour = NA, fill = "white", size = 0.5,
-    linetype = 1, alpha = 0.5
+    linetype = 1, alpha = 0.5, rel_min_height = 0, scale = 1.8
   ),
 
   # from ggplot, geom-ribbon.r
-  setup_data = function(data, params){
+  setup_data = function(self, data, params){
     if ("density" %in% names(data)) {
+
+      # all density plots
       transform(data[order(data$PANEL, data$group, data$x), ], ymin = 0, ymax = y)
+
+      if ("height" %in% names(data)){
+        # ridge plots
+        # code from ggridges/R/geoms.R
+        if (is.null(params$panel_scaling)) {
+          params$panel_scaling <- TRUE
+        }
+
+        # calculate internal scale
+        yrange = max(data$y) - min(data$y)
+        n = length(unique(data$y))
+
+        if (n<2) {
+          hmax <- max(data$height, na.rm = TRUE)
+          iscale <- 1
+        } else {
+          #scale per panel or globally?
+          if (params$panel_scaling) {
+            heights <- split(data$height, data$PANEL)
+            max_heights <- vapply(heights, max, numeric(1), na.rm = TRUE)
+            hmax <- max_heights[data$PANEL]
+            iscale <- yrange/((n-1)*hmax)
+          } else {
+            hmax <- max(data$height, na.rm = TRUE)
+            iscale <- yrange/((n-1)*hmax)
+          }
+
+        }
+        data <- cbind(data, iscale)
+
+        if (!"scale" %in% names(data)) {
+          if (!"scale" %in% names(params))
+            data <- cbind(data, scale = self$default_aes$scale)
+          else
+            data <- cbind(data, scale = params$scale)
+        }
+
+        if (!"rel_min_height" %in% names(data)){
+          if (!"rel_min_height" %in% names(params))
+            data <- cbind(data, rel_min_height = self$default_aes$rel_min_height)
+          else
+            data <- cbind(data, rel_min_height = params$rel_min_height)
+        }
+
+        browser()
+        transform(data,
+                  ymin = y,
+                  ymax = y + iscale*scale*height,
+                  min_height = hmax*rel_min_height)
+
+      }
+
     } else {
+      # not density plots
       data
     }
   },
