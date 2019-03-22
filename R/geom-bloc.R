@@ -173,45 +173,63 @@ GeomBloc <- ggplot2::ggproto(
   draw_group = function(data, panel_params, coord, na.rm = FALSE) {
 
     if ("density" %in% names(data)){
+      if ("height" %in% names(data)){
+        # ridge plot
 
-      # from ggplot, geom-ribbon.r
-      if (na.rm) data <- data[stats::complete.cases(data[c("x", "ymin", "ymax")]), ]
-      data <- data[order(data$group), ]
+        # remove all points that fall below the minimum height
+        data$ymax[data$height < data$min_height] <- NA
 
-      # Check that aesthetics are constant
-      aes <- unique(data[c("colour", "fill", "size", "linetype", "alpha")])
-      if (nrow(aes) > 1) {
-        stop("Aesthetics can not vary with a ribbon")
+        # Check that aesthetics are constant
+        aes <- unique(data[c("colour", "fill", "size", "linetype", "alpha")])
+        if (nrow(aes) > 1) {
+          stop("Aesthetics can not vary along a ridgeline")
+        }
+        aes <- as.list(aes)
+
+        # TODO
+
       }
-      aes <- as.list(aes)
+      # else {
+
+        # from ggplot, geom-ribbon.r
+        if (na.rm) data <- data[stats::complete.cases(data[c("x", "ymin", "ymax")]), ]
+        data <- data[order(data$group), ]
+
+        # Check that aesthetics are constant
+        aes <- unique(data[c("colour", "fill", "size", "linetype", "alpha")])
+        if (nrow(aes) > 1) {
+          stop("Aesthetics can not vary with a ribbon")
+        }
+        aes <- as.list(aes)
 
 
-      missing_pos <- !stats::complete.cases(data[c("x", "ymin", "ymax")])
-      ids <- cumsum(missing_pos) + 1
-      ids[missing_pos] <- NA
+        missing_pos <- !stats::complete.cases(data[c("x", "ymin", "ymax")])
+        ids <- cumsum(missing_pos) + 1
+        ids[missing_pos] <- NA
 
 
-      data <- unclass(data) #for faster indexing
-      positions <- new_data_frame(list(
-        x = c(data$x, rev(data$x)),
-        y = c(data$ymax, rev(data$ymin)),
-        id = c(ids, rev(ids))
-      ))
-      munched <- coord_munch(coord, positions, panel_params)
+        data <- unclass(data) #for faster indexing
+        positions <- new_data_frame(list(
+          x = c(data$x, rev(data$x)),
+          y = c(data$ymax, rev(data$ymin)),
+          id = c(ids, rev(ids))
+        ))
+        munched <- coord_munch(coord, positions, panel_params)
 
-      # browser()
-      ggname("geom_ribbon", grid::polygonGrob(
-        munched$x, munched$y, id = munched$id,
-        default.units = "native",
-        gp = gpar(
-          fill = alpha(aes$fill, aes$alpha),
-          col = aes$colour,
-          lwd = aes$size * .pt,
-          lty = aes$linetype)
-      ))
+        # browser()
+        ggname("geom_ribbon", grid::polygonGrob(
+          munched$x, munched$y, id = munched$id,
+          default.units = "native",
+          gp = gpar(
+            fill = alpha(aes$fill, aes$alpha),
+            col = aes$colour,
+            lwd = aes$size * .pt,
+            lty = aes$linetype)
+        ))
+      # }
     } else {
       stop("not implemented yet")
-          # GeomRect$draw_panel(subset(data, level==max(data$level)), panel_params, coord)
+      # GeomRect$draw_panel(subset(data, level==max(data$level)), panel_params, coord)
 
     }
 
