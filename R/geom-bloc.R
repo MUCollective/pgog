@@ -107,6 +107,7 @@ GeomBloc <- ggplot2::ggproto(
 
   # from ggplot, geom-ribbon.r
   setup_data = function(self, data, params){
+    browser()
     if ("density" %in% names(data)) {
 
       # all density plots
@@ -228,8 +229,8 @@ GeomBloc <- ggplot2::ggproto(
         ))
       # }
     } else {
-      stop("not implemented yet")
-      # GeomRect$draw_panel(subset(data, level==max(data$level)), panel_params, coord)
+      # stop("not implemented yet")
+      GeomRect$draw_panel(subset(data, level==max(data$level)), panel_params, coord)
 
     }
 

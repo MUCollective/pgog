@@ -80,8 +80,29 @@ StatBloc <- ggplot2::ggproto(
       wt <- margin(data, marg_var, cond_var)
       # base_layer <- function(data, prob.struct, offset, level=1, bounds = productplots:::bound()){
       res <- bloc_divide(data = wt, prob.struct = prob.struct, offset = offset)
-      # browser()
-      res <- dplyr::rename(res, xmin=l, xmax=r, ymin=b, ymax=t)
+
+
+      pieces <- as.list(dlply(res, 1))
+      res <- ldply(seq_along(pieces), function(i){
+        piece <- pieces[[i]]
+
+
+        l <- piece$l
+        r <- piece$r
+        b <- piece$b
+        t <- piece$t
+
+        coords <- data.frame(x = c(l,l,r,r), y=c(b,t,b,t))
+
+        others <- piece %>%
+          subset(select = -c(l, r, b, t))
+
+        others$group <- i
+        cbind(coords, others)
+      })
+
+      # res <- dplyr::rename(res, xmin=l, xmax=r, ymin=b, ymax=t)
+
       res
 
     } else {
