@@ -107,11 +107,10 @@ GeomBloc <- ggplot2::ggproto(
 
   # from ggplot, geom-ribbon.r
   setup_data = function(self, data, params){
-    browser()
-    if ("density" %in% names(data)) {
 
+    if ("density" %in% names(data)) {
       # all density plots
-      transform(data[order(data$PANEL, data$group, data$x), ], ymin = 0, ymax = y)
+      data <- transform(data[order(data$PANEL, data$group, data$x), ], ymin = 0, ymax = y)
 
       if ("height" %in% names(data)){
         # ridge plots
@@ -156,13 +155,14 @@ GeomBloc <- ggplot2::ggproto(
             data <- cbind(data, rel_min_height = params$rel_min_height)
         }
 
-        browser()
+        # browser()
         transform(data,
                   ymin = y,
                   ymax = y + iscale*scale*height,
                   min_height = hmax*rel_min_height)
 
       }
+      data
 
     } else {
       # not density plots
@@ -172,70 +172,83 @@ GeomBloc <- ggplot2::ggproto(
 
   # draw_panel = function(data, panel_scales, coord) {
   draw_group = function(data, panel_params, coord, na.rm = FALSE) {
+    # Check that aesthetics are constant
+    aes <- unique(data[c("colour", "fill", "size", "linetype", "alpha")])
+    if (nrow(aes) > 1) {
+      stop("Aesthetics can not vary along a ridgeline")
+    }
+    aes <- as.list(aes)
 
     if ("density" %in% names(data)){
       if ("height" %in% names(data)){
         # ridge plot
-
         # remove all points that fall below the minimum height
         data$ymax[data$height < data$min_height] <- NA
-
-        # Check that aesthetics are constant
-        aes <- unique(data[c("colour", "fill", "size", "linetype", "alpha")])
-        if (nrow(aes) > 1) {
-          stop("Aesthetics can not vary along a ridgeline")
-        }
-        aes <- as.list(aes)
-
-        # TODO
-
       }
-      # else {
-
-        # from ggplot, geom-ribbon.r
-        if (na.rm) data <- data[stats::complete.cases(data[c("x", "ymin", "ymax")]), ]
-        data <- data[order(data$group), ]
-
-        # Check that aesthetics are constant
-        aes <- unique(data[c("colour", "fill", "size", "linetype", "alpha")])
-        if (nrow(aes) > 1) {
-          stop("Aesthetics can not vary with a ribbon")
-        }
-        aes <- as.list(aes)
 
 
-        missing_pos <- !stats::complete.cases(data[c("x", "ymin", "ymax")])
-        ids <- cumsum(missing_pos) + 1
-        ids[missing_pos] <- NA
+      # from ggplot, geom-ribbon.r
+      if (na.rm) data <- data[stats::complete.cases(data[c("x", "ymin", "ymax")]), ]
+      data <- data[order(data$group), ]
+
+      missing_pos <- !stats::complete.cases(data[c("x", "ymin", "ymax")])
+      ids <- cumsum(missing_pos) + 1
+      ids[missing_pos] <- NA
 
 
-        data <- unclass(data) #for faster indexing
-        positions <- new_data_frame(list(
-          x = c(data$x, rev(data$x)),
-          y = c(data$ymax, rev(data$ymin)),
-          id = c(ids, rev(ids))
-        ))
-        munched <- coord_munch(coord, positions, panel_params)
+      data <- unclass(data) #for faster indexing
+      positions <- new_data_frame(list(
+        x = c(data$x, rev(data$x)),
+        y = c(data$ymax, rev(data$ymin)),
+        id = c(ids, rev(ids))
+      ))
+      munched <- coord_munch(coord, positions, panel_params)
 
-        # browser()
-        ggname("geom_ribbon", grid::polygonGrob(
-          munched$x, munched$y, id = munched$id,
-          default.units = "native",
-          gp = gpar(
-            fill = alpha(aes$fill, aes$alpha),
-            col = aes$colour,
-            lwd = aes$size * .pt,
-            lty = aes$linetype)
-        ))
-      # }
+      ggname("geom_bloc", grid::polygonGrob(
+        munched$x, munched$y, id = munched$id,
+        default.units = "native",
+        gp = gpar(
+          fill = alpha(aes$fill, aes$alpha),
+          col = aes$colour,
+          lwd = aes$size * .pt,
+          lty = aes$linetype)
+      ))
     } else {
       # stop("not implemented yet")
-      GeomRect$draw_panel(subset(data, level==max(data$level)), panel_params, coord)
+      # GeomRect$draw_panel(subset(data, level==max(data$level)), panel_params, coord)
+      if (!coord$is_linear()) {
+        aesthetics <- setdiff(
+          names(data), c("x", "y", "xmin", "xmax", "ymin", "ymax")
+        )
+
+        polys <- lapply(split(data, seq_len(nrow(data))), function(row) {
+          poly <- rect_to_poly(row$xmin, row$xmax, row$ymin, row$ymax)
+          aes <- new_data_frame(row[aesthetics])[rep(1,5), ]
+
+          GeomPolygon$draw_panel(cbind(poly, aes), panel_params, coord)
+        })
+
+        ggname("bar", do.call("grobTree", polys))
+      } else {
+        coords <- coord$transform(data, panel_params)
+        ggname("geom_rect", grid::rectGrob(
+          coords$xmin, coords$ymax,
+          width = coords$xmax - coords$xmin,
+          height = coords$ymax - coords$ymin,
+          default.units = "native",
+          just = c("left", "top"),
+          gp = gpar(
+            col = coords$colour,
+            fill = alpha(coords$fill, coords$alpha),
+            lwd = coords$size * .pt,
+            lty = coords$linetype,
+            lineend = "butt"
+          )
+        ))
+      }
 
     }
-
-
-    },
+  },
 
   #   # stuff from ggmosaic; for colors
   #   # if (all(is.na(data$colour)))

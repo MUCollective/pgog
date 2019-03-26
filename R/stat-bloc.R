@@ -81,27 +81,31 @@ StatBloc <- ggplot2::ggproto(
       # base_layer <- function(data, prob.struct, offset, level=1, bounds = productplots:::bound()){
       res <- bloc_divide(data = wt, prob.struct = prob.struct, offset = offset)
 
+#
+#       pieces <- as.list(dlply(res, 1))
+#       res <- ldply(seq_along(pieces), function(i){
+#         piece <- pieces[[i]]
+#
+#         l <- piece$l
+#         r <- piece$r
+#         b <- piece$b
+#         t <- piece$t
+#
+#         # coords <- data.frame(x = c(l,l,r,r), y=c(b,t,b,t))
+#         coords <- new_data_frame(list(
+#           y = c(t, t, b, b, t),
+#           x = c(l, r, r, l, l)
+#         ))
+#
+#         others <- piece %>%
+#           subset(select = -c(l, r, b, t))
+#
+#         others$group <- i
+#         cbind(coords, others)
+#       })
 
-      pieces <- as.list(dlply(res, 1))
-      res <- ldply(seq_along(pieces), function(i){
-        piece <- pieces[[i]]
-
-
-        l <- piece$l
-        r <- piece$r
-        b <- piece$b
-        t <- piece$t
-
-        coords <- data.frame(x = c(l,l,r,r), y=c(b,t,b,t))
-
-        others <- piece %>%
-          subset(select = -c(l, r, b, t))
-
-        others$group <- i
-        cbind(coords, others)
-      })
-
-      # res <- dplyr::rename(res, xmin=l, xmax=r, ymin=b, ymax=t)
+      res <- dplyr::rename(res, xmin=l, xmax=r, ymin=b, ymax=t)
+      res$group <- seq_len(nrow(res))
 
       res
 
