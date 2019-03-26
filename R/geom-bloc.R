@@ -156,14 +156,15 @@ GeomBloc <- ggplot2::ggproto(
         }
 
         # browser()
-        transform(data,
+        data <- transform(data,
                   ymin = y,
                   ymax = y + iscale*scale*height,
                   min_height = hmax*rel_min_height)
 
+        return(data)
+
       }
       data
-
     } else {
       # not density plots
       data
