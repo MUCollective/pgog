@@ -185,3 +185,9 @@ ggplot(mtcars) +
   coord_fixed()
 ```
 
+## dotplots
+
+```{r}
+
+```
+
