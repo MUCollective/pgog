@@ -593,8 +593,13 @@ ggplot(mtcars, aes(x = mpg)) + geom_density(adjust = 1/2)
 ggplot(mtcars, aes(x = cyl)) + 
   geom_density(position = "stack")
 
-ggplot(mtcars, aes(x = mpg, fill = factor(cyl))) + 
-  geom_density(position = "stack")
+ggplot(mtcars) + 
+  geom_density(aes(
+  x = mpg, 
+  fill = factor(cyl)),
+  position = "stack") +
+  theme_minimal() + 
+  scale_fill_brewer(palette = "Accent")
 
 
 ggplot(mtcars, aes(x = mpg, fill = factor(cyl))) + 
@@ -606,8 +611,10 @@ ggplot(mtcars, aes(x = mpg, fill = factor(cyl))) +
 # count = density * n
 # the one with correct marginal distribution
 
-ggplot(mtcars, aes(x = hp, y = stat(density * n), fill = factor(cyl))) + 
-  geom_density(position = "stack")
+ggplot(mtcars, aes(x = mpg, y = stat(density * n), fill = factor(cyl))) + 
+  geom_density(position = "stack") + 
+  theme_minimal() + 
+  scale_fill_brewer(palette = "Accent")
 
 # conditional
 ggplot(mtcars, aes(x = mpg, y = stat(density * n), fill = factor(cyl))) + 

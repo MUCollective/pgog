@@ -127,7 +127,8 @@ ggplot(mtcars) + geom_bloc(aes(x = c(mpg, gear), height = c(P(cyl | gear,mpg))))
 ### P(B,A,...)
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(x = c(hp), height = c(P(cyl|hp), P(hp)), color = factor(cyl)))
+ggplot(mtcars) + geom_bloc(aes(x = c(mpg), height = c(P(cyl|mpg), P(mpg)), fill = factor(cyl))) +   scale_fill_brewer(palette = "Accent") + theme_minimal()
+
 ```
 
 ```{r}
@@ -150,7 +151,7 @@ ggplot(mtcars) + geom_icon(aes(height = c(P(cyl|gear)), x = c(gear)), stat = "ic
 ```
 
 ```{r}
-ggplot(mtcars) + geom_icon(aes(height = c(P(cyl|gear, vs), P(gear|vs)), x = c(gear, vs)), stat = "icon") +
+ggplot(mtcars) + geom_icon(aes(height = c(P(cyl|gear), P(gear)), x = c(gear, vs)), stat = "icon") +
   coord_fixed()
 ```
 
@@ -188,6 +189,7 @@ ggplot(mtcars) +
 ## dotplots
 
 ```{r}
-
+ggplot(mtcars) + 
+  geom_icon(aes(height = c(P(cyl))))
 ```
 
