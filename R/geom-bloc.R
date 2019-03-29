@@ -56,7 +56,7 @@ geom_bloc <- function(mapping = NULL, data = NULL,
   # ACHTUNG: but geom doesn't have data values yet
 
   # position = "fill"
-  position = "stack"
+  # position = "stack"
 
   ggplot2::layer(
     data = data,
@@ -167,7 +167,8 @@ GeomBloc <- ggplot2::ggproto(
       data
     } else {
       # not density plots
-      data
+      # productplots, etc. only want top level rectangles
+      subset(data, level==max(data$level))
     }
   },
 
@@ -215,8 +216,8 @@ GeomBloc <- ggplot2::ggproto(
           lty = aes$linetype)
       ))
     } else {
-      # stop("not implemented yet")
       # GeomRect$draw_panel(subset(data, level==max(data$level)), panel_params, coord)
+      # mosaic plots/product plots
       if (!coord$is_linear()) {
         aesthetics <- setdiff(
           names(data), c("x", "y", "xmin", "xmax", "ymin", "ymax")

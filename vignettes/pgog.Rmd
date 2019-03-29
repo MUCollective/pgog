@@ -46,7 +46,7 @@ ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl|gear, carb)), x = c(gear), y=c(c
 ```
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(height = c(P(gear|carb), P(cyl|gear, carb)), x = c(gear, carb)))
+ggplot(mtcars) + geom_bloc(aes(height = c(P(gear|am), P(cyl|gear, am)), x = c(gear), y = c(am)))
 ```
 
 
