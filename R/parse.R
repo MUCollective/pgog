@@ -161,7 +161,6 @@ complete_conditionals <- function(prob_mtx){
 #'
 mtx_check <- function(m){
 
-  legit <- TRUE
 
   for (i in seq_len(nrow(m))){
     cond <- m[i, 2][[1]]
@@ -170,10 +169,12 @@ mtx_check <- function(m){
     if (i < nrow(m)){
       next_cond <- m[i + 1, 2][[1]]
       combi <- c(cond, marg)
-      legit <- setequal(next_cond, combi)
+      if (!setequal(next_cond, combi)){
+        return(FALSE)
+      }
     }
   }
-  legit
+  TRUE
 }
 
 
