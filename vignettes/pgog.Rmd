@@ -75,7 +75,9 @@ ggplot(mtcars) + geom_bloc(aes(x = c(mpg, cyl), height = c(P(mpg | cyl)), colour
   height <- P(A|B)
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(x = c(mpg), height = c(P(mpg | cyl)), color = factor(cyl)))
+ggplot(mtcars) + geom_bloc(aes(x = c(mpg), height = c(P(mpg | cyl)),fill = factor(cyl)))  + 
+  scale_fill_brewer(palette = "Accent") + theme_minimal()
+
 ```
 
 
@@ -127,7 +129,8 @@ ggplot(mtcars) + geom_bloc(aes(x = c(mpg, gear), height = c(P(cyl | gear,mpg))))
 ### P(B,A,...)
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(x = c(mpg), height = c(P(cyl|mpg), P(mpg)), fill = factor(cyl))) +   scale_fill_brewer(palette = "Accent") + theme_minimal()
+ggplot(mtcars) + geom_bloc(aes(x = c(mpg), height = c(P(cyl|mpg), P(mpg)), fill = factor(cyl))) +   
+  scale_fill_brewer(palette = "Accent") + theme_minimal()
 
 ```
 
@@ -147,7 +150,9 @@ TODO: more conds
 Using `geom_bloc` first to get the base partition right
 
 ```{r}
-ggplot(mtcars) + geom_icon(aes(height = c(P(cyl|gear)), x = c(gear)), stat = "icon")
+ggplot(mtcars) + geom_icon(aes(height = c(P(cyl|gear)), x = c(gear), fill = c(factor(cyl))), stat = "icon") +
+  scale_fill_brewer(palette = "Accent") +
+  theme_minimal() 
 ```
 
 ```{r}
@@ -156,7 +161,10 @@ ggplot(mtcars) + geom_icon(aes(height = c(P(cyl|gear), P(gear)), x = c(gear, vs)
 ```
 
 ```{r}
-ggplot(mtcars) + geom_icon(aes(height = c(P(cyl|carb)), y=c(carb)), stat = "icon")
+ggplot(mtcars) + geom_icon(aes(height = c(P(cyl|carb)), y=c(carb)), stat = "icon") +
+  # scale_fill_brewer(palette = "Accent") + 
+  # theme_minimal() + 
+  NULL
 ```
 
 
