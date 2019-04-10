@@ -102,7 +102,7 @@ GeomBloc <- ggplot2::ggproto(
 
   default_aes = ggplot2::aes(
     colour = NA, fill = "white", size = 0.5,
-    linetype = 1, alpha = 1, rel_min_height = 0, scale = 1.8
+    linetype = 1, alpha = 0.5, rel_min_height = 0, scale = 1.8
   ),
 
   # from ggplot, geom-ribbon.r
