@@ -56,7 +56,7 @@ geom_bloc <- function(mapping = NULL, data = NULL,
   # ACHTUNG: but geom doesn't have data values yet
 
   # position = "fill"
-  # position = "stack"
+  position = "stack"
 
   ggplot2::layer(
     data = data,
@@ -101,8 +101,8 @@ GeomBloc <- ggplot2::ggproto(
   #                            linewidth=.1, weight = 1, x = NULL, y = NULL, conds = NULL),
 
   default_aes = ggplot2::aes(
-    colour = NA, fill = "white", size = 0.5,
-    linetype = 1, alpha = 0.5, rel_min_height = 0, scale = 1.8
+    colour = NA, fill = "white", size = 0.5,stroke = 0.1, linewidth = .1, weight = 1,
+    linetype = 1, alpha = 1, rel_min_height = 0, scale = 1.8
   ),
 
   # from ggplot, geom-ribbon.r

@@ -258,6 +258,12 @@ Using mapping:
 
 ## 1 ~ X
 
+
+```{r}
+ggplot(mtcars) +
+  geom_mosaic(aes(x = product(cyl, am)), divider = c("vspine", "hspine"))
+```
+
 ```{r}
 ggplot(happy) +
   geom_mosaic(aes(x = product(marital), fill = happy), na.rm = TRUE) +
@@ -548,10 +554,8 @@ Try it on the cancer dataset
 
 
 ```{r}
-cancer %>%
-  ggplot(aes(x = test)) +
-  geom_dotplot(binwidth = 1) + 
-  xlim(-50, 50)
+ggplot(mtcars, aes(x = mpg, fill = factor(cyl))) +
+  geom_dotplot(stackgroups = TRUE, binwidth = 1), method = "histodot")
 ```
 
 
@@ -598,9 +602,12 @@ ggplot(mtcars) +
   x = mpg, 
   fill = factor(cyl)),
   position = "stack") +
-  theme_minimal() + 
+  # theme_minimal() + 
+  # scale_fill_brewer(palette = "Accent")
+  theme_bw() + 
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) + 
   scale_fill_brewer(palette = "Accent")
-
 
 ggplot(mtcars, aes(x = mpg, fill = factor(cyl))) + 
   geom_density()
@@ -620,3 +627,64 @@ ggplot(mtcars, aes(x = mpg, y = stat(density * n), fill = factor(cyl))) +
 ggplot(mtcars, aes(x = mpg, y = stat(density * n), fill = factor(cyl))) + 
   geom_density(position = "fill")
 ```
+
+# Onion plot?
+
+```{r}
+# fake data to create an onion
+
+a <- c(1,3,4,5,6,7,7,8,10,10)
+b <- rnorm(n = 10, mean = 5, sd = 2)
+c <- rnorm(n = 10, mean = 5, sd = 3)
+
+df <- data.frame(a,b,c) %>%
+  gather(cyl, mpg)
+
+```
+
+
+
+```{r}
+ggplot(df) + 
+  geom_density(aes(
+  x = mpg, 
+  fill = factor(cyl)),
+  position = "stack") +
+  theme_bw() + 
+  theme(panel.border = element_blank(), 
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), 
+        axis.line = element_line(colour = "black")) + 
+  scale_fill_brewer(palette = "Accent")
+```
+
+```{r}
+ggplot(mapping = aes(x = mpg)) + 
+  geom_density(data = filter(df, cyl == "a"))  + 
+  geom_density(data = filter(df, cyl == "b")) + 
+  geom_density(data = filter(df, cyl == "c"))
+```
+```{r}
+ggplot(df) +
+  geom_density_ridges(aes(x = mpg, y = cyl))
+```
+
+```{r}
+ggplot(df) + 
+  geom_violin(aes(x = cyl, y = mpg), bw = 1)
+```
+```{r}
+ggplot(tail(mtcars)) + geom_point(aes(x = hp, y =mpg, size = 8)) + theme_classic()
+```
+```{r}
+ggplot(tail(mtcars)) + geom_point(aes(x = hp, y =mpg, size = 8, color = factor(cyl), shape = "9")) + theme_classic()
+
+```
+```{r}
+ggplot(mtcars) + 
+  geom_bar(aes(x = cyl, y = stat(prop), fill = factor(am)), position = "stack")
+
+ggplot(mtcars) + 
+  geom_bar(aes(x = cyl, y = stat(prop), fill = factor(am)))
+```
+
