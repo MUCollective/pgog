@@ -688,3 +688,8 @@ ggplot(mtcars) +
   geom_bar(aes(x = cyl, y = stat(prop), fill = factor(am)))
 ```
 
+```{r}
+ggplot(mtcars) + 
+  geom_mosaic(aes(x=product(cyl, gear), conds=product(am)), divider = c("vspine", "hbar", "vbar"))
+```
+
