@@ -56,7 +56,7 @@ geom_bloc <- function(mapping = NULL, data = NULL,
   # ACHTUNG: but geom doesn't have data values yet
 
   # position = "fill"
-  position = "stack"
+  # position = "stack"
 
   ggplot2::layer(
     data = data,

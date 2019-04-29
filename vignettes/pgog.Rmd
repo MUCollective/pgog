@@ -201,3 +201,11 @@ ggplot(mtcars) +
   geom_icon(aes(height = c(P(cyl))))
 ```
 
+
+# pew example
+
+```{r}
+ggplot(mtcars) + 
+  geom_bloc(aes(y = c(cyl), x = c(am), width = c(P(cyl|am))))
+```
+
