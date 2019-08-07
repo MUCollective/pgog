@@ -1,0 +1,73 @@
+# what about continuous vars
+# [?] assumption: categorical_vars are from well-formed probabilities
+#   -> define supported P(A), P(A, B), P(A|B, ...)
+# how to differentiate A, B, Cs that are from different probabilities
+# how about the parsing level/chain diagram
+# how to say the set of categorical_var is the same as those vars in probabilities
+# https://en.wikipedia.org/wiki/Comparison_of_parser_generators
+
+
+# ========== variables ==========
+null = "null";
+# can have as many categorical variables as you like
+categorical_var = "A"..."D";
+# can only have zero or one continuous variable
+continuous_var = null | "X";
+
+# categorical_vars = categorical_var
+#                     | categorical_var categorical_vars;
+
+# ========== probability distribution ==========
+
+
+
+coord_vars = categorical_vars;
+visual_vars = categorical_vars;
+
+# ========== aesthetics ==========
+coord_aes = "x" | "y";
+visual_aes = "fill"|"color"|"alpha"|"density";
+oneD_recur_prob_aes = "height" | "width";
+oneD_nonrecur_prob_aes = "fill" | "color" | "alpha" | "density";
+
+
+# is this correct
+coord_mapping = coord_aes categorical_vars
+                  | "x" categorical_vars "y" categorical_vars;
+
+# oneD_prob_variable = "P(A)";
+
+oneD_prob_variable = first_bit | first_bit last_bit;
+first_bit = categorical_var | categorical_var categorical_var | continuous_var;
+
+# say the coord & visual aes variables are the same as what prob vars contain?
+# TODO: BNF prob doesn't do this???
+last_bit = coord_vars + visual_vars;
+
+
+
+
+oneD_recur_prob_mapping = oneD_recur_prob_aes
+                            oneD_prob_variable;
+oneD_base_prob_mapping = oneD_recur_prob_aes
+                                oneD_prob_variable
+                              | oneD_nonrecur_prob_aes
+                                oneD_prob_variable;
+
+oneD_bunch_prob_mapping = oneD_recur_prob_mapping
+                          | oneD_recur_prob_mapping
+                           oneD_bunch_prob_mapping;
+
+prob_mapping = oneD_base_prob_mapping
+                 | oneD_base_prob_mapping
+                   oneD_bunch_prob_mapping;
+
+data_mapping = prob_mapping
+                 | prob_mapping coord_mapping;
+
+visual_mapping = visual_aes categorical_var
+                   | visual_aes categorical_var
+                     visual_mapping;
+
+mapping = data_mapping
+            | data_mapping visual_mapping;
