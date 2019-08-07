@@ -12,55 +12,76 @@ null = "null";
 # can have as many categorical variables as you like
 categorical_var = "A"..."D";
 # can only have zero or one continuous variable
-continuous_var = null | "X";
+continuous_var = "X";
 
 # categorical_vars = categorical_var
 #                     | categorical_var categorical_vars;
 
 # ========== probability distribution ==========
+prob_var_base = head cond;
+# only one marginal is allowed for the moment
+head = categorical_var | continuous_var;
+# can have zero or more coord vars, but zero or more visual vars still? or >=1?
+# cond can also be null
+cond = coord_vars visual_vars;
+
+# the "chain"
+new_head = coord_var | visual_var;
+new_cond = head cond | new_head new_cond;
+prob_var_recur = new_head new_cond;
 
 
+# variables mapped onto x, y, fill, or other aesthetics
 
-coord_vars = categorical_vars;
-visual_vars = categorical_vars;
+coord_vars = {cond_var};
+visual_vars = {visual_var};
+
+cond_var = categorical_var;
+visual_var = categorical_var;
+
 
 # ========== aesthetics ==========
 coord_aes = "x" | "y";
 visual_aes = "fill"|"color"|"alpha"|"density";
-oneD_recur_prob_aes = "height" | "width";
-oneD_nonrecur_prob_aes = "fill" | "color" | "alpha" | "density";
+recur_prob_aes = "height" | "width";
+nonrecur_prob_aes = "fill" | "color" | "alpha" | "density";
+
+
+# ========== mappings ==========
+
+coord_mappings = {coord_aes coord_var};
+# but this might create multiple "fill = A"? (not unique?)
+visual_mappings = {visual_aes visual_var};
 
 
 # is this correct
-coord_mapping = coord_aes categorical_vars
-                  | "x" categorical_vars "y" categorical_vars;
+# coord_mapping = coord_aes categorical_vars
+                  # | "x" categorical_vars "y" categorical_vars;
 
-# oneD_prob_variable = "P(A)";
+# prob_variable = "P(A)";
 
-oneD_prob_variable = first_bit | first_bit last_bit;
-first_bit = categorical_var | categorical_var categorical_var | continuous_var;
+# prob_variable = first_bit | first_bit last_bit;
+# first_bit = categorical_var | categorical_var categorical_var | continuous_var;
 
 # say the coord & visual aes variables are the same as what prob vars contain?
 # TODO: BNF prob doesn't do this???
-last_bit = coord_vars + visual_vars;
+# last_bit = coord_vars + visual_vars;
 
 
 
 
-oneD_recur_prob_mapping = oneD_recur_prob_aes
-                            oneD_prob_variable;
-oneD_base_prob_mapping = oneD_recur_prob_aes
-                                oneD_prob_variable
-                              | oneD_nonrecur_prob_aes
-                                oneD_prob_variable;
+recur_prob_mapping = recur_prob_aes prob_variable;
+base_prob_mapping = recur_prob_aes prob_variable
+                              | nonrecur_prob_aes
+                                prob_variable;
 
-oneD_bunch_prob_mapping = oneD_recur_prob_mapping
-                          | oneD_recur_prob_mapping
-                           oneD_bunch_prob_mapping;
+bunch_prob_mapping = recur_prob_mapping
+                          | recur_prob_mapping
+                           bunch_prob_mapping;
 
-prob_mapping = oneD_base_prob_mapping
-                 | oneD_base_prob_mapping
-                   oneD_bunch_prob_mapping;
+prob_mapping = base_prob_mapping
+                 | base_prob_mapping
+                   bunch_prob_mapping;
 
 data_mapping = prob_mapping
                  | prob_mapping coord_mapping;
