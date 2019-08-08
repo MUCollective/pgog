@@ -1,12 +1,12 @@
 # ========== variables ==========
-# just variable names
+# example of variable names in dataset
 categorical_var = "A".."Z";
 # can have at most 1 continuous variable
 continuous_var = "x";
 
-# ========== probability distribution ==========
+# === probability distribution ===
 prob_var = marg cond;
-# base_prob_var is the one with the longest conditional
+# the prob_var with the longest conditional
 base_prob_var = head cond;
 
 head = categorical_var | continuous_var;
