@@ -1,0 +1,34 @@
+# ========== variables ==========
+# just variable names
+categorical_var = "A".."Z";
+# can have at most 1 continuous variable
+continuous_var = "x";
+
+# ========== probability distribution ==========
+prob_var = marg cond;
+# base_prob_var is the one with the longest conditional
+base_prob_var = head cond;
+
+head = categorical_var | continuous_var;
+marg = categorical_var;
+cond = coord_vars visual_vars;
+
+coord_vars = {categorical_var};
+visual_vars = {categorical_var};
+
+
+# ========== aesthetics ==========
+coord_aes = "x" | "y";
+visual_aes = "fill" | "color" | "alpha";
+prob_aes = "height" | "width";
+base_prob_aes = "fill" | "color" | "alpha";
+
+# ========== mappings ==========
+coord_mappings = {coord_aes coord_var};
+visual_mappings = {visual_aes visual_var};
+
+prob_mapping = prob_aes prob_var;
+base_prob_mapping = (base_prob_aes | prob_aes) base_prob_var;
+prob_mappings = {prob_mapping} base_prob_mapping;
+
+mappings = prob_mappings coord_mappings visual_mappings;
