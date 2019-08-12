@@ -16,7 +16,6 @@ cond = coord_vars visual_vars;
 coord_vars = {categorical_var};
 visual_vars = {categorical_var};
 
-
 # ========== aesthetics ==========
 coord_aes = "x" | "y";
 visual_aes = "fill" | "color" | "alpha";
@@ -24,8 +23,8 @@ prob_aes = "height" | "width";
 base_prob_aes = "fill" | "color" | "alpha";
 
 # ========== mappings ==========
-coord_mappings = {coord_aes coord_var};
-visual_mappings = {visual_aes visual_var};
+coord_mappings = {coord_aes coord_var} [coord_aes head]; # TODO: is this true
+visual_mappings = {visual_aes visual_var} [coord_aes head];
 
 prob_mapping = prob_aes prob_var;
 base_prob_mapping = (base_prob_aes | prob_aes) base_prob_var;
