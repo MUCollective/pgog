@@ -312,11 +312,17 @@ StatBloc <- ggplot2::ggproto(
 
       # calculate a single bandwidth for all groups
 
-      group_bw <- data %>%
-        pull(!!cont_var) %>%
-        bw.nrd0()
+      if (is_string(bw)){
+        group_bw <- data %>%
+          pull(!!cont_var) %>%
+          bw.nrd0()
+      } else {
+        group_bw <- bw
+      }
 
-      group_bw <- group_bw / length(unique(data[, group_var]))
+
+      if (! is.null(group_var))
+        group_bw <- group_bw #/ length(unique(data[, group_var]))
 
 
       # browser()

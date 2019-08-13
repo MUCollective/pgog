@@ -20,7 +20,36 @@ knitr::opts_chunk$set(
 library(tidyverse)
 ```
 
+```{r}
 
+custom_theme <- theme_minimal() + 
+  theme(axis.title.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.text.y = element_blank(),
+        panel.grid = element_blank(),
+        axis.ticks = element_line()
+  )
+theme_set(custom_theme)
+
+colorbrewer2 <- rev(c(
+  "#f7fcf0",
+  "#e0f3db",
+  "#ccebc5",
+  "#a8ddb5",
+  "#7bccc4",
+  "#4eb3d3",
+  "#2b8cbe",
+  "#0868ac",
+  "#084081"))
+
+names(colorbrewer2) <- 1:length(colorbrewer2)
+
+
+# https://stackoverflow.com/questions/10504724/change-the-default-colour-palette-in-ggplot
+scale_aesthetic_discrete <- function(...) scale_fill_manual(values = colorbrewer2)
+
+scale_colour_discrete <- function(...) scale_colour_manual(values = colorbrewer2)
+```
 
 
 # geom_bloc
@@ -121,9 +150,10 @@ ggplot(mtcars) + geom_bloc(aes(x = c(mpg,gear), y = c(cyl), height = c(P(mpg | g
 
 ### P(B|A, ...)
 
+TODO: position needs to be "fill"
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(x = c(mpg), height = c(P(cyl | mpg)), color = factor(cyl)), position = "fill")
+ggplot(mtcars) + geom_bloc(aes(x = c(mpg), height = c(P(cyl | mpg)), fill = factor(cyl)))
 ```
 
 ```{r}
@@ -134,12 +164,24 @@ ggplot(mtcars) + geom_bloc(aes(x = c(mpg, gear), height = c(P(cyl | gear,mpg))))
 ### P(B,A,...)
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(
+p_correct <- ggplot(mtcars) + 
+    geom_bloc(aes(
     x = c(mpg), 
     height = c(P(cyl|mpg), P(mpg)), 
-    fill = factor(cyl))) +   
-  scale_fill_brewer(palette = "Accent") + theme_minimal()
+    fill = factor(cyl)))
 
+p_half_correct <- 
+  ggplot(mtcars) + 
+  geom_density(aes(
+    x = mpg,
+    y = stat(density * n),
+    fill = factor(cyl),
+    color = factor(cyl)),
+    position = "stack") 
+
+p <- ggplot(mtcars) +  geom_bloc(aes(x = c(mpg), height = c(P(mpg))))
+
+grid.arrange(p, p_half_correct, p_correct, nrow = 1)
 ```
 
 ```{r}
