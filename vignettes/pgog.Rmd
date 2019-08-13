@@ -48,6 +48,7 @@ names(colorbrewer2) <- 1:length(colorbrewer2)
 # https://stackoverflow.com/questions/10504724/change-the-default-colour-palette-in-ggplot
 scale_aesthetic_discrete <- function(...) scale_fill_manual(values = colorbrewer2)
 
+# to our great dismay scale_color_* doesn't work
 scale_colour_discrete <- function(...) scale_colour_manual(values = colorbrewer2)
 ```
 
@@ -163,12 +164,16 @@ ggplot(mtcars) + geom_bloc(aes(x = c(mpg, gear), height = c(P(cyl | gear,mpg))))
 
 ### P(B,A,...)
 
+The nice thing about `geom_density` is that there is no way to pick a bandwidth automatically and apply the same bandwidth to all groups/conditionals
+
+
 ```{r}
 p_correct <- ggplot(mtcars) + 
     geom_bloc(aes(
     x = c(mpg), 
     height = c(P(cyl|mpg), P(mpg)), 
-    fill = factor(cyl)))
+    fill = factor(cyl)) # bw = 10, etc
+    )
 
 p_half_correct <- 
   ggplot(mtcars) + 
@@ -176,7 +181,7 @@ p_half_correct <-
     x = mpg,
     y = stat(density * n),
     fill = factor(cyl),
-    color = factor(cyl)),
+    color = factor(cyl)), # bw = 2.4 fixes this
     position = "stack") 
 
 p <- ggplot(mtcars) +  geom_bloc(aes(x = c(mpg), height = c(P(mpg))))
