@@ -3,10 +3,12 @@ title: "Vignette Title"
 author: "Vignette Author"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
+editor_options:
+  chunk_output_type: console
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
 ---
 
 ```{r setup, include = FALSE}
@@ -132,7 +134,10 @@ ggplot(mtcars) + geom_bloc(aes(x = c(mpg, gear), height = c(P(cyl | gear,mpg))))
 ### P(B,A,...)
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(x = c(mpg), height = c(P(cyl|mpg), P(mpg)), fill = factor(cyl))) +   
+ggplot(mtcars) + geom_bloc(aes(
+    x = c(mpg), 
+    height = c(P(cyl|mpg), P(mpg)), 
+    fill = factor(cyl))) +   
   scale_fill_brewer(palette = "Accent") + theme_minimal()
 
 ```
@@ -143,7 +148,7 @@ ggplot(mtcars) + geom_density(aes(x =hp))
 
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(x = c(hp, gear), height = c(P(cyl|hp, gear), P(hp|gear))))
+ggplot(mtcars) + geom_bloc(aes(x = c(hp, gear), fill = factor(cyl), height = c(P(cyl|hp, gear), P(hp|gear))))
 ```
 
 TODO: more conds

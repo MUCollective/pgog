@@ -309,6 +309,18 @@ StatBloc <- ggplot2::ggproto(
       base_layout %<>%
         mutate(x_rank = dense_rank(l), y_rank = dense_rank(b))
 
+
+      # calculate a single bandwidth for all groups
+
+      group_bw <- data %>%
+        pull(!!cont_var) %>%
+        bw.nrd0()
+
+      group_bw <- group_bw / length(unique(data[, group_var]))
+
+
+      # browser()
+
       pieces <- as.list(dlply(data,group_var))
 
       # if (group_var %in% names(base_layout)){
@@ -333,7 +345,7 @@ StatBloc <- ggplot2::ggproto(
         res <- compute_density(c(t(select(piece, cont_var))), NULL,
                                from = range[1],
                                to = range[2],
-                               bw = bw,
+                               bw = group_bw,
                                adjust = adjust,
                                kernel = kernel,
                                n=n)
