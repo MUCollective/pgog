@@ -75,7 +75,10 @@ ggplot(mtcars) + geom_bloc(aes(x = c(mpg, cyl), height = c(P(mpg | cyl)), colour
   height <- P(A|B)
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(x = c(mpg), height = c(P(mpg | cyl)),fill = factor(cyl)))  + 
+ggplot(mtcars) + geom_bloc(aes(
+    x = c(mpg), 
+   height = c(P(mpg | cyl)), 
+   fill = factor(cyl)))  + 
   scale_fill_brewer(palette = "Accent") + theme_minimal()
 
 ```
