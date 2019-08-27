@@ -316,11 +316,12 @@ StatBloc <- ggplot2::ggproto(
         group_bw <- data %>%
           pull(!!cont_var) %>%
           bw.nrd0()
-      } else {
+      } else { # if bw is a set number
         group_bw <- bw
       }
 
 
+      # unnecessary
       if (! is.null(group_var))
         group_bw <- group_bw #/ length(unique(data[, group_var]))
 
