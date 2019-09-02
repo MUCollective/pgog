@@ -84,6 +84,22 @@ ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl|gear, carb)), x = c(gear, carb))
 ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl|gear, carb)), x = c(gear), y=c(carb)))
 ```
 
+
+That chain example
+
+P(cyl, gear|am)
+
+```{r}
+prodplot(mtcars, ~ cyl + gear | am,  c("vspine", "vspine", "hbar")) + aes(fill=cyl)
+ggsave("../figures/chain_cyl_gear_am.pdf", width = 2, height = 2)
+```
+
+```{r}
+ggplot(mtcars) + geom_bloc(aes(height = c(P(gear|am), P(cyl|gear, am)), 
+                               x = c(am)))
+
+```
+
 ```{r}
 ggplot(mtcars) + geom_bloc(aes(height = c(P(gear|am), P(cyl|gear, am)), x = c(gear), y = c(am)))
 ```
@@ -209,7 +225,7 @@ p <- ggplot(mtcars) +
 
 alles<-grid.arrange(p,p_incorrect, p_correct, nrow = 1)
 scaling <- 1.5
-ggsave("../figures/density_new_raw.pdf", plot = alles, width = 4.6 * scaling, height = 1.3 * scaling)
+# ggsave("../figures/density_new_raw.pdf", plot = alles, width = 4.6 * scaling, height = 1.3 * scaling)
 ```
 
 
@@ -217,9 +233,43 @@ ggsave("../figures/density_new_raw.pdf", plot = alles, width = 4.6 * scaling, he
 
 ```{r}
 mtcars %>%
-  ggplot(aes(x = mpg, y=stat(density), fill = factor(cyl), color = NA)) + 
+  ggplot(aes(x = mpg, y=stat(density), fill = factor(cyl), color = NA, alpha = 0.5)) + 
     geom_density(bw = common_bw)
 
+#ggsave("../figures/density_separate_raw.pdf", width = 7, height = 4)
+
+
+```
+
+Violating the The Principle of Visual-Data Correspondence:
+
+if we remove _half_ of the 8-cylinder cars ($D \rightarrow D$), the plot looks almost the same --- the region for 8-cylinder in fact remains to be 1/3 of the total density area.
+
+```{r}
+subset_incorrect <- mtcars %>%
+  group_by(cyl) %>%
+  filter((cyl == 8) & row_number() %% 2 ==0 | cyl != 8) %>%
+  ggplot(aes(x = mpg, y=stat(density), fill = factor(cyl), color = NA)) + 
+  geom_density(bw = common_bw, position = "stack") + 
+  labs(title = "Half of 8-cylinder data removed")
+
+p_incorrect <- p_incorrect + labs(title = "All data")
+
+
+subset_correct <- mtcars %>%
+  group_by(cyl) %>%
+  filter((cyl == 8) & row_number() %% 2 ==0 | cyl != 8) %>%
+  ggplot() + 
+ geom_bloc(aes(
+    x = c(mpg), 
+    height = c(P(cyl|mpg), P(mpg)), 
+    fill = factor(cyl)), bw = common_bw) +
+  xlab("mpg")
+  
+
+explanation <- grid.arrange(p_incorrect, subset_incorrect, p_correct, subset_correct, nrow = 2)
+
+ggsave("../figures/density_explanation.pdf",plot = explanation, width = 7, height = 4)
 
 ```
 
