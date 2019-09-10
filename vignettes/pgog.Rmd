@@ -368,3 +368,19 @@ ggplot(mtcars) +
   geom_bloc(aes(y = c(cyl), x = c(am), width = c(P(cyl|am))))
 ```
 
+## Using base ggplot
+
+Assuming x = am = race
+y = cyl = generation
+
+```{r}
+mtcars %>%
+  group_by(cyl,am) %>%
+  summarize(count.cyl = n()) %>%
+  mutate( prop.cyl = count.cyl/sum(count.cyl)) %>%
+  ggplot(aes(x = factor(cyl), y = prop.cyl)) + 
+  geom_col() + 
+  coord_flip() +
+  facet_grid(.~am)
+```
+
