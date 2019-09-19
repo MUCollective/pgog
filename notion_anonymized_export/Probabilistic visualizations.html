@@ -1,0 +1,565 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Probabilistic visualizations</title><style>
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	text-indent: -1.7em;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	opacity: 0.5;
+}
+
+.sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, KaiTi, STKaiTi, '华文楷体', KaiTi_GB2312, '楷体_GB2312', serif; }
+.mono { font-family: Nitti, 'Microsoft YaHei', '微软雅黑', monospace; }
+.pdf .sans { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .code { font-family: Source Code Pro, 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, KaiTi, STKaiTi, '华文楷体', KaiTi_GB2312, '楷体_GB2312', serif, 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .mono { font-family: PT Mono, Nitti, 'Microsoft YaHei', '微软雅黑', monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.highlight-default {
+}
+.highlight-gray {
+	color: rgb(155,154,151);
+}
+.highlight-brown {
+	color: rgb(100,71,58);
+}
+.highlight-orange {
+	color: rgb(217,115,13);
+}
+.highlight-yellow {
+	color: rgb(223,171,1);
+}
+.highlight-teal {
+	color: rgb(15,123,108);
+}
+.highlight-blue {
+	color: rgb(11,110,153);
+}
+.highlight-purple {
+	color: rgb(105,64,165);
+}
+.highlight-pink {
+	color: rgb(173,26,114);
+}
+.highlight-red {
+	color: rgb(224,62,62);
+}
+.highlight-gray_background {
+	background: rgb(235,236,237);
+}
+.highlight-brown_background {
+	background: rgb(233,229,227);
+}
+.highlight-orange_background {
+	background: rgb(250,235,221);
+}
+.highlight-yellow_background {
+	background: rgb(251,243,219);
+}
+.highlight-teal_background {
+	background: rgb(221,237,234);
+}
+.highlight-blue_background {
+	background: rgb(221,235,241);
+}
+.highlight-purple_background {
+	background: rgb(234,228,242);
+}
+.highlight-pink_background {
+	background: rgb(244,223,235);
+}
+.highlight-red_background {
+	background: rgb(251,228,228);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(55, 53, 47, 0.6);
+	fill: rgba(55, 53, 47, 0.6);
+}
+.block-color-brown {
+	color: rgb(100,71,58);
+	fill: rgb(100,71,58);
+}
+.block-color-orange {
+	color: rgb(217,115,13);
+	fill: rgb(217,115,13);
+}
+.block-color-yellow {
+	color: rgb(223,171,1);
+	fill: rgb(223,171,1);
+}
+.block-color-teal {
+	color: rgb(15,123,108);
+	fill: rgb(15,123,108);
+}
+.block-color-blue {
+	color: rgb(11,110,153);
+	fill: rgb(11,110,153);
+}
+.block-color-purple {
+	color: rgb(105,64,165);
+	fill: rgb(105,64,165);
+}
+.block-color-pink {
+	color: rgb(173,26,114);
+	fill: rgb(173,26,114);
+}
+.block-color-red {
+	color: rgb(224,62,62);
+	fill: rgb(224,62,62);
+}
+.block-color-gray_background {
+	background: rgb(235,236,237);
+}
+.block-color-brown_background {
+	background: rgb(233,229,227);
+}
+.block-color-orange_background {
+	background: rgb(250,235,221);
+}
+.block-color-yellow_background {
+	background: rgb(251,243,219);
+}
+.block-color-teal_background {
+	background: rgb(221,237,234);
+}
+.block-color-blue_background {
+	background: rgb(221,235,241);
+}
+.block-color-purple_background {
+	background: rgb(234,228,242);
+}
+.block-color-pink_background {
+	background: rgb(244,223,235);
+}
+.block-color-red_background {
+	background: rgb(251,228,228);
+}
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="0c7c890e-e6e4-4ac3-886b-28842c515df2" class="page sans"><header><img class="page-cover-image" src="https://www.notion.so/images/page-cover/nasa_ibm_type_704.jpg" style="object-position:center 35.47%"/><div class="page-header-icon page-header-icon-with-cover"><span class="icon">👩‍🎨</span></div><h1 class="page-title">Probabilistic visualizations</h1></header><div class="page-body"><table class="collection-content"><thead><tr><th>Name</th><th>Coverage</th><th>Created</th><th>Tags</th><th>link</th></tr></thead><tbody><tr id="5757005a-ef8e-4485-97b2-ad5b19607b5f"><td class="cell-title"><a href="Probabilistic visualizations/Treemap bars.html">Treemap bars</a></td><td class="cell-njA@"><span class="selected-value">Special layout</span></td><td class="cell-(O&amp;&lt;"><time>@May 05, 2019 5:05 AM</time></td><td class="cell-w;lA"></td><td class="cell-[8aR"><a href="http://scs.tju.edu.cn/~jwzhang/papers/iv09.pdf" class="url-value">http://scs.tju.edu.cn/~jwzhang/papers/iv09.pdf</a></td></tr><tr id="5784eb0f-d0a0-4b8c-bf2b-6093ea6f7f53"><td class="cell-title"><a href="Probabilistic visualizations/Pictograph Icon array.html">Pictograph/Icon array</a></td><td class="cell-njA@"><span class="selected-value">Reproducible</span></td><td class="cell-(O&amp;&lt;"><time>@Nov 08, 2018 4:04 PM</time></td><td class="cell-w;lA"><span class="selected-value">chart-type</span><span class="selected-value">icon</span><span class="selected-value">paper</span><span class="selected-value">uncertainty</span></td><td class="cell-[8aR"></td></tr><tr id="9c1e5b47-4dab-4a8a-8d96-3dbcb9e03b07"><td class="cell-title"><a href="Probabilistic visualizations/Measles outbreak.html">Measles outbreak</a></td><td class="cell-njA@"><span class="selected-value">Special layout</span></td><td class="cell-(O&amp;&lt;"><time>@Nov 08, 2018 4:04 PM</time></td><td class="cell-w;lA"><span class="selected-value">icon</span><span class="selected-value">press</span><span class="selected-value">uncertainty</span></td><td class="cell-[8aR"><a href="https://www.theguardian.com/society/ng-interactive/2015/feb/05/-sp-watch-how-measles-outbreak-spreads-when-kids-get-vaccinated" class="url-value">https://www.theguardian.com/society/ng-interactive/2015/feb/05/-sp-watch-how-measles-outbreak-spreads-when-kids-get-vaccinated</a></td></tr><tr id="62abe8c3-5a4a-44e0-b881-04834cc3daf8"><td class="cell-title"><a href="Probabilistic visualizations/Risk theatre.html">Risk theatre</a></td><td class="cell-njA@"><span class="selected-value">Special layout</span></td><td class="cell-(O&amp;&lt;"><time>@Nov 08, 2018 4:04 PM</time></td><td class="cell-w;lA"><span class="selected-value">icon</span><span class="selected-value">press</span><span class="selected-value">uncertainty</span></td><td class="cell-[8aR"><a href="https://www.washingtonpost.com/news/monkey-cage/wp/2016/11/29/how-to-better-communicate-election-forecasts-in-one-simple-chart/?noredirect=on&amp;utm_term=.a6ef7e470ef6" class="url-value">https://www.washingtonpost.com/news/monkey-cage/wp/2016/11/29/how-to-better-communicate-election-forecasts-in-one-simple-chart/?noredirect=on&amp;utm_term=.a6ef7e470ef6</a></td></tr><tr id="622a9ba0-ac01-40ec-b3c1-b3bbc7089648"><td class="cell-title"><a href="Probabilistic visualizations/Taking a seat.html">Taking a seat</a></td><td class="cell-njA@"><span class="selected-value">Special layout</span></td><td class="cell-(O&amp;&lt;"><time>@Nov 08, 2018 4:04 PM</time></td><td class="cell-w;lA"><span class="selected-value">icon</span><span class="selected-value">press</span></td><td class="cell-[8aR"></td></tr><tr id="225ce312-25ca-4633-9987-bdc9029ec5b4"><td class="cell-title"><a href="Probabilistic visualizations/US Seats.html">US ?? Seats</a></td><td class="cell-njA@"><span class="selected-value">Reproducible</span></td><td class="cell-(O&amp;&lt;"><time>@Dec 02, 2018 8:55 AM</time></td><td class="cell-w;lA"><span class="selected-value">icon</span><span class="selected-value">press</span><span class="selected-value">uncertainty</span></td><td class="cell-[8aR"><a href="https://www.nytimes.com/interactive/2018/10/24/us/elections/2018-battle-for-congress.html" class="url-value">https://www.nytimes.com/interactive/2018/10/24/us/elections/2018-battle-for-congress.html</a></td></tr><tr id="982e0df5-e3c4-444f-9805-c3413a7fb055"><td class="cell-title"><a href="Probabilistic visualizations/Italian parliament.html">Italian parliament</a></td><td class="cell-njA@"><span class="selected-value">Special layout</span></td><td class="cell-(O&amp;&lt;"><time>@Dec 02, 2018 8:55 AM</time></td><td class="cell-w;lA"><span class="selected-value">icon</span></td><td class="cell-[8aR"><a href="https://ig.ft.com/italy-poll-tracker/" class="url-value">https://ig.ft.com/italy-poll-tracker/</a></td></tr><tr id="6d45b919-1046-4409-bcf5-4a1da8b6a0df"><td class="cell-title"><a href="Probabilistic visualizations/Euler diagram.html">Euler diagram</a></td><td class="cell-njA@"><span class="selected-value">Special layout</span></td><td class="cell-(O&amp;&lt;"><time>@Nov 09, 2018 11:10 AM</time></td><td class="cell-w;lA"><span class="selected-value">icon</span><span class="selected-value">medical</span><span class="selected-value">paper</span><span class="selected-value">uncertainty</span></td><td class="cell-[8aR"><a href="https://hal.inria.fr/hal-00717503v2/document" class="url-value">https://hal.inria.fr/hal-00717503v2/document</a></td></tr><tr id="a814744a-f915-4f8c-ad45-5da75233acbf"><td class="cell-title"><a href="Probabilistic visualizations/Income mobility NYT.html">Income mobility | NYT</a></td><td class="cell-njA@"><span class="selected-value">Hierarchical</span></td><td class="cell-(O&amp;&lt;"><time>@Nov 08, 2018 4:04 PM</time></td><td class="cell-w;lA"><span class="selected-value">flow</span><span class="selected-value">icon</span><span class="selected-value">uncertainty</span></td><td class="cell-[8aR"><a href="https://www.nytimes.com/interactive/2018/03/27/upshot/make-your-own-mobility-animation.html" class="url-value">https://www.nytimes.com/interactive/2018/03/27/upshot/make-your-own-mobility-animation.html</a></td></tr><tr id="f71416c4-ae1c-4eff-a052-81ccedfee4fa"><td class="cell-title"><a href="Probabilistic visualizations/Faceted icon array.html">Faceted icon array </a></td><td class="cell-njA@"><span class="selected-value">Reproducible</span></td><td class="cell-(O&amp;&lt;"><time>@Dec 02, 2018 3:56 PM</time></td><td class="cell-w;lA"><span class="selected-value">icon</span><span class="selected-value">uncertainty</span></td><td class="cell-[8aR"><a href="http://www.wiwi.uni-bielefeld.de/lehrbereiche/statoekoinf/comet/wolf/pw_files/SOFTWARE/pic.plot_examples.pdf" class="url-value">http://www.wiwi.uni-bielefeld.de/lehrbereiche/statoekoinf/comet/wolf/pw_files/SOFTWARE/pic.plot_examples.pdf</a></td></tr><tr id="f5e463f3-5df7-4bca-9a54-1397eb34621d"><td class="cell-title"><a href="Probabilistic visualizations/Quantile dotplots.html">Quantile dotplots</a></td><td class="cell-njA@"><span class="selected-value">Reproducible</span></td><td class="cell-(O&amp;&lt;"><time>@Nov 08, 2018 4:06 PM</time></td><td class="cell-w;lA"><span class="selected-value">icon</span><span class="selected-value">uncertainty</span></td><td class="cell-[8aR"></td></tr><tr id="5945c844-9901-4e99-8b39-eae8bec722c0"><td class="cell-title"><a href="Probabilistic visualizations/Possible worlds visualization of polling data usin.html">Possible worlds visualization of polling data using quantile box plots.</a></td><td class="cell-njA@"><span class="selected-value">Hierarchical</span></td><td class="cell-(O&amp;&lt;"><time>@Feb 11, 2019 3:35 PM</time></td><td class="cell-w;lA"><span class="selected-value">composite</span><span class="selected-value">dotplot</span><span class="selected-value">icon</span></td><td class="cell-[8aR"><a href="https://bl.ocks.org/mcorrell/bd9b06def6b52a2acc1be1ee47ab4920" class="url-value">https://bl.ocks.org/mcorrell/bd9b06def6b52a2acc1be1ee47ab4920</a></td></tr><tr id="33e96d66-5fe3-4d41-98c4-b83c7c284c97"><td class="cell-title"><a href="Probabilistic visualizations/Facets DIVE.html">Facets DIVE</a></td><td class="cell-njA@"><span class="selected-value">Reproducible</span></td><td class="cell-(O&amp;&lt;"><time>@Mar 02, 2019 4:05 PM</time></td><td class="cell-w;lA"><span class="selected-value">icon</span></td><td class="cell-[8aR"><a href="https://pair-code.github.io/facets/" class="url-value">https://pair-code.github.io/facets/</a></td></tr><tr id="882d0530-84fb-4a78-ab75-e82d1016725c"><td class="cell-title"><a href="Probabilistic visualizations/Attacking discrimination with smarter machine lear.html">Attacking discrimination with smarter machine learning</a></td><td class="cell-njA@"><span class="selected-value">Reproducible</span></td><td class="cell-(O&amp;&lt;"><time>@Dec 04, 2018 9:11 AM</time></td><td class="cell-w;lA"><span class="selected-value">bloc</span><span class="selected-value">icon</span><span class="selected-value">uncertainty</span></td><td class="cell-[8aR"><a href="https://research.google.com/bigpicture/attacking-discrimination-in-ml/" class="url-value">https://research.google.com/bigpicture/attacking-discrimination-in-ml/</a></td></tr><tr id="e5ddd6fa-8c58-493e-a62a-e27682d775dc"><td class="cell-title"><a href="Probabilistic visualizations/To Reclaim the House DemocratsNeed to Flip 24 G O .html">To Reclaim the House, DemocratsNeed to Flip 24 G.O.P. Seats</a></td><td class="cell-njA@"><span class="selected-value">Reproducible</span></td><td class="cell-(O&amp;&lt;"><time>@Dec 24, 2018 7:33 AM</time></td><td class="cell-w;lA"><span class="selected-value">icon</span><span class="selected-value">press</span></td><td class="cell-[8aR"><a href="https://www.nytimes.com/interactive/2018/03/26/us/elections/house-races-midterms.html" class="url-value">https://www.nytimes.com/interactive/2018/03/26/us/elections/house-races-midterms.html</a></td></tr><tr id="30f295fb-003a-403e-bbcc-ab90db904103"><td class="cell-title"><a href="Probabilistic visualizations/VSUP.html">VSUP</a></td><td class="cell-njA@"><span class="selected-value">Additional channels</span></td><td class="cell-(O&amp;&lt;"><time>@Nov 08, 2018 4:04 PM</time></td><td class="cell-w;lA"><span class="selected-value">paper</span><span class="selected-value">uncertainty</span></td><td class="cell-[8aR"></td></tr><tr id="78b573fe-67ad-40fe-8860-f00431cd2603"><td class="cell-title"><a href="Probabilistic visualizations/College and income.html">College and income</a></td><td class="cell-njA@"><span class="selected-value">Special layout</span></td><td class="cell-(O&amp;&lt;"><time>@Nov 08, 2018 4:04 PM</time></td><td class="cell-w;lA"><span class="selected-value">bloc</span><span class="selected-value">press</span><span class="selected-value">uncertainty</span></td><td class="cell-[8aR"><a href="https://www.nytimes.com/interactive/2017/01/18/upshot/some-colleges-have-more-students-from-the-top-1-percent-than-the-bottom-60.html" class="url-value">https://www.nytimes.com/interactive/2017/01/18/upshot/some-colleges-have-more-students-from-the-top-1-percent-than-the-bottom-60.html</a></td></tr><tr id="edd28561-d22c-46ef-8aee-2d561f6f1a11"><td class="cell-title"><a href="Probabilistic visualizations/Confusing ggmosaic.html"><span class="icon">🐦</span>Confusing ggmosaic</a></td><td class="cell-njA@"><span class="selected-value">Reproducible</span></td><td class="cell-(O&amp;&lt;"><time>@Nov 29, 2018 2:51 PM</time></td><td class="cell-w;lA"><span class="selected-value">bloc</span><span class="selected-value">uncertainty</span></td><td class="cell-[8aR"></td></tr><tr id="48945f25-3e54-4135-bc27-3c7c0c61e620"><td class="cell-title"><a href="Probabilistic visualizations/How Our Club Soccer Predictions Work.html">How Our Club Soccer Predictions Work</a></td><td class="cell-njA@"><span class="selected-value">Additional channels</span></td><td class="cell-(O&amp;&lt;"><time>@Dec 27, 2018 2:43 PM</time></td><td class="cell-w;lA"><span class="selected-value">bloc</span><span class="selected-value">press</span><span class="selected-value">sports</span></td><td class="cell-[8aR"><a href="https://fivethirtyeight.com/methodology/how-our-club-soccer-predictions-work/" class="url-value">https://fivethirtyeight.com/methodology/how-our-club-soccer-predictions-work/</a></td></tr><tr id="6973c5b6-8f0d-489f-9bfe-a454beb162d6"><td class="cell-title"><a href="Probabilistic visualizations/Product plots.html">Product plots</a></td><td class="cell-njA@"><span class="selected-value">Reproducible</span></td><td class="cell-(O&amp;&lt;"><time>@Nov 15, 2018 2:12 PM</time></td><td class="cell-w;lA"><span class="selected-value">bloc</span><span class="selected-value">paper</span><span class="selected-value">uncertainty</span></td><td class="cell-[8aR"></td></tr><tr id="0b579ae2-f358-4270-8c15-6176882f8ce8"><td class="cell-title"><a href="Probabilistic visualizations/Mosaic plot of Titanic survivor data.html">Mosaic plot of Titanic survivor data</a></td><td class="cell-njA@"><span class="selected-value">Reproducible</span></td><td class="cell-(O&amp;&lt;"><time>@Jan 15, 2019 10:31 AM</time></td><td class="cell-w;lA"></td><td class="cell-[8aR"><a href="http://link.springer.com/10.1007/0-387-28695-0" class="url-value">http://link.springer.com/10.1007/0-387-28695-0</a></td></tr><tr id="0be9326a-7970-421a-8e49-190388ec1756"><td class="cell-title"><a href="Probabilistic visualizations/Bubble treemap.html">Bubble treemap</a></td><td class="cell-njA@"><span class="selected-value">Additional channels</span></td><td class="cell-(O&amp;&lt;"><time>@Nov 08, 2018 4:04 PM</time></td><td class="cell-w;lA"><span class="selected-value">icon</span><span class="selected-value">uncertainty</span></td><td class="cell-[8aR"></td></tr><tr id="d6da7b4e-a9f8-45c7-bc2e-739bda254d75"><td class="cell-title"><a href="Probabilistic visualizations/Forecasting the race for the Senate.html">Forecasting the race for the Senate</a></td><td class="cell-njA@"><span class="selected-value">Reproducible</span></td><td class="cell-(O&amp;&lt;"><time>@Nov 08, 2018 4:04 PM</time></td><td class="cell-w;lA"><span class="selected-value">uncertainty</span></td><td class="cell-[8aR"><a href="https://projects.fivethirtyeight.com/2018-midterm-election-forecast/senate/?ex_cid=rrpromo" class="url-value">https://projects.fivethirtyeight.com/2018-midterm-election-forecast/senate/?ex_cid=rrpromo</a></td></tr><tr id="eec17064-5363-4a89-b17b-e0b6c4a6d68f"><td class="cell-title"><a href="Probabilistic visualizations/Misled by the Jobs Report.html">Misled by the Jobs Report</a></td><td class="cell-njA@"><span class="selected-value">Additional channels</span></td><td class="cell-(O&amp;&lt;"><time>@Nov 08, 2018 4:04 PM</time></td><td class="cell-w;lA"><span class="selected-value">animation</span><span class="selected-value">bar</span><span class="selected-value">uncertainty</span></td><td class="cell-[8aR"><a href="https://www.nytimes.com/2014/05/02/upshot/how-not-to-be-misled-by-the-jobs-report.html" class="url-value">https://www.nytimes.com/2014/05/02/upshot/how-not-to-be-misled-by-the-jobs-report.html</a></td></tr><tr id="086b379a-e46a-4e4d-be08-dbb432d4f0ef"><td class="cell-title"><a href="Probabilistic visualizations/Tech Is Splitting the U S Work Force in Two.html">Tech Is Splitting the U.S. Work Force in Two</a></td><td class="cell-njA@"><span class="selected-value">Reproducible</span></td><td class="cell-(O&amp;&lt;"><time>@Feb 05, 2019 11:51 AM</time></td><td class="cell-w;lA"><span class="selected-value">bar</span><span class="selected-value">press</span></td><td class="cell-[8aR"><a href="https://nyti.ms/2DSI2KZ?smid=nytcore-ios-share" class="url-value">https://nyti.ms/2DSI2KZ?smid=nytcore-ios-share</a></td></tr><tr id="8afbfe16-81e1-4b01-b65e-c7921b1a2611"><td class="cell-title"><a href="Probabilistic visualizations/Global temperature change.html">Global temperature change</a></td><td class="cell-njA@"><span class="selected-value">Additional channels</span></td><td class="cell-(O&amp;&lt;"><time>@Nov 08, 2018 4:05 PM</time></td><td class="cell-w;lA"><span class="selected-value">ensemble</span><span class="selected-value">line</span><span class="selected-value">uncertainty</span></td><td class="cell-[8aR"><a href="https://www.theguardian.com/cities/ng-interactive/2017/nov/03/three-degree-world-cities-drowned-global-warming" class="url-value">https://www.theguardian.com/cities/ng-interactive/2017/nov/03/three-degree-world-cities-drowned-global-warming</a></td></tr><tr id="24aa3c18-41d4-4b8a-af8b-a324b4624a44"><td class="cell-title"><a href="Probabilistic visualizations/House result comparison.html">House result comparison</a></td><td class="cell-njA@"><span class="selected-value">Special layout</span></td><td class="cell-(O&amp;&lt;"><time>@Nov 09, 2018 10:23 AM</time></td><td class="cell-w;lA"><span class="selected-value">icon</span><span class="selected-value">press</span></td><td class="cell-[8aR"><a href="https://twitter.com/niko_tinius/status/1060185135918866433?s=12" class="url-value">https://twitter.com/niko_tinius/status/1060185135918866433?s=12</a></td></tr><tr id="0dbce71b-52e3-459e-be70-d0a36e6a9056"><td class="cell-title"><a href="Probabilistic visualizations/The dithering multivariate correlation matrix.html">The dithering multivariate correlation matrix</a></td><td class="cell-njA@"><span class="selected-value">Additional channels</span></td><td class="cell-(O&amp;&lt;"><time>@Nov 10, 2018 9:53 PM</time></td><td class="cell-w;lA"><span class="selected-value">uncertainty</span></td><td class="cell-[8aR"><a href="https://github.com/mjskay/uncertainty-examples/blob/master/multivariate-regression.md" class="url-value">https://github.com/mjskay/uncertainty-examples/blob/master/multivariate-regression.md</a></td></tr><tr id="6fa48239-6c79-4589-9913-40908199da26"><td class="cell-title"><a href="Probabilistic visualizations/Rotated Gaussians Kruschke style.html">Rotated Gaussians, Kruschke style</a></td><td class="cell-njA@"><span class="selected-value">Additional channels</span></td><td class="cell-(O&amp;&lt;"><time>@Dec 22, 2018 1:16 PM</time></td><td class="cell-w;lA"><span class="selected-value">ensemble</span><span class="selected-value">line</span></td><td class="cell-[8aR"><a href="https://solomonkurz.netlify.com/post/make-rotated-gaussians-kruschke-style/" class="url-value">https://solomonkurz.netlify.com/post/make-rotated-gaussians-kruschke-style/</a></td></tr><tr id="7aa6e3ee-1079-41cb-a4f7-8602e81b7219"><td class="cell-title"><a href="Probabilistic visualizations/Hockey.html">Hockey </a></td><td class="cell-njA@"><span class="selected-value">Additional channels</span></td><td class="cell-(O&amp;&lt;"><time>@Nov 14, 2018 4:59 PM</time></td><td class="cell-w;lA"><span class="selected-value">bar</span><span class="selected-value">press</span><span class="selected-value">sports</span><span class="selected-value">uncertainty</span></td><td class="cell-[8aR"><a href="http://hockeyviz.com/txt/preview1819" class="url-value">http://hockeyviz.com/txt/preview1819</a></td></tr><tr id="ebeea651-6a48-498f-846b-7b2ef3a8b50d"><td class="cell-title"><a href="Probabilistic visualizations/Results of a reproducibility survey.html">Results of a reproducibility survey</a></td><td class="cell-njA@"><span class="selected-value">Hierarchical</span></td><td class="cell-(O&amp;&lt;"><time>@Nov 15, 2018 2:05 PM</time></td><td class="cell-w;lA"><span class="selected-value">animation</span><span class="selected-value">flow</span><span class="selected-value">icon</span><span class="selected-value">uncertainty</span></td><td class="cell-[8aR"><a href="https://twitter.com/babeheim/status/1063792960377053185" class="url-value">https://twitter.com/babeheim/status/1063792960377053185</a></td></tr><tr id="0789b327-fd1e-467b-95be-428267196994"><td class="cell-title"><a href="Probabilistic visualizations/Bayesian inference.html">Bayesian inference</a></td><td class="cell-njA@"><span class="selected-value">Additional channels</span></td><td class="cell-(O&amp;&lt;"><time>@Nov 10, 2018 9:38 AM</time></td><td class="cell-w;lA"><span class="selected-value">statistics/education</span></td><td class="cell-[8aR"><a href="http://rpsychologist.com/d3/bayes/?utm_content=buffera5352&amp;utm_medium=social&amp;utm_source=twitter.com&amp;utm_campaign=buffer" class="url-value">http://rpsychologist.com/d3/bayes/?utm_content=buffera5352&amp;utm_medium=social&amp;utm_source=twitter.com&amp;utm_campaign=buffer</a></td></tr><tr id="5ff1c0a4-62e0-4497-b381-d6a06426b126"><td class="cell-title"><a href="Probabilistic visualizations/A visual introduction to machine learning.html">A visual introduction to machine learning</a></td><td class="cell-njA@"><span class="selected-value">Hierarchical</span></td><td class="cell-(O&amp;&lt;"><time>@Nov 30, 2018 11:41 AM</time></td><td class="cell-w;lA"><span class="selected-value">animation</span><span class="selected-value">flow</span><span class="selected-value">icon</span><span class="selected-value">tree</span><span class="selected-value">uncertainty</span></td><td class="cell-[8aR"><a href="http://www.r2d3.us/visual-intro-to-machine-learning-part-1/" class="url-value">http://www.r2d3.us/visual-intro-to-machine-learning-part-1/</a></td></tr><tr id="ce46b866-f3bc-4b71-b99c-8416d6444a00"><td class="cell-title"><a href="Probabilistic visualizations/Regression tree predicting accident rates.html">Regression tree predicting accident rates</a></td><td class="cell-njA@"><span class="selected-value">Hierarchical</span></td><td class="cell-(O&amp;&lt;"><time>@Jan 15, 2019 10:29 AM</time></td><td class="cell-w;lA"><span class="selected-value">icon</span><span class="selected-value">tree</span></td><td class="cell-[8aR"><a href="http://link.springer.com/10.1007/0-387-28695-0" class="url-value">http://link.springer.com/10.1007/0-387-28695-0</a></td></tr><tr id="c6eaac5f-85e9-4d49-a30f-56dcd62d8958"><td class="cell-title"><a href="Probabilistic visualizations/Bracket probabilities.html">Bracket probabilities</a></td><td class="cell-njA@"><span class="selected-value">Hierarchical</span></td><td class="cell-(O&amp;&lt;"><time>@Nov 08, 2018 4:04 PM</time></td><td class="cell-w;lA"><span class="selected-value">uncertainty</span></td><td class="cell-[8aR"><a href="https://twitter.com/IneffectiveMath?lang=en" class="url-value">https://twitter.com/IneffectiveMath?lang=en</a></td></tr><tr id="270dcc97-3f43-46e6-8b9a-359104f96f19"><td class="cell-title"><a href="Probabilistic visualizations/Temporal Bracket Probability.html">Temporal Bracket Probability</a></td><td class="cell-njA@"><span class="selected-value">Hierarchical</span></td><td class="cell-(O&amp;&lt;"><time>@Nov 14, 2018 12:43 PM</time></td><td class="cell-w;lA"><span class="selected-value">uncertainty</span></td><td class="cell-[8aR"><a href="https://xeno.graphics/bracket-probabilities/" class="url-value">https://xeno.graphics/bracket-probabilities/</a></td></tr><tr id="59861ea9-8daa-46e1-b5c5-3b791291eef4"><td class="cell-title"><a href="Probabilistic visualizations/Point projections for NHL teams.html">Point projections for NHL teams</a></td><td class="cell-njA@"><span class="selected-value">Additional channels</span></td><td class="cell-(O&amp;&lt;"><time>@Nov 30, 2018 4:58 PM</time></td><td class="cell-w;lA"><span class="selected-value">line</span><span class="selected-value">press</span></td><td class="cell-[8aR"><a href="https://twitter.com/IneffectiveMath/status/1068613463134650369" class="url-value">https://twitter.com/IneffectiveMath/status/1068613463134650369</a></td></tr><tr id="ab6161e6-1cc1-47cb-aa87-dd290fd976bd"><td class="cell-title"><a href="Probabilistic visualizations/Sankey diagrams.html">Sankey diagrams</a></td><td class="cell-njA@"><span class="selected-value">Special layout</span></td><td class="cell-(O&amp;&lt;"><time>@Dec 02, 2018 8:55 AM</time></td><td class="cell-w;lA"><span class="selected-value">chart-type</span><span class="selected-value">flow</span></td><td class="cell-[8aR"></td></tr><tr id="f2048b65-7cbe-4fee-a778-e2b76f7c175e"><td class="cell-title"><a href="Probabilistic visualizations/Marimekko chart.html">Marimekko chart</a></td><td class="cell-njA@"><span class="selected-value">Reproducible</span></td><td class="cell-(O&amp;&lt;"><time>@Dec 02, 2018 9:04 AM</time></td><td class="cell-w;lA"><span class="selected-value">bloc</span><span class="selected-value">chart-type</span></td><td class="cell-[8aR"></td></tr><tr id="15204763-c2f2-4ea7-80e7-14fcec8cd2ce"><td class="cell-title"><a href="Probabilistic visualizations/Risk matrix chart.html">Risk matrix chart</a></td><td class="cell-njA@"><span class="selected-value">Additional channels</span></td><td class="cell-(O&amp;&lt;"><time>@Dec 02, 2018 10:19 AM</time></td><td class="cell-w;lA"><span class="selected-value">uncertainty</span></td><td class="cell-[8aR"><a href="https://community.powerbi.com/t5/Desktop/Risk-matrix-chart-in-Power-BI/td-p/161587" class="url-value">https://community.powerbi.com/t5/Desktop/Risk-matrix-chart-in-Power-BI/td-p/161587</a></td></tr><tr id="fc044fdc-18f6-4aeb-83be-e351b8abb5f3"><td class="cell-title"><a href="Probabilistic visualizations/A Day in the Life.html">A Day in the Life </a></td><td class="cell-njA@"><span class="selected-value">Special layout</span></td><td class="cell-(O&amp;&lt;"><time>@Dec 02, 2018 1:50 PM</time></td><td class="cell-w;lA"><span class="selected-value">icon</span><span class="selected-value">press</span></td><td class="cell-[8aR"><a href="https://www.wsj.com/articles/were-working-more-hoursand-watching-more-tv-1435187603" class="url-value">https://www.wsj.com/articles/were-working-more-hoursand-watching-more-tv-1435187603</a></td></tr><tr id="5da1f567-5872-4ac0-8e45-6e7a3f30d70c"><td class="cell-title"><a href="Probabilistic visualizations/How electricity generation changed.html">How electricity generation changed</a></td><td class="cell-njA@"><span class="selected-value">Special layout</span></td><td class="cell-(O&amp;&lt;"><time>@Dec 24, 2018 10:46 PM</time></td><td class="cell-w;lA"><span class="selected-value">flow</span><span class="selected-value">press</span><span class="selected-value">temporal</span></td><td class="cell-[8aR"><a href="https://www.nytimes.com/interactive/2018/12/24/climate/how-electricity-generation-changed-in-your-state.html?smid=nytcore-ios-share" class="url-value">https://www.nytimes.com/interactive/2018/12/24/climate/how-electricity-generation-changed-in-your-state.html?smid=nytcore-ios-share</a></td></tr><tr id="5dbc70c1-b0a1-42d5-84cb-5b3f5fd059c2"><td class="cell-title"><a href="Probabilistic visualizations/How America Uses Its Land.html">How America Uses Its Land</a></td><td class="cell-njA@"><span class="selected-value">Special layout</span></td><td class="cell-(O&amp;&lt;"><time>@Jan 01, 2019 5:39 PM</time></td><td class="cell-w;lA"></td><td class="cell-[8aR"><a href="https://www.bloomberg.com/graphics/2018-us-land-use/" class="url-value">https://www.bloomberg.com/graphics/2018-us-land-use/</a></td></tr><tr id="4fa2ffcb-5e53-4ff4-96c0-e50394096baa"><td class="cell-title"><a href="Probabilistic visualizations/Some ski events are easier to finish than others.html">Some ski events are easier to finish than others</a></td><td class="cell-njA@"><span class="selected-value">Reproducible</span></td><td class="cell-(O&amp;&lt;"><time>@Jan 01, 2019 5:44 PM</time></td><td class="cell-w;lA"><span class="selected-value">press</span></td><td class="cell-[8aR"><a href="https://fivethirtyeight.com/features/the-45-best-and-weirdest-charts-we-made-in-2018/?ex_cid=538twitter" class="url-value">https://fivethirtyeight.com/features/the-45-best-and-weirdest-charts-we-made-in-2018/?ex_cid=538twitter</a></td></tr><tr id="d38b344d-fbb3-483a-b169-aa602f8f40c1"><td class="cell-title"><a href="Probabilistic visualizations/How to Tell if a Hurricane Is Headed Your Way.html">How to Tell if a Hurricane Is Headed Your Way</a></td><td class="cell-njA@"><span class="selected-value">Additional channels</span></td><td class="cell-(O&amp;&lt;"><time>@Jan 01, 2019 7:40 PM</time></td><td class="cell-w;lA"></td><td class="cell-[8aR"><a href="https://www.wsj.com/articles/how-to-tell-if-a-hurricane-is-headed-your-way-1536658200" class="url-value">https://www.wsj.com/articles/how-to-tell-if-a-hurricane-is-headed-your-way-1536658200</a></td></tr><tr id="fd3d0ea1-2218-4aea-9182-0d1a903de25d"><td class="cell-title"><a href="Probabilistic visualizations/U S house Election Results 2018.html">U.S. house Election Results 2018</a></td><td class="cell-njA@"><span class="selected-value">Special layout</span></td><td class="cell-(O&amp;&lt;"><time>@Jan 01, 2019 7:53 PM</time></td><td class="cell-w;lA"></td><td class="cell-[8aR"><a href="https://www.nytimes.com/interactive/2018/11/06/us/elections/results-house-elections.html" class="url-value">https://www.nytimes.com/interactive/2018/11/06/us/elections/results-house-elections.html</a></td></tr><tr id="ddeaa3c2-4a8c-4708-bd4e-b899a4d4c8a7"><td class="cell-title"><a href="Probabilistic visualizations/https www bloomberg com graphics 2018 in graphics.html">https://www.bloomberg.com/graphics/2018-in-graphics/</a></td><td class="cell-njA@"><span class="selected-value">Special layout</span></td><td class="cell-(O&amp;&lt;"><time>@Jan 01, 2019 7:56 PM</time></td><td class="cell-w;lA"></td><td class="cell-[8aR"><a href="https://www.bloomberg.com/graphics/2018-midterms-women-results/" class="url-value">https://www.bloomberg.com/graphics/2018-midterms-women-results/</a></td></tr><tr id="c7629c21-6372-4c12-82c0-902bde5fecfe"><td class="cell-title"><a href="Probabilistic visualizations/How easy it is to vote.html">How easy it is to vote</a></td><td class="cell-njA@"><span class="selected-value">Special layout</span></td><td class="cell-(O&amp;&lt;"><time>@Jan 01, 2019 8:04 PM</time></td><td class="cell-w;lA"></td><td class="cell-[8aR"><a href="https://www.washingtonpost.com/graphics/2018/politics/voter-access/?utm_term=.a0b2c3350ac5" class="url-value">https://www.washingtonpost.com/graphics/2018/politics/voter-access/?utm_term=.a0b2c3350ac5</a></td></tr><tr id="9b1a9263-1bca-43e2-8bce-a92095805a5d"><td class="cell-title"><a href="Probabilistic visualizations/Crypto Market.html">Crypto Market</a></td><td class="cell-njA@"><span class="selected-value">Special layout</span></td><td class="cell-(O&amp;&lt;"><time>@Jan 01, 2019 8:12 PM</time></td><td class="cell-w;lA"></td><td class="cell-[8aR"><a href="https://public.tableau.com/en-us/s/gallery/cryptomarket" class="url-value">https://public.tableau.com/en-us/s/gallery/cryptomarket</a></td></tr><tr id="0b56c911-a4b8-4ff7-be9d-ab835d05eca6"><td class="cell-title"><a href="Probabilistic visualizations/Women are more likely to be underpaid in certain s.html">Women are more likely to be underpaid in certain sectors</a></td><td class="cell-njA@"><span class="selected-value">Reproducible</span></td><td class="cell-(O&amp;&lt;"><time>@Jan 01, 2019 10:15 PM</time></td><td class="cell-w;lA"></td><td class="cell-[8aR"><a href="https://www.theguardian.com/news/ng-interactive/2018/apr/05/women-are-paid-less-than-men-heres-how-to-fix-it" class="url-value">https://www.theguardian.com/news/ng-interactive/2018/apr/05/women-are-paid-less-than-men-heres-how-to-fix-it</a></td></tr><tr id="c9c74aab-8553-48bb-bc4f-520d7328a9aa"><td class="cell-title"><a href="Probabilistic visualizations/Firms Are Reporting Their Gender Pay Gaps Even Aft.html">Firms Are Reporting Their Gender Pay Gaps Even After The Deadline</a></td><td class="cell-njA@"><span class="selected-value">Reproducible</span></td><td class="cell-(O&amp;&lt;"><time>@Jan 01, 2019 8:01 PM</time></td><td class="cell-w;lA"></td><td class="cell-[8aR"><a href="https://www.bloomberg.com/graphics/2018-uk-gender-pay-gap/uk-gender-pay-gap/" class="url-value">https://www.bloomberg.com/graphics/2018-uk-gender-pay-gap/uk-gender-pay-gap/</a></td></tr><tr id="103c3ea7-1a33-40e7-8617-f18756057c8d"><td class="cell-title"><a href="Probabilistic visualizations/Gender pay gap what we learned and how to fix it.html">Gender pay gap: what we learned and how to fix it</a></td><td class="cell-njA@"><span class="selected-value">Reproducible</span></td><td class="cell-(O&amp;&lt;"><time>@Jan 01, 2019 10:16 PM</time></td><td class="cell-w;lA"></td><td class="cell-[8aR"><a href="https://www.theguardian.com/news/ng-interactive/2018/apr/05/women-are-paid-less-than-men-heres-how-to-fix-it" class="url-value">https://www.theguardian.com/news/ng-interactive/2018/apr/05/women-are-paid-less-than-men-heres-how-to-fix-it</a></td></tr><tr id="6c784f1c-6086-4b60-ad15-ca5c08b39fc5"><td class="cell-title"><a href="Probabilistic visualizations/Gender pay gap when does your company stop paying .html">Gender pay gap: when does your company stop paying women in 2018?</a></td><td class="cell-njA@"><span class="selected-value">Special layout</span></td><td class="cell-(O&amp;&lt;"><time>@Jan 01, 2019 10:19 PM</time></td><td class="cell-w;lA"><span class="selected-value">icon</span><span class="selected-value">press</span></td><td class="cell-[8aR"><a href="https://www.theguardian.com/news/ng-interactive/2018/apr/04/gender-pay-gap-when-does-your-company-stop-paying-women-in-2018" class="url-value">https://www.theguardian.com/news/ng-interactive/2018/apr/04/gender-pay-gap-when-does-your-company-stop-paying-women-in-2018</a></td></tr><tr id="ef2e60d6-d87d-443c-8f85-3659c2be8659"><td class="cell-title"><a href="Probabilistic visualizations/Post Millennials are on track to be the most racia.html">Post-Millennials are on track to be the most racially and ethnically diverse generation yet</a></td><td class="cell-njA@"><span class="selected-value">Reproducible</span></td><td class="cell-(O&amp;&lt;"><time>@Jan 01, 2019 10:20 PM</time></td><td class="cell-w;lA"><span class="selected-value">bloc</span><span class="selected-value">press</span></td><td class="cell-[8aR"><a href="http://www.pewresearch.org/fact-tank/2018/12/13/18-striking-findings-from-2018/" class="url-value">http://www.pewresearch.org/fact-tank/2018/12/13/18-striking-findings-from-2018/</a></td></tr><tr id="84ea3073-cf6d-49db-944e-e5f82db25ef9"><td class="cell-title"><a href="Probabilistic visualizations/Nine in ten Americans believe in a higher power.html">Nine-in-ten Americans believe in a higher power</a></td><td class="cell-njA@"><span class="selected-value">Hierarchical</span></td><td class="cell-(O&amp;&lt;"><time>@Jan 01, 2019 10:22 PM</time></td><td class="cell-w;lA"></td><td class="cell-[8aR"><a href="http://www.pewresearch.org/fact-tank/2018/12/13/18-striking-findings-from-2018/" class="url-value">http://www.pewresearch.org/fact-tank/2018/12/13/18-striking-findings-from-2018/</a></td></tr><tr id="31287839-b988-4668-a900-6e7e0600fb48"><td class="cell-title"><a href="Probabilistic visualizations/A generational shift in religious identity.html">A generational shift in religious identity </a></td><td class="cell-njA@"><span class="selected-value">Special layout</span></td><td class="cell-(O&amp;&lt;"><time>@Jan 02, 2019 8:26 AM</time></td><td class="cell-w;lA"></td><td class="cell-[8aR"><a href="https://fivethirtyeight.com/features/the-45-best-and-weirdest-charts-we-made-in-2018/?ex_cid=538twitter" class="url-value">https://fivethirtyeight.com/features/the-45-best-and-weirdest-charts-we-made-in-2018/?ex_cid=538twitter</a></td></tr><tr id="9a629d7b-3112-4c83-9128-ce6085670aac"><td class="cell-title"><a href="Probabilistic visualizations/How long will the court s liberal wing last.html">How long will the court&#x27;s liberal wing last?</a></td><td class="cell-njA@"><span class="selected-value">Additional channels</span></td><td class="cell-(O&amp;&lt;"><time>@Jan 02, 2019 8:30 AM</time></td><td class="cell-w;lA"></td><td class="cell-[8aR"><a href="https://fivethirtyeight.com/features/the-45-best-and-weirdest-charts-we-made-in-2018/?ex_cid=538twitter" class="url-value">https://fivethirtyeight.com/features/the-45-best-and-weirdest-charts-we-made-in-2018/?ex_cid=538twitter</a></td></tr><tr id="e944e863-9a42-4e23-a9d6-b4d784847ce0"><td class="cell-title"><a href="Probabilistic visualizations/What if only nonwhite people voted.html">What if only nonwhite people voted?</a></td><td class="cell-njA@"><span class="selected-value">Reproducible</span></td><td class="cell-(O&amp;&lt;"><time>@Jan 02, 2019 8:32 AM</time></td><td class="cell-w;lA"><span class="selected-value">icon</span><span class="selected-value">press</span></td><td class="cell-[8aR"><a href="https://fivethirtyeight.com/features/the-45-best-and-weirdest-charts-we-made-in-2018/?ex_cid=538twitter" class="url-value">https://fivethirtyeight.com/features/the-45-best-and-weirdest-charts-we-made-in-2018/?ex_cid=538twitter</a></td></tr><tr id="e1d42a3e-2237-44ea-bec6-ec01be61a8df"><td class="cell-title"><a href="Probabilistic visualizations/Hurricane Florence Keep tabs on shifting storm tra.html">Hurricane Florence: Keep tabs on shifting storm track</a></td><td class="cell-njA@"><span class="selected-value">Additional channels</span></td><td class="cell-(O&amp;&lt;"><time>@Jan 02, 2019 9:31 PM</time></td><td class="cell-w;lA"><span class="selected-value">animation</span><span class="selected-value">ensemble</span><span class="selected-value">line</span></td><td class="cell-[8aR"><a href="https://www.axios.com/hurricane-florence-storm-track-changes-map-e8f3f5d4-7594-4b1c-b5cd-0064d0b75461.html" class="url-value">https://www.axios.com/hurricane-florence-storm-track-changes-map-e8f3f5d4-7594-4b1c-b5cd-0064d0b75461.html</a></td></tr><tr id="17ed5bf6-fbb7-49ac-ab61-a5b5a27e0cad"><td class="cell-title"><a href="Probabilistic visualizations/Mass Exodus 3D icon array.html">Mass Exodus: 3D icon array!</a></td><td class="cell-njA@"><span class="selected-value">Special layout</span></td><td class="cell-(O&amp;&lt;"><time>@Jan 02, 2019 10:17 PM</time></td><td class="cell-w;lA"><span class="selected-value">icon</span></td><td class="cell-[8aR"><a href="http://tmsnrt.rs/2xTId74" class="url-value">http://tmsnrt.rs/2xTId74</a></td></tr><tr id="02b7663f-1a5a-4f26-8b93-ac511f7ae715"><td class="cell-title"><a href="Probabilistic visualizations/The next Bechdel test.html">The next Bechdel test </a></td><td class="cell-njA@"><span class="selected-value">Special layout</span></td><td class="cell-(O&amp;&lt;"><time>@Jan 02, 2019 10:21 PM</time></td><td class="cell-w;lA"><span class="selected-value">icon</span></td><td class="cell-[8aR"><a href="https://projects.fivethirtyeight.com/next-bechdel/" class="url-value">https://projects.fivethirtyeight.com/next-bechdel/</a></td></tr><tr id="6819379a-d805-4d26-b439-2cd36bcf4a37"><td class="cell-title"><a href="Probabilistic visualizations/Safe skies.html">Safe skies</a></td><td class="cell-njA@"><span class="selected-value">Special layout</span></td><td class="cell-(O&amp;&lt;"><time>@Jan 02, 2019 10:24 PM</time></td><td class="cell-w;lA"><span class="selected-value">icon</span></td><td class="cell-[8aR"><a href="https://multimedia.scmp.com/news/world/article/safety-aviation-2017/index.html" class="url-value">https://multimedia.scmp.com/news/world/article/safety-aviation-2017/index.html</a></td></tr><tr id="6e4b32c0-e549-4947-8d51-2ed5753b8ecc"><td class="cell-title"><a href="Probabilistic visualizations/Data visualization book with Uncertainty Chapter.html">Data visualization book with Uncertainty Chapter</a></td><td class="cell-njA@"><span class="selected-value">Reproducible</span></td><td class="cell-(O&amp;&lt;"><time>@Jan 16, 2019 10:29 AM</time></td><td class="cell-w;lA"></td><td class="cell-[8aR"></td></tr><tr id="f3db2662-35f7-4b4e-8d66-a2eb6caa16b7"><td class="cell-title"><a href="Probabilistic visualizations/Brexit dynamically scaling icon array.html">Brexit, dynamically scaling icon array</a></td><td class="cell-njA@"><span class="selected-value">Reproducible</span></td><td class="cell-(O&amp;&lt;"><time>@Jan 02, 2019 10:29 PM</time></td><td class="cell-w;lA"><span class="selected-value">icon</span><span class="selected-value">press</span></td><td class="cell-[8aR"><a href="https://www.bloomberg.com/graphics/2018-brexit-portraits/" class="url-value">https://www.bloomberg.com/graphics/2018-brexit-portraits/</a></td></tr><tr id="b5aa90b3-f280-4445-9464-3bf078c41347"><td class="cell-title"><a href="Probabilistic visualizations/geom_waffle.html">geom_waffle</a></td><td class="cell-njA@"><span class="selected-value">Reproducible</span></td><td class="cell-(O&amp;&lt;"><time>@Jan 12, 2019 10:38 AM</time></td><td class="cell-w;lA"><span class="selected-value">icon</span></td><td class="cell-[8aR"><a href="https://twitter.com/hrbrmstr/status/1083054718631464962?s=12" class="url-value">https://twitter.com/hrbrmstr/status/1083054718631464962?s=12</a></td></tr><tr id="6e1e59f1-67f7-4e45-ba4a-06b3b9848098"><td class="cell-title"><a href="Probabilistic visualizations/Presidential approval frequency.html">Presidential approval frequency</a></td><td class="cell-njA@"><span class="selected-value">Additional channels</span></td><td class="cell-(O&amp;&lt;"><time>@Jan 16, 2019 10:31 AM</time></td><td class="cell-w;lA"><span class="selected-value">bloc</span><span class="selected-value">press</span></td><td class="cell-[8aR"><a href="https://www.safaribooksonline.com/library/view/the-truthful-art/9780133440492/ch07.html#ch07" class="url-value">https://www.safaribooksonline.com/library/view/the-truthful-art/9780133440492/ch07.html#ch07</a></td></tr><tr id="1813fe3d-3bb4-4f10-bd9c-b638386979c9"><td class="cell-title"><a href="Probabilistic visualizations/Construction projects is happening under one of it.html">Construction projects is happening under one of its most crowded cities</a></td><td class="cell-njA@"><span class="selected-value">Additional channels</span></td><td class="cell-(O&amp;&lt;"><time>@Feb 05, 2019 3:57 PM</time></td><td class="cell-w;lA"></td><td class="cell-[8aR"><a href="https://twitter.com/WSJGraphics/status/1082288346754416640" class="url-value">https://twitter.com/WSJGraphics/status/1082288346754416640</a></td></tr><tr id="be0a58e6-c931-4ad9-b33e-17a6d978b8fb"><td class="cell-title"><a href="Probabilistic visualizations/Midterm Elections 2018 Live Results.html">Midterm Elections 2018: Live Results</a></td><td class="cell-njA@"><span class="selected-value">Reproducible</span></td><td class="cell-(O&amp;&lt;"><time>@Feb 05, 2019 4:20 PM</time></td><td class="cell-w;lA"><span class="selected-value">animation</span></td><td class="cell-[8aR"><a href="https://www.wsj.com/graphics/midterm-elections-2018-results/?mod=e2twg" class="url-value">https://www.wsj.com/graphics/midterm-elections-2018-results/?mod=e2twg</a></td></tr><tr id="6682faf1-ae95-4bfc-a978-c03ec1b2630e"><td class="cell-title"><a href="Probabilistic visualizations/bnlearn conditional probabilities.html">bnlearn conditional probabilities</a></td><td class="cell-njA@"><span class="selected-value">Reproducible</span></td><td class="cell-(O&amp;&lt;"><time>@Feb 05, 2019 7:42 PM</time></td><td class="cell-w;lA"><span class="selected-value">bar</span></td><td class="cell-[8aR"><a href="http://www.bnlearn.com/examples/fit/" class="url-value">http://www.bnlearn.com/examples/fit/</a></td></tr><tr id="a056d1e7-a9df-4674-a467-7002ef928fc2"><td class="cell-title"><a href="Probabilistic visualizations/Example dotplot in bnlearn.html">Example &quot;dotplot&quot; in bnlearn</a></td><td class="cell-njA@"><span class="selected-value">Reproducible</span></td><td class="cell-(O&amp;&lt;"><time>@Feb 05, 2019 7:44 PM</time></td><td class="cell-w;lA"><span class="selected-value">bar</span></td><td class="cell-[8aR"><a href="http://www.bnlearn.com/examples/fit/" class="url-value">http://www.bnlearn.com/examples/fit/</a></td></tr><tr id="6114348b-13ec-4351-83fa-8220ac5c386c"><td class="cell-title"><a href="Probabilistic visualizations/Graphical natural frequency.html">Graphical natural frequency </a></td><td class="cell-njA@"><span class="selected-value">Reproducible</span></td><td class="cell-(O&amp;&lt;"><time>@Feb 07, 2019 9:37 AM</time></td><td class="cell-w;lA"><span class="selected-value">icon</span><span class="selected-value">paper</span></td><td class="cell-[8aR"><a href="http://journal.sjdm.org/18/18604d/jdm18604d.pdf" class="url-value">http://journal.sjdm.org/18/18604d/jdm18604d.pdf</a></td></tr><tr id="4152f44a-7f5a-4c44-ac9b-a4059cc97718"><td class="cell-title"><a href="Probabilistic visualizations/Gradient plot experiment.html">Gradient plot experiment</a></td><td class="cell-njA@"><span class="selected-value">Additional channels</span></td><td class="cell-(O&amp;&lt;"><time>@Feb 19, 2019 2:32 PM</time></td><td class="cell-w;lA"></td><td class="cell-[8aR"><a href="https://weber.itn.liu.se/~jouhe21/experiment/" class="url-value">https://weber.itn.liu.se/~jouhe21/experiment/</a></td></tr><tr id="4e0f1c2b-7205-4f63-8e41-9140ef03dedd"><td class="cell-title"><a href="Probabilistic visualizations/1D zoo.html">1D zoo</a></td><td class="cell-njA@"><span class="selected-value">Additional channels</span></td><td class="cell-(O&amp;&lt;"><time>@Feb 20, 2019 8:06 PM</time></td><td class="cell-w;lA"></td><td class="cell-[8aR"><a href="https://mcorrell.github.io/oneD-zoo/" class="url-value">https://mcorrell.github.io/oneD-zoo/</a></td></tr><tr id="791f7c58-bd53-414e-931e-78b95ee66c58"><td class="cell-title"><a href="Probabilistic visualizations/easyfluvial.html">easyfluvial</a></td><td class="cell-njA@"><span class="selected-value">Special layout</span></td><td class="cell-(O&amp;&lt;"><time>@Apr 03, 2019 4:35 PM</time></td><td class="cell-w;lA"></td><td class="cell-[8aR"><a href="https://www.datisticsblog.com/2019/04/easyalluvial-0-2-0-released/" class="url-value">https://www.datisticsblog.com/2019/04/easyalluvial-0-2-0-released/</a></td></tr><tr id="bfd2b5dc-2014-4c5a-8a3a-fd1060a67d78"><td class="cell-title"><a href="Probabilistic visualizations/Confidence interval gif.html">Confidence interval gif</a></td><td class="cell-njA@"><span class="selected-value">Additional channels</span></td><td class="cell-(O&amp;&lt;"><time>@Apr 06, 2019 9:17 AM</time></td><td class="cell-w;lA"></td><td class="cell-[8aR"><a href="https://twitter.com/GuyProchilo/status/1041231496084905985" class="url-value">https://twitter.com/GuyProchilo/status/1041231496084905985</a></td></tr><tr id="c736a1a0-aefe-4dea-9243-c745d5e40f3a"><td class="cell-title"><a href="Probabilistic visualizations/Data Analysis with Bootstrap Estimation in R.html">Data Analysis with Bootstrap Estimation in R.</a></td><td class="cell-njA@"><span class="selected-value">Additional channels</span></td><td class="cell-(O&amp;&lt;"><time>@Apr 08, 2019 4:21 PM</time></td><td class="cell-w;lA"></td><td class="cell-[8aR"><a href="https://github.com/ACCLAB/dabestr" class="url-value">https://github.com/ACCLAB/dabestr</a></td></tr><tr id="abc209af-bf01-412e-bf7e-a415ce4f69ee"><td class="cell-title"><a href="Probabilistic visualizations/A geometric visualisation of Bayes theorem.html">A geometric visualisation of Bayes&#x27; theorem</a></td><td class="cell-njA@"><span class="selected-value">Reproducible</span></td><td class="cell-(O&amp;&lt;"><time>@Apr 08, 2019 4:24 PM</time></td><td class="cell-w;lA"><span class="selected-value">icon</span><span class="selected-value">statistics/education</span></td><td class="cell-[8aR"></td></tr><tr id="a165534d-820c-4b23-8d9a-1d336672ad5e"><td class="cell-title"><a href="Probabilistic visualizations/Prism plot with scaled horizontal rectangles.html">Prism plot (with scaled horizontal rectangles)</a></td><td class="cell-njA@"><span class="selected-value">Special layout</span></td><td class="cell-(O&amp;&lt;"><time>@Apr 08, 2019 4:27 PM</time></td><td class="cell-w;lA"><span class="selected-value">area</span><span class="selected-value">bar</span><span class="selected-value">modeling/machinelearning</span></td><td class="cell-[8aR"><a href="https://cran.r-project.org/web/packages/riskyr/readme/README.html" class="url-value">https://cran.r-project.org/web/packages/riskyr/readme/README.html</a></td></tr><tr id="f4c8de7a-39ab-46e6-a66a-0763727164eb"><td class="cell-title"><a href="Probabilistic visualizations/Visualizing Uncertainty and Alternatives in Event .html">Visualizing Uncertainty and Alternatives in Event Sequence Predictions</a></td><td class="cell-njA@"><span class="selected-value">Special layout</span></td><td class="cell-(O&amp;&lt;"><time>@Apr 09, 2019 9:58 AM</time></td><td class="cell-w;lA"></td><td class="cell-[8aR"></td></tr><tr id="70cdc0c1-df2f-49fc-ae6d-205e683467ea"><td class="cell-title"><a href="Probabilistic visualizations/Sparkplug.html">Sparkplug</a></td><td class="cell-njA@"><span class="selected-value">Special layout</span></td><td class="cell-(O&amp;&lt;"><time>@Apr 09, 2019 3:11 PM</time></td><td class="cell-w;lA"><span class="selected-value">icon</span><span class="selected-value">paper</span></td><td class="cell-[8aR"></td></tr><tr id="c3850f9b-2793-48c2-95ca-a83503958608"><td class="cell-title"><a href="Probabilistic visualizations/Israel s political kaleidoscope.html">Israel’s political kaleidoscope </a></td><td class="cell-njA@"><span class="selected-value">Special layout</span></td><td class="cell-(O&amp;&lt;"><time>@Apr 10, 2019 8:56 AM</time></td><td class="cell-w;lA"><span class="selected-value">bloc</span><span class="selected-value">flow</span><span class="selected-value">press</span></td><td class="cell-[8aR"><a href="https://www.economist.com/graphic-detail/2019/04/09/israels-political-kaleidoscope?fsrc=scn/fb/te/bl/ed/israelspoliticalkaleidoscopedailychart" class="url-value">https://www.economist.com/graphic-detail/2019/04/09/israels-political-kaleidoscope?fsrc=scn/fb/te/bl/ed/israelspoliticalkaleidoscopedailychart</a></td></tr><tr id="1f6fce11-ed82-42f4-8567-58f76a9713a0"><td class="cell-title"><a href="Probabilistic visualizations/Would Medicare for all save billions or cost billi.html">Would ‘Medicare for all’ save billions or cost billions </a></td><td class="cell-njA@"><span class="selected-value">Special layout</span></td><td class="cell-(O&amp;&lt;"><time>@Apr 10, 2019 1:03 PM</time></td><td class="cell-w;lA"></td><td class="cell-[8aR"><a href="https://www.nytimes.com/interactive/2019/04/10/upshot/medicare-for-all-bernie-sanders-cost-estimates.html?smid=nytcore-ios-share" class="url-value">https://www.nytimes.com/interactive/2019/04/10/upshot/medicare-for-all-bernie-sanders-cost-estimates.html?smid=nytcore-ios-share</a></td></tr><tr id="e62decc1-a6a8-49d9-86f8-f69fe8715083"><td class="cell-title"><a href="Probabilistic visualizations/Interpreting Cohen s d effect size.html">Interpreting Cohen&#x27;s d effect size</a></td><td class="cell-njA@"><span class="selected-value">Reproducible</span></td><td class="cell-(O&amp;&lt;"><time>@Apr 12, 2019 9:29 AM</time></td><td class="cell-w;lA"><span class="selected-value">area</span><span class="selected-value">statistics/education</span></td><td class="cell-[8aR"><a href="http://rpsychologist.com/d3/cohend/" class="url-value">http://rpsychologist.com/d3/cohend/</a></td></tr><tr id="ed20e0d8-521b-4bf4-a834-6f5a9bad03e3"><td class="cell-title"><a href="Probabilistic visualizations/inspectdf.html">inspectdf</a></td><td class="cell-njA@"><span class="selected-value">Reproducible</span></td><td class="cell-(O&amp;&lt;"><time>@Apr 25, 2019 3:19 PM</time></td><td class="cell-w;lA"><span class="selected-value">bloc</span></td><td class="cell-[8aR"><a href="https://twitter.com/dataandme/status/1121459374948540421" class="url-value">https://twitter.com/dataandme/status/1121459374948540421</a></td></tr><tr id="1385e046-b1a4-42ba-80cb-d7e2ec478221"><td class="cell-title"><a href="Probabilistic visualizations/Bar chart with uncertainty.html">Bar chart with uncertainty </a></td><td class="cell-njA@"><span class="selected-value">Additional channels</span></td><td class="cell-(O&amp;&lt;"><time>@May 09, 2019 2:11 AM</time></td><td class="cell-w;lA"></td><td class="cell-[8aR"><a href="https://twitter.com/mjskay/status/1126101428253204481?s=12" class="url-value">https://twitter.com/mjskay/status/1126101428253204481?s=12</a></td></tr><tr id="9055eb89-a9a2-4c74-8cad-38f25340009d"><td class="cell-title"><a href="Probabilistic visualizations/Success in academia.html">Success in academia </a></td><td class="cell-njA@"><span class="selected-value">Additional channels</span></td><td class="cell-(O&amp;&lt;"><time>@May 12, 2019 5:59 PM</time></td><td class="cell-w;lA"></td><td class="cell-[8aR"><a href="https://www.economist.com/graphic-detail/2019/05/10/success-in-academia-is-as-much-about-grit-as-talent" class="url-value">https://www.economist.com/graphic-detail/2019/05/10/success-in-academia-is-as-much-about-grit-as-talent</a></td></tr><tr id="4cb9c828-ffa7-4768-a234-56fafc836ed6"><td class="cell-title"><a href="Probabilistic visualizations/Religious Composition in Kingdom of Yugoslavia.html">Religious Composition in Kingdom of Yugoslavia</a></td><td class="cell-njA@"><span class="selected-value">Special layout</span></td><td class="cell-(O&amp;&lt;"><time>@May 12, 2019 8:49 PM</time></td><td class="cell-w;lA"><span class="selected-value">area</span></td><td class="cell-[8aR"><a href="https://twitter.com/milos_agathon/status/1127449677958221825" class="url-value">https://twitter.com/milos_agathon/status/1127449677958221825</a></td></tr><tr id="2c84e696-9280-47e3-b094-5a2f17c76a97"><td class="cell-title"><a href="Probabilistic visualizations/Hard Brexit and anti Brexit parties share.html">Hard-Brexit and anti-Brexit parties&#x27; share</a></td><td class="cell-njA@"><span class="selected-value">Reproducible</span></td><td class="cell-(O&amp;&lt;"><time>@May 15, 2019 9:09 PM</time></td><td class="cell-w;lA"><span class="selected-value">area</span><span class="selected-value">press</span></td><td class="cell-[8aR"><a href="https://twitter.com/jburnmurdoch/status/1126749065478168578" class="url-value">https://twitter.com/jburnmurdoch/status/1126749065478168578</a></td></tr><tr id="298f7800-8a9c-4d19-bb6e-529d08267c53"><td class="cell-title"><a href="Probabilistic visualizations/corrr.html">corrr</a></td><td class="cell-njA@"><span class="selected-value">Additional channels</span></td><td class="cell-(O&amp;&lt;"><time>@May 20, 2019 10:04 PM</time></td><td class="cell-w;lA"></td><td class="cell-[8aR"></td></tr><tr id="b9d6dd6e-5fce-4264-b7cc-2be2ab48322b"><td class="cell-title"><a href="Probabilistic visualizations/Violin plots for comparisons.html">Violin plots for comparisons</a></td><td class="cell-njA@"><span class="selected-value">Reproducible</span></td><td class="cell-(O&amp;&lt;"><time>@May 29, 2019 5:15 PM</time></td><td class="cell-w;lA"></td><td class="cell-[8aR"><a href="https://twitter.com/BrianNosek/status/1064551086210654209" class="url-value">https://twitter.com/BrianNosek/status/1064551086210654209</a></td></tr><tr id="7b9f11fc-72dc-4ba1-90e9-7a1c02eaf937"><td class="cell-title"><a href="Probabilistic visualizations/IUD drop outs.html">IUD drop-outs</a></td><td class="cell-njA@"><span class="selected-value">Special layout</span></td><td class="cell-(O&amp;&lt;"><time>@May 31, 2019 9:50 PM</time></td><td class="cell-w;lA"><span class="selected-value">flow</span></td><td class="cell-[8aR"><a href="https://www.scientificamerican.com/article/why-women-and-men-need-better-birth-control/" class="url-value">https://www.scientificamerican.com/article/why-women-and-men-need-better-birth-control/</a></td></tr><tr id="24e50e3e-fb24-428c-a36a-dff668670095"><td class="cell-title"><a href="Probabilistic visualizations/Statistical pie charts.html">Statistical pie charts</a></td><td class="cell-njA@"><span class="selected-value">Special layout</span></td><td class="cell-(O&amp;&lt;"><time>@Jun 25, 2019 10:28 AM</time></td><td class="cell-w;lA"></td><td class="cell-[8aR"><a href="https://thiswoo.wordpress.com/2008/10/21/i-give-you-statistical-pie-charts/" class="url-value">https://thiswoo.wordpress.com/2008/10/21/i-give-you-statistical-pie-charts/</a></td></tr><tr id="a3a6f648-d129-40f8-8f61-483554d3e64a"><td class="cell-title"><a href="Probabilistic visualizations/Soviet map land animal types.html">Soviet map — land animal types</a></td><td class="cell-njA@"><span class="selected-value">Special layout</span></td><td class="cell-(O&amp;&lt;"><time>@Aug 12, 2019 3:10 PM</time></td><td class="cell-w;lA"></td><td class="cell-[8aR"><a href="https://twitter.com/sasha_trub/status/1160952653498781697?s=20" class="url-value">https://twitter.com/sasha_trub/status/1160952653498781697?s=20</a></td></tr><tr id="afc25f40-4926-4f74-87ce-505683c40af4"><td class="cell-title"><a href="Probabilistic visualizations/America s light bulb revolution NYT.html">America&#x27;s light bulb revolution (NYT)</a></td><td class="cell-njA@"><span class="selected-value">Reproducible</span></td><td class="cell-(O&amp;&lt;"><time>@Sep 04, 2019 11:20 AM</time></td><td class="cell-w;lA"><span class="selected-value">area</span><span class="selected-value">press</span></td><td class="cell-[8aR"><a href="https://www.nytimes.com/interactive/2019/03/08/climate/light-bulb-efficiency.html?smid=nytcore-ios-share" class="url-value">https://www.nytimes.com/interactive/2019/03/08/climate/light-bulb-efficiency.html?smid=nytcore-ios-share</a></td></tr><tr id="e68df3e1-2d9d-47f4-9e9b-3321c0e1e64a"><td class="cell-title"><a href="Probabilistic visualizations/The 2020 Endorsement Primary.html">The 2020 Endorsement Primary</a></td><td class="cell-njA@"><span class="selected-value">Special layout</span></td><td class="cell-(O&amp;&lt;"><time>@Sep 09, 2019 1:14 PM</time></td><td class="cell-w;lA"><span class="selected-value">area</span></td><td class="cell-[8aR"><a href="https://projects.fivethirtyeight.com/2020-endorsements/democratic-primary/" class="url-value">https://projects.fivethirtyeight.com/2020-endorsements/democratic-primary/</a></td></tr><tr id="bde94d1a-f7e0-4e88-a12c-df47435b62a9"><td class="cell-title"><a href="Probabilistic visualizations/Michigan s 2020 Democratic Presidential Primary.html">Michigan’s 2020 Democratic Presidential Primary</a></td><td class="cell-njA@"><span class="selected-value">Reproducible</span></td><td class="cell-(O&amp;&lt;"><time>@Sep 09, 2019 1:18 PM</time></td><td class="cell-w;lA"><span class="selected-value">area</span></td><td class="cell-[8aR"><a href="https://projects.fivethirtyeight.com/2020-primaries/democratic/michigan/" class="url-value">https://projects.fivethirtyeight.com/2020-primaries/democratic/michigan/</a></td></tr><tr id="7e478ce4-eca5-444a-b5dd-c76d72dbd82e"><td class="cell-title"><a href="Probabilistic visualizations/Quantile dotplots 1.html">Quantile dotplots</a></td><td class="cell-njA@"><span class="selected-value">Reproducible</span></td><td class="cell-(O&amp;&lt;"><time>@Sep 18, 2019 10:19 AM</time></td><td class="cell-w;lA"><span class="selected-value">icon</span><span class="selected-value">paper</span></td><td class="cell-[8aR"><a href="doi.org/10.1145/2858036.2858558" class="url-value">doi.org/10.1145/2858036.2858558</a></td></tr><tr id="a2f69d31-f876-4ce8-aeef-9fe0c6783d60"><td class="cell-title"><a href="Probabilistic visualizations/How China Unleashed Twitter Trolls to Discredit Ho.html">How China Unleashed Twitter Trolls to Discredit Hong Kong’s Protesters</a></td><td class="cell-njA@"><span class="selected-value">Reproducible</span></td><td class="cell-(O&amp;&lt;"><time>@Sep 18, 2019 12:12 PM</time></td><td class="cell-w;lA"><span class="selected-value">area</span><span class="selected-value">bloc</span><span class="selected-value">press</span></td><td class="cell-[8aR"><a href="https://www.nytimes.com/interactive/2019/09/18/world/asia/hk-twitter.html?smid=nytcore-ios-share" class="url-value">https://www.nytimes.com/interactive/2019/09/18/world/asia/hk-twitter.html?smid=nytcore-ios-share</a></td></tr><tr id="787362ce-6866-4783-90ab-0f7a5fba493e"><td class="cell-title"><a href="Probabilistic visualizations/Icon array.html">Icon array </a></td><td class="cell-njA@"><span class="selected-value">Special layout</span></td><td class="cell-(O&amp;&lt;"><time>@Sep 18, 2019 7:35 PM</time></td><td class="cell-w;lA"></td><td class="cell-[8aR"></td></tr><tr id="792a4192-ac6c-4571-a223-6ea64b467d37"><td class="cell-title"><a href="Probabilistic visualizations/Hurricane path ensemble.html">Hurricane path ensemble</a></td><td class="cell-njA@"><span class="selected-value">Additional channels</span></td><td class="cell-(O&amp;&lt;"><time>@Sep 18, 2019 7:38 PM</time></td><td class="cell-w;lA"><span class="selected-value">paper</span></td><td class="cell-[8aR"><a href="https://doi.org/10.1109/TVCG.2018.2865193" class="url-value">https://doi.org/10.1109/TVCG.2018.2865193</a></td></tr><tr id="5eb98132-1ed1-4ede-bb57-05a033ea1ccc"><td class="cell-title"><a href="Probabilistic visualizations/Untitled.html">Untitled</a></td><td class="cell-njA@"></td><td class="cell-(O&amp;&lt;"><time>@Sep 18, 2019 12:12 PM</time></td><td class="cell-w;lA"></td><td class="cell-[8aR"></td></tr></tbody></table></div></article></body></html>
