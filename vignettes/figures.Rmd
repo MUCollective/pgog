@@ -1,0 +1,261 @@
+---
+title: "Vignette Title"
+author: "Vignette Author"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: inline
+---
+
+editor_options:
+  chunk_output_type: console
+  
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+library(tidyverse)
+library(gridExtra)
+```
+
+
+
+# Override default themes
+
+```{r}
+custom_theme <- theme_minimal() + 
+  theme(axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.text.x = element_text(vjust=5),
+        panel.grid = element_blank(),
+        axis.ticks = element_blank(),
+        # axis.ticks = element_line(),
+        legend.position = "none"
+  )
+theme_set(custom_theme)
+
+colorbrewer2 <- rev(c(
+  "#f7fcf0",
+  "#e0f3db",
+  "#ccebc5",
+  "#a8ddb5",
+  "#7bccc4",
+  "#4eb3d3",
+  "#2b8cbe",
+  "#0868ac",
+  "#084081"))
+
+
+colorbrewer2_warm <- rev(c(
+  "#ffffb2",
+  "#fecc5c",
+  "#fd8d3c",
+  "#e31a1c"
+))
+
+names(colorbrewer2) <- 1:length(colorbrewer2)
+
+
+# https://stackoverflow.com/questions/10504724/change-the-default-colour-palette-in-ggplot
+# scale_aesthetic_discrete <- function(...) scale_fill_manual(values = colorbrewer2)
+scale_fill_discrete <- function(...) scale_fill_manual(values = colorbrewer2)
+
+# to our great dismay scale_color_* doesn't work
+scale_colour_discrete <- function(...) scale_colour_manual(values = colorbrewer2_warm)
+```
+
+
+# More notes on how to do things
+
+
+## The chain example in the paper
+
+P(cyl, gear|am)
+
+```{r}
+prodplot(mtcars, ~ cyl + gear | am,  c("vspine", "vspine", "hbar")) + aes(fill=cyl, color = gear)
+ggsave("../figures/chain_cyl_gear_am.pdf", width = 2, height = 2)
+```
+
+
+The version that looks more like a tree map
+
+```{r}
+prodplot(mtcars, ~ cyl + gear + am,  c("hspine", "vspine", "hbar")) + aes(fill=cyl, color = gear)
+ggsave("../figures/chain_3var_tree.pdf", width = 3, height = 3)
+
+```
+
+
+The nice thing about `geom_density` is that there is no way to pick a bandwidth automatically and apply the same bandwidth to all groups/conditionals
+
+
+```{r}
+common_bw <- 1.5
+
+p_correct <- ggplot(mtcars) + 
+  geom_bloc(aes(
+    x = c(mpg), 
+    height = c(P(cyl|mpg), P(mpg)), 
+    fill = factor(cyl)), bw = common_bw) +
+  xlab("mpg")
+
+p_incorrect <- 
+  ggplot(mtcars) + 
+  geom_density(aes(
+    x = mpg,
+    y = stat(density),
+    fill = factor(cyl),
+    color = factor(cyl)), # bw = 2.4 fixes this
+    position = "stack", bw = common_bw) +
+  xlab("mpg")
+
+p_half_correct <- 
+  ggplot(mtcars) + 
+  geom_density(aes(
+    x = mpg,
+    y = stat(density * n),
+    fill = factor(cyl),
+    color = factor(cyl)), # bw = 2.4 fixes this
+    position = "stack", bw = common_bw) 
+
+p <- ggplot(mtcars) +  
+  geom_bloc(aes(x = c(mpg), height = c(P(mpg))), bw = common_bw) +
+  xlab("mpg")
+
+alles<-grid.arrange(p,p_incorrect, p_correct, nrow = 1)
+scaling <- 1.5
+# ggsave("../figures/density_new_raw.pdf", plot = alles, width = 4.6 * scaling, height = 1.3 * scaling)
+```
+
+
+#### reasoning mistake
+
+```{r}
+mtcars %>%
+  ggplot(aes(x = mpg, y=stat(density), fill = factor(cyl), color = NA, alpha = 0.5)) + 
+    geom_density(bw = common_bw)
+
+#ggsave("../figures/density_separate_raw.pdf", width = 7, height = 4)
+
+
+```
+
+Violating the The Principle of Visual-Data Correspondence:
+
+if we remove _half_ of the 8-cylinder cars ($D \rightarrow D$), the plot looks almost the same --- the region for 8-cylinder in fact remains to be 1/3 of the total density area.
+
+```{r}
+subset_incorrect <- mtcars %>%
+  group_by(cyl) %>%
+  filter((cyl == 8) & row_number() %% 2 ==0 | cyl != 8) %>%
+  ggplot(aes(x = mpg, y=stat(density), fill = factor(cyl), color = NA)) + 
+  geom_density(bw = common_bw, position = "stack") + 
+  labs(title = "Half of 8-cylinder data removed")
+
+p_incorrect <- p_incorrect + labs(title = "All data")
+
+
+subset_correct <- mtcars %>%
+  group_by(cyl) %>%
+  filter((cyl == 8) & row_number() %% 2 ==0 | cyl != 8) %>%
+  ggplot() + 
+ geom_bloc(aes(
+    x = c(mpg), 
+    height = c(P(cyl|mpg), P(mpg)), 
+    fill = factor(cyl)), bw = common_bw) +
+  xlab("mpg")
+  
+
+explanation <- grid.arrange(p_incorrect, subset_incorrect, p_correct, subset_correct, nrow = 2)
+
+ggsave("../figures/density_explanation.pdf",plot = explanation, width = 7, height = 4)
+
+```
+
+ACHTUNG: dotplot version colors the [15, 20) bin differntly ... where did they 6-cylinders go?
+
+```{r}
+ggplot(mtcars) + 
+  geom_dotplot(aes(x =  cut_width(mpg,width = 5, boundary = 5), 
+               fill = factor(cyl)), method = 'histodot', stackgroups = TRUE)
+  
+  ggplot(mtcars) + 
+  geom_dotplot(aes(x =  cut_width(mpg,width = 5, boundary = 5), 
+               fill = factor(cyl)), method = 'histodot', stackgroups = FALSE)
+  
+ggplot(mtcars, aes(x = mpg, fill = factor(cyl))) +
+  geom_dotplot(method="histodot", binwidth = 5, stackgroups = TRUE)
+
+ggplot(mtcars, aes(x = mpg, fill = factor(cyl))) +
+  geom_dotplot(method="histodot", binwidth = 5, stackgroups = FALSE)
+```
+
+
+
+```{r}
+ggplot(mtcars) + geom_density(aes(x =hp))
+```
+
+
+
+
+# pew example
+
+```{r}
+ggplot(mtcars) + 
+  geom_bloc(aes(y = c(cyl), x = c(am), width = c(P(cyl|am))))
+```
+
+
+
+## Using base ggplot
+
+Assuming x = am = race
+y = cyl = generation
+
+```{r}
+mtcars %>%
+  group_by(cyl,am) %>%
+  summarize(count.cyl = n()) %>%
+  mutate( prop.cyl = count.cyl/sum(count.cyl)) %>%
+  ggplot(aes(x = factor(cyl), y = prop.cyl)) + 
+  geom_col() + 
+  coord_flip() +
+  facet_grid(.~am)
+```
+
+
+
+
+
+
+# Pie chart analogy
+
+
+```{r}
+# Nope not this one
+ggplot(mtcars) +
+  geom_bar(aes(x = factor(cyl), fill = factor(cyl))) + 
+  coord_polar()
+```
+
+
+
+```{r}
+mtcars %>%
+  group_by(cyl) %>%
+  summarize(count = n()) %>%
+  ggplot() +
+  geom_bar(aes(x = "", y = count, fill = factor(cyl)), stat = "identity") +
+  coord_polar("y", start = 0) + 
+  theme_void()
+  
+ggsave("../figures/mtcar_pie.pdf", width = 4, height = 3)
+```

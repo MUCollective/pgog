@@ -27,6 +27,8 @@ geom_bloc <- function(mapping = NULL, data = NULL,
   parsed_mapping <- parse_aes(mapping)
   pprint(parsed_mapping)
 
+  # print(parsed_mapping)
+
 
   # hack the aes mapping so that ggplot selects the column in data
   rv_syms <- get_all_rv(parsed_mapping)
