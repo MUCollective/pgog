@@ -52,6 +52,9 @@ geom_bloc <- function(mapping = NULL, data = NULL,
   }
 
 
+  print(mapping)
+
+
 
 
   # hack to get position arg right

@@ -48,7 +48,7 @@ StatBloc <- ggplot2::ggproto(
                            kernel = "gaussian",
                            n = 512){
 
-    margin <- getFromNamespace("margin", "productplots")
+    margin <- getFromNamespace("margin", "productplots") # TODO: get rid of productplot dependency
     # stuff from prodcalc()
     # this is wrong... need unique()
     marg_var <- sapply(get_margs(prob.struct), as.character)
