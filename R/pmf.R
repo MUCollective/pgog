@@ -1,3 +1,4 @@
+#' parses a single pmf
 #' @param p a single expression like P(A, B | C, D)
 #' @return a list of marginals and conditionals
 parse_pmf <- function(p){
