@@ -36,7 +36,8 @@ See https://ggplot2.tidyverse.org/reference/geom_density.html
 ```{r}
 
 # Preserves marginal densities
-
+mtcars %>% ggplot(aes(x = mpg, y = stat(density)),fill = cut) +
+  geom_density(position = "fill")
 
 # You can use position="fill" to produce a conditional density estimate
 
