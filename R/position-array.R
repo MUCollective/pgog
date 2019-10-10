@@ -5,7 +5,7 @@
 #' @import dplyr
 #' @import magrittr
 #' @import ggplot2
-PositionArray <- ggplot2::ggproto("PositionArray",
+PositionArray <- ggproto("PositionArray",
                         ggplot2:::Position,
                         required_aes = c("x", "y"),
 
