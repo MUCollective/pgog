@@ -1,4 +1,4 @@
-context("test-pmfs")
+context("parsing-multiple-pmfs")
 library(purrr)
 library(rlang)
 
