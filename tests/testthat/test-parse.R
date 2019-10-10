@@ -1,6 +1,7 @@
-context("parse")
+context("parse.R")
 library(rlang)
-# ACHTUNG: this test is broken
+
+
 
 # legit mapping
 m1 <- aes(height = c(P(cyl|gear)), x = c(gear))
