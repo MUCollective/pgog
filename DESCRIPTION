@@ -12,7 +12,8 @@ Imports: tidyverse,
     ggplot2,
     grid,
     plyr
-Suggests: knitr,
+Suggests: 
+    knitr,
     rmarkdown,
-    testthat
+    testthat (>= 2.1.0)
 VignetteBuilder: knitr
