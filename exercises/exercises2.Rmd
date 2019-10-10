@@ -37,6 +37,7 @@ See https://ggplot2.tidyverse.org/reference/geom_density.html
 
 # Preserves marginal densities
 
+ggplot(mtcars,aes(x = mpg, fill = factor(cyl))) + geom_density(position = "fill")
 
 # You can use position="fill" to produce a conditional density estimate
 
@@ -47,7 +48,7 @@ See https://ggplot2.tidyverse.org/reference/geom_density.html
 https://ggplot2.tidyverse.org/reference/geom_dotplot.html
 
 ```{r}
-
+ggplot(mtcars,aes(disp, mpg)) + geom_point()
 ```
 
 
@@ -57,12 +58,15 @@ See https://ggplot2.tidyverse.org/reference/geom_bar.html
 
 
 ```{r}
-
+ggplot(mtcars,aes(cyl)) + 
+  geom_bar()
 ```
 
 ## conditional barcharts
 
 ```{r}
-
+ ggplot(mtcars,aes(cyl)) + 
+  geom_bar()+ 
+  facet_grid(~gear)
 ```
 
