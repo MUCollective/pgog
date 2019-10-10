@@ -2,8 +2,10 @@
 #' parses and checks aesthetics mapping
 #' @param mapping aesthetics mapping, a list of expressions (used to be
 #' quosures)
+#' @return the aesthetics matrix
 #' @export
 parse_aes <- function(mapping){
+  # browser()
 
   # 1. get a list of prob and coord aesthetics
   flat_mapping <- flatten_aes(mapping)$mapping
@@ -61,7 +63,10 @@ get_all_rv <- function(mapping){
 
 }
 
-
+#' TODO
+#' @param mapping
+#' @return
+#'
 get_margs <- function(mapping){
   margs <- flatten(mapping$marginals)
   alles <- rev(margs[sapply(margs, function(i) i !=1)])

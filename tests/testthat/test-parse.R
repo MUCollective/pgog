@@ -3,36 +3,22 @@ library(rlang)
 # ACHTUNG: this test is broken
 
 # legit mapping
+m1 <- aes(height = c(P(cyl|gear)), x = c(gear))
 
-m1 <- list()
-m1$width <- list(expr(P(B|A)), expr(P(A)), expr(P(C|A,B)))
-m1$x <- list(expr(A))
+# TODO: write more cases
 
 # bad mapping
-m2 <- m1
-m2$width <- list(expr(P(A)), expr(P(C)))
 
+m2 <- aes(height = c(P(cyl|gear), P(cyl)), x = c(gear))
 
-# conditinoal pmf
-m3 <- list()
-m3$area <- list(expr(P(C, B|A, D)))
-m3$x <- list(expr(A))
-m3$y <- list(expr(D))
-
-# test_that("parse_aes succeed", {
-#
-#   expect_null(parse_aes(m1))
-#
-# })
-#
-#
-# test_that("parse_aes fail", {
-#   expect_error(parse_aes(m2))
-#
-# })
-
+# TODO: write more cases
 
 
 test_that("parse_aes conditional pmf", {
-  expect_null(parse_aes(m3))
+  expect_named(parse_aes(m1)) # TODO: is there a better way to test this?
+})
+
+
+test_that("parse_aes conditional pmf", {
+  expect_error(parse_aes(m2)) # TODO: is there a better way to test this?
 })

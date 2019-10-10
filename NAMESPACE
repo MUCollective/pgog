@@ -3,7 +3,6 @@
 export(GeomIcon)
 export(ddecker)
 export(geom_bloc)
-export(geom_bloc_old)
 export(geom_icon)
 export(hbar)
 export(hspine)
