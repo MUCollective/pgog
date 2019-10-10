@@ -7,6 +7,7 @@ output: html_notebook
 library(tidyverse) # ggplot is included in this
 ```
 
+
 # Explanation
 
 This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
@@ -37,7 +38,7 @@ See https://ggplot2.tidyverse.org/reference/geom_density.html
 
 # Preserves marginal densities
 
-
+mtcars %>% ggplot(aes(x = mpg, fill = factor(cyl))) + geom_density(position = "fill")
 # You can use position="fill" to produce a conditional density estimate
 
 ```
@@ -47,7 +48,7 @@ See https://ggplot2.tidyverse.org/reference/geom_density.html
 https://ggplot2.tidyverse.org/reference/geom_dotplot.html
 
 ```{r}
-
+mtcars %>% ggplot(aes(disp, mpg)) + geom_point()
 ```
 
 
@@ -57,12 +58,14 @@ See https://ggplot2.tidyverse.org/reference/geom_bar.html
 
 
 ```{r}
+mtcars %>% ggplot(aes(cyl)) + geom_bar()
 
 ```
 
 ## conditional barcharts
 
 ```{r}
+mtcars %>% ggplot(aes(cyl)) + geom_bar() + facet_grid(~gear)
 
 ```
 
