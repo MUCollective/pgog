@@ -22,6 +22,7 @@ knitr::opts_chunk$set(
 
 library(tidyverse)
 library(gridExtra)
+library(ggplot2)
 ```
 
 

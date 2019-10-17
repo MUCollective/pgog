@@ -63,6 +63,7 @@ geom_icon <- function(mapping = NULL,
 #' @export
 #' @importFrom grid pointsGrob
 #' @importFrom grid gpar
+#' @importFrom ggplot2 aes
 GeomIcon <- ggplot2::ggproto("GeomIcon", ggplot2::GeomPoint,
                     required_aes = c("x", "y"),
                     non_missing_aes = c("size", "shape", "colour"),
