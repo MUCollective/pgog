@@ -13,7 +13,10 @@ Imports: tidyverse,
     grid,
     plyr,
     ggmosaic,
-    ggridges
+    ggridges,
+    dplyr,
+    magrittr,
+    rlang
 Suggests: 
     knitr,
     rmarkdown,

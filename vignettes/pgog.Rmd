@@ -23,6 +23,7 @@ knitr::opts_chunk$set(
 library(tidyverse)
 library(gridExtra)
 library(ggplot2)
+library(uncertainty.gogr)
 ```
 
 
@@ -201,6 +202,9 @@ ggplot(mtcars) + geom_bloc(aes(x = c(mpg, gear), height = c(P(cyl | gear,mpg))))
 ### P(B,A,...)
 
 ```{r}
+common_bw <- 1.5
+
+
 ggplot(mtcars) + 
   geom_bloc(aes(
     x = c(mpg), 

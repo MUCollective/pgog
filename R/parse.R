@@ -64,8 +64,8 @@ get_all_rv <- function(mapping){
 }
 
 #' TODO
-#' @param mapping
-#' @return
+#' @param mapping probability mapping TODO
+#' @return TODO: all marginals in the mapping
 #'
 get_margs <- function(mapping){
   margs <- flatten(mapping$marginals)
@@ -73,7 +73,10 @@ get_margs <- function(mapping){
   alles
 }
 
-
+#' TODO
+#' @param mapping probability mapping TODO
+#' @return TODO: all conditionals in the mapping
+#'
 get_conds <- function(mapping){
   margs <- flatten(mapping$marginals)
   cond_inx <- sapply(margs, function(i) i == 1)
@@ -83,12 +86,6 @@ get_conds <- function(mapping){
 
 
 
-#' Helper func
-#' @param prob_mtx
-#' @param coord_mtx
-#'
-#' @return
-#'
 add_coord_aes <- function(prob_mtx, coord_aes){
 
 
@@ -162,7 +159,7 @@ complete_conditionals <- function(prob_mtx){
 
 
 #' Helper func: Goes thru the matrix to check if it's a legit factorization of a pmf
-#' @param mtx rows: pmf terms, cols: marginals, conditionals, aesthetics names
+#' @param m rows: pmf terms, cols: marginals, conditionals, aesthetics names
 #'
 mtx_check <- function(m){
 
@@ -185,7 +182,7 @@ mtx_check <- function(m){
 
 #' Helper function
 #'
-#' @param mapping
+#' @param mapping TODO: aesthetics mapping?
 #'
 #' @return a dataframe of aes:variables
 #'

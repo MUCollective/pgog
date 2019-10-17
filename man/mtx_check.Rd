@@ -7,7 +7,7 @@
 mtx_check(m)
 }
 \arguments{
-\item{mtx}{rows: pmf terms, cols: marginals, conditionals, aesthetics names}
+\item{m}{rows: pmf terms, cols: marginals, conditionals, aesthetics names}
 }
 \description{
 Helper func: Goes thru the matrix to check if it's a legit factorization of a pmf
