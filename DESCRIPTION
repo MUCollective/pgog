@@ -11,7 +11,8 @@ RoxygenNote: 6.1.1
 Imports: tidyverse,
     ggplot2,
     grid,
-    plyr
+    plyr,
+    ggmosaic
 Suggests: 
     knitr,
     rmarkdown,
