@@ -10,6 +10,9 @@ parse_aes(mapping)
 \item{mapping}{aesthetics mapping, a list of expressions (used to be
 quosures)}
 }
+\value{
+the aesthetics matrix
+}
 \description{
 parses and checks aesthetics mapping
 }

@@ -11,9 +11,15 @@ RoxygenNote: 6.1.1
 Imports: tidyverse,
     ggplot2,
     grid,
-    plyr
+    plyr,
+    ggmosaic,
+    ggridges,
+    dplyr,
+    magrittr,
+    rlang
 Suggests: 
     knitr,
     rmarkdown,
-    testthat (>= 2.1.0)
+    testthat (>= 2.1.0),
+    covr
 VignetteBuilder: knitr

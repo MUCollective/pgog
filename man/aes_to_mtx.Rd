@@ -7,7 +7,7 @@
 aes_to_mtx(mapping)
 }
 \arguments{
-\item{mapping}{}
+\item{mapping}{TODO: aesthetics mapping?}
 }
 \value{
 a dataframe of aes:variables

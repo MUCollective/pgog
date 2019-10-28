@@ -11,10 +11,10 @@ library(tidyverse)
 #   rlang::expr(...)
 # }
 
-
-test_that("parsing things connect to ggplot", {
-
-  res <- ggplot(mtcars) +
-    geom_bloc(aes(height = c(P(carb | gear, cyl), P(cyl|gear)), x = c(gear)))
-  expect_null(res)
-})
+# TODO
+# test_that("parsing things connect to ggplot", {
+#
+#   res <- ggplot(mtcars) +
+#     geom_bloc(aes(height = c(P(carb | gear, cyl), P(cyl|gear)), x = c(gear)))
+#   expect_null(res)
+# })

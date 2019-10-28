@@ -1,5 +1,5 @@
 ---
-title: "Vignette Title"
+title: "Examples"
 author: "Vignette Author"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -24,6 +24,7 @@ library(tidyverse)
 library(gridExtra)
 library(ggplot2)
 #devtools::install_github("hadley/productplots")
+library(uncertainty.gogr)
 ```
 
 
@@ -202,6 +203,9 @@ ggplot(mtcars) + geom_bloc(aes(x = c(mpg, gear), height = c(P(cyl | gear,mpg))))
 ### P(B,A,...)
 
 ```{r}
+common_bw <- 1.5
+
+
 ggplot(mtcars) + 
   geom_bloc(aes(
     x = c(mpg), 
