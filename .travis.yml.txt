@@ -1,1 +1,6 @@
 language: r
+branches:
+  only:
+  - master
+  - dev
+  - dev2
