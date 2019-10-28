@@ -11,6 +11,8 @@ test_that("P(B|A) P(A) P(C|A, B)", {
 })
 
 
+
+
 test_that("P(C|A, B) P(A) P(B|A)", {
   exprs <- c(expr(P(B|A)), expr(P(A)), expr(P(C|A, B)))
 
@@ -39,11 +41,6 @@ test_that(" P(B | A) P(A)", {
 
 # these should fail
 
-test_that("P(A) P(C)", {
-  exprs <- c(expr(P(A)), expr(P(C)))
-
-  expect_error(parse_pmfs(one_d = exprs))
-})
 
 
 test_that("P(B|A) P(A) P(A|C)", {
