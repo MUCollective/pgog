@@ -18,7 +18,7 @@ test_that("P(A,A)", {
 test_that("P(A)", {
   exprs <- expr(P(A))
   res <- parse_pmf(exprs)
-  expect_equal(res, list(marginals = A))
+  expect_equal(res, list(marginals = expr(A)))
 })
 
 test_that("P(A|B)", {
