@@ -121,7 +121,7 @@ repack <- function(df, direction, spacing){
       idx <- match(i, ys)
       new_ys[idx]
     }
-    df %<>% mutate(y = match_ys(y))
+    df <- df %>% mutate(y = match_ys(y))
     df
 
   } else {
@@ -136,7 +136,7 @@ repack <- function(df, direction, spacing){
       new_xs[idx]
     }
 
-    df %<>% mutate(x = match_xs(x))
+    df <- df %>% mutate(x = match_xs(x))
     df
 
   }
@@ -146,7 +146,7 @@ repack <- function(df, direction, spacing){
 calc_spacing <- function(bounds, direction, offset){
 
   if (direction == "down"){
-    bounds %<>%
+    bounds <- bounds %>%
       mutate(n_icon_col = sqrt(.N * (r-l )/(t-b )))
     n_icon_col <- ceiling(max(bounds$n_icon_col))
     # ACHTUNG: hack
@@ -154,7 +154,7 @@ calc_spacing <- function(bounds, direction, offset){
     spacing
 
   } else {
-    bounds %<>%
+    bounds <- bounds %>%
       mutate(n_icon_row = sqrt(.N * (t-b)/(r - l)))
     n_icon_row <- ceiling(max(bounds$n_icon_row))
     spacing <- (bounds$t[1] - bounds$b[1]) / (n_icon_row + 1)
@@ -178,13 +178,13 @@ pack_one_partition <- function(counts, bound, spacing, N, offset, direction, max
     x.coords <- seq(from = bound$l + spacing/2, by = spacing, length.out = N)
     y.coords <- seq(from = bound$b + spacing/2, by = spacing, length.out = ceiling(max_count/N ))
 
-    counts %<>%
+    counts <- counts %>%
       select(c(.N, all_vars)) %>%
       uncount(weights = .N)
 
     grid <- expand.grid(x = rev(x.coords), y = rev(y.coords))
 
-    grid %<>%
+    grid <- grid %>%
       group_by_("y") %>%
       mutate(x = rev(x)) %>%
       ungroup() %>%
@@ -199,13 +199,13 @@ pack_one_partition <- function(counts, bound, spacing, N, offset, direction, max
     y.coords <- seq(from = bound$b + spacing/2, by = spacing, length.out = N)
     x.coords <- seq(from = bound$l + spacing/2, by = spacing, length.out = ceiling(sum(counts$.N)/N))
 
-    counts %<>%
+    counts <- counts %>%
       select(c(.N, all_vars)) %>%
       uncount(weights = .N)
 
     grid <- expand.grid(x = x.coords, y = rev(y.coords))
 
-    grid %<>%
+    grid <- grid %>%
       arrange(x) %>%
       head(n=nrow(counts))
 
