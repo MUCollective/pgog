@@ -9,7 +9,6 @@ bloc_divide <- function(data, prob.struct, offset, level=1, bounds = productplot
   first_aes <- prob.struct$aes[1]
   d <- if (first_aes == "area") 2 else 1
 
-  # margin <- getFromNamespace("margin", "productplots")
   parent_data <- margin(data, rev(seq_len(d)))
 
   parent <- divide_base(data = parent_data, bounds = bounds,
@@ -232,7 +231,6 @@ icon_divide <- function(data, prob.struct, offset, level=1, bounds = productplot
   first_aes <- prob.struct$aes[1]
   d <- if (first_aes == "area") 2 else 1
 
-  # margin <- getFromNamespace("margin", "productplots")
   parent_data <- margin(data, rev(seq_len(d)))
 
 

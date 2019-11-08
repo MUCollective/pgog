@@ -172,7 +172,7 @@ GeomBloc <- ggplot2::ggproto(
       data
     } else {
       # not density plots
-      # productplots, etc. only want top level rectangles
+      # product plots, etc. only want top level rectangles
       # browser()
       subset(data, level==max(data$level))
     }

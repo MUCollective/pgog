@@ -48,8 +48,6 @@ StatIcon <- ggplot2::ggproto(
       cond_var <- c()
     }
 
-    # margin <- getFromNamespace("margin", "productplots")
-    # browser()
     wt <- margin(data, marg_var, cond_var)
 
     base_layout <- icon_divide(data = wt, prob.struct = prob.struct, offset = offset)
