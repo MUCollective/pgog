@@ -2,6 +2,7 @@
 #' @param p a single expression like P(A, B | C, D)
 #' @return a list of marginals and conditionals
 parse_pmf <- function(p){
+  #browser()
 
   l <- as.character(p)
   l <- l[2:length(l)]
@@ -107,7 +108,7 @@ combine_pmfs <- function(res){
 
   stopifnot(res$length >1 & length(common_rv)  != 0) #TODO: >2 pmfs?
 
-  # browser()
+  # #browser()
   # res$marginals <- c(res$marginals, common_rv) # this is wrong
   rv_idx <- which(res$conditionals %in% common_rv )
   res$conditionals <- res$conditionals[-rv_idx]

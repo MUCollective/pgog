@@ -22,10 +22,11 @@ geom_bloc <- function(mapping = NULL, data = NULL,
   # is_aes_p <- function(i) i %in% aes_p
   # mapping_p <- mapping[is_aes_p(names(mapping))]
 
-
+  browser()
   # parse prob structure
   parsed_mapping <- parse_aes(mapping)
   pprint(parsed_mapping)
+
 
   # print(parsed_mapping)
 
@@ -112,7 +113,7 @@ GeomBloc <- ggplot2::ggproto(
 
   # from ggplot, geom-ribbon.r
   setup_data = function(self, data, params){
-
+browser()
     if ("density" %in% names(data)) {
       # all density plots
       data <- transform(data[order(data$PANEL, data$group, data$x), ], ymin = 0, ymax = y)
@@ -160,7 +161,7 @@ GeomBloc <- ggplot2::ggproto(
             data <- cbind(data, rel_min_height = params$rel_min_height)
         }
 
-        # browser()
+         browser()
         data <- transform(data,
                   ymin = y,
                   ymax = y + iscale*scale*height,
@@ -173,7 +174,7 @@ GeomBloc <- ggplot2::ggproto(
     } else {
       # not density plots
       # productplots, etc. only want top level rectangles
-      # browser()
+       browser()
       subset(data, level==max(data$level))
     }
   },
