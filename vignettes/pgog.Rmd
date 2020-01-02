@@ -77,7 +77,7 @@ scale_colour_discrete <- function(...) scale_colour_manual(values = colorbrewer2
 P(A)
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(width = c(P(cyl))))
+ggplot(mtcars) + geom_bloc(aes(width = c(P(cyl)))) 
 ```
 
 P(A|B)

@@ -10,7 +10,8 @@ aes_lookup <- function(aes_str){
     y.width = return(vbar),
     # y.height = return(vbar), # ACHTUNG
     height = return(vspine),
-    width = return(hspine)
+    width = return(hspine),
+    fill.width = return(hspine)
   )
 }
 

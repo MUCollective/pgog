@@ -94,8 +94,6 @@ GeomBloc <- ggplot2::ggproto(
   },
 
 
-
-
   # required_aes = c("xmin", "xmax", "ymin", "ymax"),
   required_aes = c(),
 
@@ -173,7 +171,6 @@ GeomBloc <- ggplot2::ggproto(
     } else {
       # not density plots
       # product plots, etc. only want top level rectangles
-      # browser()
       subset(data, level==max(data$level))
     }
   },
