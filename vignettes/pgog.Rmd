@@ -72,55 +72,69 @@ scale_colour_discrete <- function(...) scale_colour_manual(values = colorbrewer2
 
 # geom_bloc
 
-## product plots
+Assuming B,C, etc. are discrete variables
 
-P(A)
+## Product/area plots for discrete A
+
+### {w,h} <- P(A)
 
 ```{r}
 ggplot(mtcars) + geom_bloc(aes(width = c(P(cyl)))) 
 ```
 
-P(A|B)
-
-```{r}
-ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl|gear)), x = c(gear)))
-```
-
-P(A)
+### {w,h} <- P(A), {x,y} <- A
 
 ```{r}
 ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl)), x = c(cyl)))
 ```
 
+TODO: new combination 
+
+  w <- P(A)
+  x <-A
+
+### {w,h} <- P(A|B), {x,y} <- (A),B
+
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl|gear, carb)), x = c(gear, carb)))
+ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl|gear)), x = c(gear)))
 ```
+
+
+```{r}
+ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl|gear)), x = c(cyl), y = c(gear)))
+
+```
+
+
+
+### {w,h} <- P(A|B,C), {x,y} <- B,C
 
 ```{r}
 ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl|gear, carb)), x = c(gear), y=c(carb)))
 ```
 
+### 1+ probabilistic variables
 
 ```{r}
 ggplot(mtcars) + geom_bloc(aes(height = c(P(gear|am), P(cyl|gear, am)), 
                                x = c(am)))
 
-ggplot(mtcars) + geom_bloc(aes(height = c(P(gear|am)), width = c(P(cyl|gear, am)), 
+ggplot(mtcars) + geom_bloc(aes(height = c(P(gear|am)), 
+                               width = c(P(cyl|gear, am)), 
                                y = c(am)))
 
-
 ggplot(mtcars) + geom_bloc(aes(height = c(P(gear), P(cyl|gear))))
+
+ggplot(mtcars) + geom_bloc(aes(height = c(P(gear|am), P(cyl|gear, am)), 
+                               x = c(gear), 
+                               y = c(am)))
 ```
 
-```{r}
-ggplot(mtcars) + geom_bloc(aes(height = c(P(gear|am), P(cyl|gear, am)), x = c(gear), y = c(am)))
-```
+
+## Density plots for continuous A
 
 
-## density plots
-
-
-### P(A|...)
+### h <- P(A), x <- A
 
   x <- A
   height <- P(A)
@@ -129,67 +143,53 @@ ggplot(mtcars) + geom_bloc(aes(height = c(P(gear|am), P(cyl|gear, am)), x = c(ge
 ggplot(mtcars) +  geom_bloc(aes(x = c(mpg), height = c(P(mpg)))) 
 ```
 
-### P(A|B)
+### h <- P(A|B), x <- A, f <- B
 
-TODO: this spec is wrong
-
-```{r}
-ggplot(mtcars) + geom_bloc(aes(x = c(mpg, cyl), height = c(P(mpg | cyl)), colour = factor(cyl)))
-```
-
-  x <- A
-  color <- B
-  height <- P(A|B)
+`fill = cyl` cannot be omitted
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(
-    x = c(mpg), 
-   height = c(P(mpg | cyl)), 
-   fill = factor(cyl)))  + 
-  scale_fill_brewer(palette = "Accent") + theme_minimal()
-
+ggplot(mtcars) + geom_bloc(aes(x = mpg, fill = cyl, height = c(P(mpg | cyl))))
 ```
 
 
-### Ridge plots
+### h <- P(A|B), x <- A, y <- B
   
-  x <- A
-  y <- B
-  height <- P(A|B)
-
+Ridge plots
+  
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(x = c(mpg), height = c(P(mpg | cyl)), y = c(cyl)))
+ggplot(mtcars) + geom_bloc(aes(x = c(mpg), height = c(P(mpg | cyl)), y = c(cyl), fill = cyl))
 ```
 
-  x <- A
-  y <- B
-  color <- B
-  height <- P(A|B)
+### h <- P(A|B,C), x <- A, y <- B, f <- C
+
+More conditionals
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(
-  x = c(mpg), 
-  y = c(cyl),
-  height = c(P(mpg | cyl)),  
-  color = factor(cyl)
-))
+ggplot(mtcars) + geom_bloc(
+  aes(
+    x = c(mpg),
+    y = c(gear), 
+    fill = factor(cyl),
+    height = c(P(mpg | gear, cyl))
+  ))
 ```
 
 
-
-
-more conds
+Issue #58 TODO/bug: this should be different from above; should be faceting?
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(x = c(mpg,gear), y = c(cyl), height = c(P(mpg | gear, cyl))))
+ggplot(mtcars) + geom_bloc(aes(x = c(mpg,cyl), y = c(gear), fill=factor(cyl), height = c(P(mpg | gear, cyl))))
 ```
 
-### P(B|A, ...)
+### h <- P(B|A), x <- A, f <- B
 
-TODO: position needs to be "fill"
+TODO/bug: position needs to be "fill" in `geom_bloc`
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(x = c(mpg), height = c(P(cyl | mpg)), fill = factor(cyl)))
+ggplot(mtcars) + geom_bloc(aes(x = c(mpg), 
+                               height = c(P(cyl | mpg)), 
+                               fill = factor(cyl)), 
+                           position = "fill") # need fixing
 ```
 
 ```{r}
