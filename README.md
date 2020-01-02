@@ -1,3 +1,3 @@
-# uncertainty-gog
+# A Probabilistic Grammar of Graphics
 
 
