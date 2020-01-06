@@ -192,32 +192,34 @@ ggplot(mtcars) + geom_bloc(aes(x = c(mpg),
                            position = "fill") # need fixing
 ```
 
+Issue #58 TODO/bug
+
 ```{r}
 ggplot(mtcars) + geom_bloc(aes(x = c(mpg, gear), height = c(P(cyl | gear,mpg))))
 ```
 
 
-### P(B,A,...)
+### 1+ probabilistic variables
 
 ```{r}
 common_bw <- 1.5
-
 
 ggplot(mtcars) + 
   geom_bloc(aes(
     x = c(mpg), 
     height = c(P(cyl|mpg), P(mpg)), 
-    fill = factor(cyl)), bw = common_bw) +
+    fill = factor(cyl)), bw = common_bw, position = "stack") + # TODO: remove position arg
   xlab("mpg")
 ```
 
 
 
+More conditionals
+
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(x = c(hp, gear), fill = factor(cyl), height = c(P(cyl|hp, gear), P(hp|gear))))
+ggplot(mtcars) + geom_bloc(aes(x = c(hp, gear), fill = factor(cyl), height = c(P(cyl|hp, gear), P(hp|gear))), position = "stack")
 ```
 
-TODO: more conds
 
 # geom_icon
 
