@@ -133,15 +133,29 @@ ggplot(mtcars) + geom_bloc(aes(height = c(P(gear|am), P(cyl|gear, am)),
 
 ## Density plots for continuous A
 
+Currently PGoG only includes `x, height` or `y, width` combinations for density plots. All of the examples in this subsection should work `y, width` as well. 
+
+
+### {w,h} <- P(A)
+
+Doesn't exist yet in the grammar. 
 
 ### h <- P(A), x <- A
 
-  x <- A
-  height <- P(A)
 
 ```{r}
 ggplot(mtcars) +  geom_bloc(aes(x = c(mpg), height = c(P(mpg)))) 
 ```
+
+
+Alternatively, w <- P(A), y <- A
+
+TODO: this is not rotated hmmm issue #59
+
+```{r}
+ggplot(mtcars) +  geom_bloc(aes(y = c(mpg), width = c(P(mpg)))) 
+```
+
 
 ### h <- P(A|B), x <- A, f <- B
 
@@ -201,6 +215,8 @@ ggplot(mtcars) + geom_bloc(aes(x = c(mpg, gear), height = c(P(cyl | gear,mpg))))
 
 ### 1+ probabilistic variables
 
+More than one probabilistic variables in the spec
+
 ```{r}
 common_bw <- 1.5
 
@@ -214,8 +230,6 @@ ggplot(mtcars) +
 
 
 
-More conditionals
-
 ```{r}
 ggplot(mtcars) + geom_bloc(aes(x = c(hp, gear), fill = factor(cyl), height = c(P(cyl|hp, gear), P(hp|gear))), position = "stack")
 ```
@@ -223,60 +237,88 @@ ggplot(mtcars) + geom_bloc(aes(x = c(hp, gear), fill = factor(cyl), height = c(P
 
 # geom_icon
 
-Using `geom_bloc` first to get the base partition right
+## Discrete var (icon arrays)
+
+### {w,h} <- P(A)
+
+aka spine plots
 
 ```{r}
-ggplot(mtcars) + geom_icon(aes(height = c(P(cyl|gear)), x = c(gear), fill = c(factor(cyl))), stat = "icon") +
-  scale_fill_brewer(palette = "Accent") +
-  theme_minimal() 
+ggplot(mtcars) + geom_icon(aes(height=c(P(cyl))))
 ```
 
 ```{r}
-ggplot(mtcars) + geom_icon(aes(height = c(P(cyl|gear), P(gear)), x = c(gear, vs)), stat = "icon") +
-  coord_fixed()
+ggplot(mtcars) + geom_icon(aes(width=c(P(cyl))))
 ```
+
+TODO: can't add fill color Computation failed in `stat_icon()`: could not find function "divider"
+
+https://github.com/MUCollective/pgog/issues/60
 
 ```{r}
-ggplot(mtcars) + geom_icon(aes(height = c(P(cyl|carb)), y=c(carb)), stat = "icon") +
-  # scale_fill_brewer(palette = "Accent") + 
-  # theme_minimal() + 
-  NULL
+# ggplot(mtcars) + geom_icon(aes(height=c(P(cyl)), fill= cyl))
 ```
 
+### {w,h} <- P(A), x,y <- A
+
+bar charts filled with icons 
+
+```{r}
+ggplot(mtcars) + geom_icon(aes(
+  height = c(P(cyl)), 
+  x = c(cyl), 
+  fill = c(factor(cyl)
+  ))) 
+```
+
+This is just ugly
+|
+V
+
+```{r}
+ggplot(mtcars) + geom_icon(aes(
+  width = c(P(cyl)), 
+  y = c(cyl), 
+  fill = c(factor(cyl)
+  ))) 
+```
+
+
+### {w,h} <- P(A|B), {x,y} <- (A),B
+
+```{r}
+ggplot(mtcars) + geom_icon(aes(height = c(P(cyl|gear)), x = c(gear)))
+```
+
+TODO: this one is supposed to be different from the prev one?
+
+```{r}
+ggplot(mtcars) + geom_icon(aes(height = c(P(cyl|gear)), x = c(cyl, gear)))
+```
+
+
+
+TODO: these spec are wrong why does the parser not catch it
+
+```{r}
+# ggplot(mtcars) + geom_icon(aes(height = c(P(gear)), x = c(gear, cyl)))
+
+# ggplot(mtcars) + geom_icon(aes(height = c(P(cyl|gear), P(gear)), x = c(gear, vs)))
+```
+
+
+### {w,h} <- P(A|B,C), {x,y} <- B,C
 
 ```{r}
 ggplot(mtcars) + 
-  geom_icon(aes(height = c(P(cyl|gear, vs)), x = c(gear), y=c(vs))) +
-  # geom_bloc(aes(height = c(P(cyl|gear, vs)), x = c(gear), y=c(vs))) + 
-  coord_fixed()
+  geom_icon(aes(height = c(P(cyl|gear, vs)), x = c(gear), y=c(vs))) 
 ```
 
 
-## vspine
 
-```{r}
-ggplot(mtcars) + 
-  geom_icon(aes(height = c(P(cyl)))) + 
-  # geom_bloc(aes(height = c(P(cyl)))) + 
-  coord_fixed()
-```
+## Continuous var (dotplots)
 
-## hspine
-
-```{r}
-ggplot(mtcars) + 
-  geom_icon(aes(width = c(P(cyl)))) + 
-  geom_bloc(aes(width = c(P(cyl)))) + 
-  coord_fixed()
-```
-
-## dotplots
-
-```{r}
-ggplot(mtcars) + 
-  geom_icon(aes(height = c(P(cyl))))
-```
-
+TODO: need implementing
 
 
 
