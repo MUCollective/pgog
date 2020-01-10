@@ -321,5 +321,25 @@ ggplot(mtcars) +
 
 TODO: need implementing
 
+### {w,h} <- P(A)
+
+
+```{r}
+# ggplot(mtcars) + geom_icon(aes(height=c(P(mpg))))
+```
+
+```{r}
+# ggplot(mtcars) + geom_icon(aes(width=c(P(mpg))))
+```
+
+
+### {w,h} <- P(A), x,y <- A
+
+
+### {w,h} <- P(A|B), {x,y} <- (A),B
+### {w,h} <- P(A|B,C), {x,y} <- B,C
+
+
+
 
 
