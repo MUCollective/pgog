@@ -225,7 +225,7 @@ ggplot(mtcars) +
   geom_bloc(aes(
     x = c(mpg), 
     height = c(P(cyl|mpg), P(mpg)), 
-    fill = factor(cyl)), bw = common_bw, position = "stack") + # TODO: remove position arg
+    fill = factor(cyl)), bw = common_bw) + # TODO: remove position arg
   xlab("mpg")
 ```
 
