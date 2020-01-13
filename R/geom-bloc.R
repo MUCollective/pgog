@@ -7,7 +7,7 @@
 #'
 geom_bloc <- function(mapping = NULL, data = NULL,
                       stat = "bloc",
-                      position = "stack",
+                      position = "bloc",
                       ...,
                       binwidth = NULL,
                       bins = NULL,
@@ -68,7 +68,7 @@ geom_bloc <- function(mapping = NULL, data = NULL,
     mapping = mapping,
     stat = stat,
     geom = GeomBloc,
-    position = position, # use customized position, pass mapping as argument
+    position = position_bloc(mapping = parsed_mapping), # use customized position, pass mapping as argument
     show.legend = show.legend,
     check.aes = FALSE,
     inherit.aes = FALSE, # only FALSE to turn the warning off
