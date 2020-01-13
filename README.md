@@ -9,8 +9,9 @@ This is an R package that accompanies our [CHI 2020 paper](https://osf.io/dy8qv/
 
 ## Useful links
 
-- [Documentation]
+- [Documentation]()
 - [Project website]()
   - [Probabilistic visualization collection]()
+  - [Sketch(-y) proof of correctness](https://xiaoyingpu.github.io/note/correctness-proof/)
 - [Paper pre-print]
 - [Paper at ACM DL]
