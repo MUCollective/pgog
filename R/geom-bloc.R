@@ -7,7 +7,7 @@
 #'
 geom_bloc <- function(mapping = NULL, data = NULL,
                       stat = "bloc",
-                      position = "identity",
+                      position = "bloc",
                       ...,
                       binwidth = NULL,
                       bins = NULL,
@@ -69,7 +69,7 @@ geom_bloc <- function(mapping = NULL, data = NULL,
     mapping = mapping,
     stat = stat,
     geom = GeomBloc,
-    position = position,
+    position = position_bloc(mapping = parsed_mapping), # use customized position, pass mapping as argument
     show.legend = show.legend,
     check.aes = FALSE,
     inherit.aes = FALSE, # only FALSE to turn the warning off
@@ -93,8 +93,6 @@ GeomBloc <- ggplot2::ggproto(
   setup_data = function(data, params){
     data
   },
-
-
 
 
   # required_aes = c("xmin", "xmax", "ymin", "ymax"),
@@ -173,8 +171,9 @@ browser()
       data
     } else {
       # not density plots
-      # productplots, etc. only want top level rectangles
-       browser()
+
+      # product plots, etc. only want top level rectangles
+
       subset(data, level==max(data$level))
     }
   },

@@ -306,7 +306,7 @@ StatBloc <- ggplot2::ggproto(
 
 
       # want number of partitions on x,y axes
-      base_layout %<>%
+      base_layout <- base_layout %>%
         mutate(x_rank = dense_rank(l), y_rank = dense_rank(b))
 
 
@@ -382,7 +382,7 @@ StatBloc <- ggplot2::ggproto(
       if (is_ridges){
         # browser()
         # densities$y <-
-        densities %<>%
+        densities <- densities %>%
           mutate_(y = group_var) %>%
           mutate(height = density)
       }
