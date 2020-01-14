@@ -1,5 +1,5 @@
-Package: uncertainty.gogr
-Title: = Uncertainty Grammar of Graphics
+Package: pgog
+Title: A Probabilistic Grammar of Graphics
 Version: 0.0.0.9000
 Authors@R: person("Xiaoying", "Pu", email = "xpu@umich.edu", role = c("aut", "cre"))
 Description: What the package does (one paragraph).
