@@ -79,6 +79,7 @@ StatBloc <- ggplot2::ggproto(
       # the normal mosaic plot things
       wt <- margin(data, marg_var, cond_var)
       # base_layer <- function(data, prob.struct, offset, level=1, bounds = productplots:::bound()){
+      #browser()
       res <- bloc_divide(data = wt, prob.struct = prob.struct, offset = offset)
 
 #

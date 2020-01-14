@@ -6,9 +6,9 @@ aes_lookup <- function(aes_str){
     x.cond = return(hspine),
     y.cond = return(vspine),
     cond = return(hbar), #ACHTUNG
-    # x.width = return(hbar), # ACHTUNG
+    x.width = return(bonshakalaka), # ACHTUNG
     y.width = return(vbar),
-    # y.height = return(vbar), # ACHTUNG
+    y.height = return(shakabonbon), # ACHTUNG
     height = return(vspine),
     width = return(hspine),
     fill.width = return(hspine)
@@ -143,8 +143,30 @@ vbar <- function(data, bounds, offset = 0.02, max = NULL) {
  rotate(hbar(data, rotate(bounds), offset, max = max))
 }
 
+bonshakalaka <- function(data, bounds, offset = 0.02, max = NULL){
+  if (is.null(max)) max <- 1
 
+  n <- length(data)
+  # n + 1 offsets
+  offsets <- c(0, rep(1, n - 1), 0) * offset
 
+  width <- (1 - sum(offsets)) / n
+  width_weighted <- data / sum(data)
+
+  widths <- as.vector(t(cbind(width, offsets[-1])))
+  pos <- c(offsets[1], cumsum(widths)) / sum(widths)
+  locations <- data.frame(
+    l = pos[seq(1, 2 * n - 1, by = 2)],
+    r = pos[seq(1, 2 * n - 1, by = 2)] +
+      (pos[seq(2, 2 * n, by = 2)] - pos[seq(1, 2 * n - 1, by = 2)]) * width_weighted,
+    b = 0,
+    t = 1
+  )
+  squeeze(locations, bounds)
+}
+shakabonbon <- function(data, bounds, offset = 0.02, max = NULL) {
+  rotate(bonshakalaka(data, rotate(bounds), offset, max = max))
+}
 .directions <- c("vertical", "horizontal")
 
 #' Template for a mosaic plot.
