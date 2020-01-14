@@ -5,7 +5,7 @@ stat_icon <- function(
   geom = "icon",
   position = "identity",
   na.rm = FALSE,
-  shwo.legend = NA,
+  show.legend = NA,
   inherit.aes = TRUE, ...){
 
   ggplot2::layer(
