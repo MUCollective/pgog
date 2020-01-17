@@ -5,7 +5,6 @@
 #' @return the aesthetics matrix
 #' @export
 parse_aes <- function(mapping){
-   browser()
 
   # 1. get a list of prob and coord aesthetics
   #output list (for example, height = c(P(cyl|gear)), x = c(gear), list with length 2, 2 elements height and x
@@ -219,7 +218,9 @@ aes_to_mtx <- function(mapping){
   for (i in seq_len(mtx_nrow)){
 
     # marginal
-    m <- as.character(i)
+    # m <- as.character(i)
+    m <- parse_pmf(mapping[[i]])$marginals
+
     if (!is.list(m)){
       m <- list(m)
     }
@@ -281,7 +282,6 @@ filter_prob_aes <- function(aes_names, mapping){
 #' @param mapping: list $x = c(A), $width = c(P(B|A), P(A))
 #' @return flattened mapping: $width1 = , $width2 =
 flatten_aes <- function(mapping){
-  browser()
 
 
   # parse out the list inside the little quosure
@@ -291,19 +291,16 @@ flatten_aes <- function(mapping){
     #   expr: ^A
     #   env:  0x11c0b6af8
     pair <- mapping[[i]]
-    browser()
     # mapping_expr get the expression part, and the length is how many expressions it contains,
     #e.g c(gear), contains one vecotr c() and data part gear
     mapping_expr <- quo_get_expr(pair)
     mapping_env <- quo_get_env(pair)
     if (length(mapping_expr) > 1){
       if (as.character(mapping_expr[[1]]) == "c"){
-        browser()
         list_of_Ps <- c()
         for (j in seq_along(mapping_expr)){
           if (j != 1){ # skip the c()
             # TODO: turn it back to a quosure?
-            browser()
             list_of_Ps <- c(mapping_expr[[j]],list_of_Ps)
           }
         }
@@ -329,7 +326,6 @@ flatten_aes <- function(mapping){
     }
   }
   names(new_mapping) <- new_names
-  browser()
   list(mapping=new_mapping, env = mapping_env)
 
 }

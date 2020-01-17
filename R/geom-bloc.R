@@ -7,7 +7,7 @@
 #'
 geom_bloc <- function(mapping = NULL, data = NULL,
                       stat = "bloc",
-                      position = "bloc",
+                      position = "identity",
                       ...,
                       binwidth = NULL,
                       bins = NULL,
@@ -22,7 +22,6 @@ geom_bloc <- function(mapping = NULL, data = NULL,
   # is_aes_p <- function(i) i %in% aes_p
   # mapping_p <- mapping[is_aes_p(names(mapping))]
 
-  browser()
   # parse prob structure
   parsed_mapping <- parse_aes(mapping)
   pprint(parsed_mapping)
@@ -69,7 +68,7 @@ geom_bloc <- function(mapping = NULL, data = NULL,
     mapping = mapping,
     stat = stat,
     geom = GeomBloc,
-    position = position_bloc(mapping = parsed_mapping), # use customized position, pass mapping as argument
+    position = position, # use customized position, pass mapping as argument
     show.legend = show.legend,
     check.aes = FALSE,
     inherit.aes = FALSE, # only FALSE to turn the warning off
@@ -111,7 +110,6 @@ GeomBloc <- ggplot2::ggproto(
 
   # from ggplot, geom-ribbon.r
   setup_data = function(self, data, params){
-browser()
     if ("density" %in% names(data)) {
       # all density plots
       data <- transform(data[order(data$PANEL, data$group, data$x), ], ymin = 0, ymax = y)
