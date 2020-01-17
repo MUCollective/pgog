@@ -24,7 +24,7 @@ library(tidyverse)
 library(gridExtra)
 library(ggplot2)
 #devtools::install_github("hadley/productplots")
-library(uncertainty.gogr)
+library(pgog)
 ```
 
 
