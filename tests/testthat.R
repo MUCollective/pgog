@@ -1,7 +1,7 @@
 
 library(testthat)
-library(uncertainty.gogr)
+library(pgog)
 
 
 
-test_check("uncertainty.gogr")
+test_check("pgog")
