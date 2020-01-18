@@ -11,6 +11,7 @@ RoxygenNote: 7.0.0
 Imports: tidyverse,
     ggplot2,
     grid,
+    gridExtra,
     plyr,
     ggmosaic,
     ggridges,

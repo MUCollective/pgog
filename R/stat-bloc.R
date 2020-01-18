@@ -400,7 +400,7 @@ create_density <- function(base_layout, cont_var, group_var){
 
 
 
-
+#' @importFrom stats density
 compute_density <- function(x, w, from, to, bw = "nrd0", adjust = 1,
                             kernel = "gaussian", n = 512) {
   nx <- length(x)
