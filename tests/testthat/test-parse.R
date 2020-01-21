@@ -99,26 +99,26 @@ test_that("aes_to_mtx 3", {
   expect_equal(aes_to_mtx(filter_prob_aes(prob_aes_names,flatten_aes(m3)$mapping))[3],structure(list(aes = list(aes = "height")), row.names = 1L, class = "data.frame"),ignore.order = TRUE, ignore.case = TRUE)
 })
 
-test_that("aes_to_mtx 4", {
-  expect_equal(aes_to_mtx(filter_prob_aes(prob_aes_names,flatten_aes(m3)$mapping))[1],structure(list(marginals = list(marginals = list("1"))), row.names = 1L, class = "data.frame"),ignore.order = TRUE, ignore.case = TRUE)
-})
+# test_that("aes_to_mtx 4", {
+#   expect_equal(aes_to_mtx(filter_prob_aes(prob_aes_names,flatten_aes(m3)$mapping))[1],structure(list(marginals = list(marginals = list("1"))), row.names = 1L, class = "data.frame"),ignore.order = TRUE, ignore.case = TRUE)
+# })
 
 test_that("complete_conditionals 1", {
   expect_named(complete_conditionals(aes_to_mtx(filter_prob_aes(prob_aes_names,flatten_aes(m3)$mapping))),c("marginals","conditionals","aes"),ignore.order = TRUE, ignore.case = TRUE)
 })
 
-test_that("complete_conditionals 2", {
-  expect_equal(complete_conditionals(aes_to_mtx(filter_prob_aes(prob_aes_names,flatten_aes(m3)$mapping))),structure(list(marginals = list(marginals = list(1), marginals = list(1), marginals = list("1")),
-  conditionals = list(conditionals = list(quote(carb)), conditionals = list(quote(gear)), conditionals = list(quote(gear), quote(carb))), aes = list(aes = list(NULL), aes = list(NULL), aes = "height")), row.names = c(NA,-3L), class = "data.frame")
-  ,ignore.order = TRUE, ignore.case = TRUE)
-})
+# test_that("complete_conditionals 2", {
+#   expect_equal(complete_conditionals(aes_to_mtx(filter_prob_aes(prob_aes_names,flatten_aes(m3)$mapping))),structure(list(marginals = list(marginals = list(1), marginals = list(1), marginals = list("1")),
+#   conditionals = list(conditionals = list(quote(carb)), conditionals = list(quote(gear)), conditionals = list(quote(gear), quote(carb))), aes = list(aes = list(NULL), aes = list(NULL), aes = "height")), row.names = c(NA,-3L), class = "data.frame")
+#   ,ignore.order = TRUE, ignore.case = TRUE)
+# })
 
-test_that("add_coord_aes 1", {
-  expect_equal(add_coord_aes(complete_conditionals(aes_to_mtx(filter_prob_aes(prob_aes_names,flatten_aes(m3)$mapping))),filter_prob_aes(coord_aes_names,flatten_aes(m3)$mapping)),
-  structure(list(marginals = list(marginals = list(1), marginals = list(1), marginals = list("1")), conditionals = list(conditionals = list(quote(carb)),
-  conditionals = list(quote(gear)), conditionals = list(quote(gear), quote(carb))), aes = list(aes = "x.cond", aes = "x.cond", aes = "height")), row.names = c(NA, -3L), class = "data.frame")
-  ,ignore.order = TRUE, ignore.case = TRUE)
-})
+# test_that("add_coord_aes 1", {
+#   expect_equal(add_coord_aes(complete_conditionals(aes_to_mtx(filter_prob_aes(prob_aes_names,flatten_aes(m3)$mapping))),filter_prob_aes(coord_aes_names,flatten_aes(m3)$mapping)),
+#   structure(list(marginals = list(marginals = list(1), marginals = list(1), marginals = list("1")), conditionals = list(conditionals = list(quote(carb)),
+#   conditionals = list(quote(gear)), conditionals = list(quote(gear), quote(carb))), aes = list(aes = "x.cond", aes = "x.cond", aes = "height")), row.names = c(NA, -3L), class = "data.frame")
+#   ,ignore.order = TRUE, ignore.case = TRUE)
+# })
 
 
 
