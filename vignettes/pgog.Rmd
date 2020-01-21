@@ -363,4 +363,8 @@ df_total = df_total %>% mutate(generation = fct_relevel(generation, "Early Boome
 ggplot(df_total) + geom_bloc(aes(width = c(P(race|generation)), x = c(race), y = c(generation),fill = generation), fill = "black") + theme_bw()
 ```
 
+```{r}
+#ggplot(mtcars) + geom_icon(aes(height = c(P(gear)), x = c(gear, cyl)))
+ggplot(mtcars) + geom_icon(aes(height = c(P(cyl|gear), P(gear)), x = c(gear, vs)))
+```
 

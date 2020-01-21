@@ -6,6 +6,7 @@
 #' @export
 parse_aes <- function(mapping){
 
+  browser()
   # 1. get a list of prob and coord aesthetics
   #output list (for example, height = c(P(cyl|gear)), x = c(gear), list with length 2, 2 elements height and x
   #x get gear out of the c(). Within height, 2 elements, P and cyl|gear, then inside cyl|gear, three elements, cyl, |, and gear
@@ -23,12 +24,15 @@ parse_aes <- function(mapping){
   # similar as the previous one
   coord_aes <- filter_prob_aes(c("x", "y", "alpha", "color", "colour", "fill"), flat_mapping)
 
+  elements_checker(prob_aes,coord_aes)
+
   # save them to a matrix for easy indexing
   # also checks aes mapping (1D, 2D)
   # change the list the matrix, convert each elements to the column instead of 2 dim list
   # add marginal
   prob_mtx <- aes_to_mtx(prob_aes)
 
+  #browser()
 
   # 2. sort by conditionals length
   cond_lengths <- sapply(prob_mtx$conditionals, length)
@@ -58,6 +62,37 @@ parse_aes <- function(mapping){
 
 }
 
+#' Helper: get all the elements in the height and combine into one vector
+#' @param prob_aes
+#' @return vector of strings contained all the elemtns
+#'
+elements_checker = function(prob_aes, coord_aes) {
+  #browser()
+  list_coord_aes = c()
+  list_prob_aes = c()
+  for (i in seq_along(coord_aes)){
+    list_coord_aes = c(list_coord_aes, coord_aes[[i]])
+  }
+  prob_aes_tmp = prob_aes
+  for(j in seq_along(prob_aes_tmp)){
+    prob_aes_tmp[[j]][[1]] = NULL
+    if(length(prob_aes_tmp[[1]][[1]]) != 1 && prob_aes_tmp[[j]][[1]][[1]] == "|"){
+      prob_aes_tmp[[j]][[1]][[1]] = NULL
+      for (k in seq_along(unlist(prob_aes_tmp))) {
+        list_prob_aes = c(list_prob_aes,unlist(prob_aes_tmp)[[k]])
+      }
+    } else {
+      for (m in seq_along(prob_aes_tmp[[j]]))
+      list_prob_aes = c(list_prob_aes,prob_aes_tmp[[j]][[m]])
+    }
+  }
+  list_coord_aes = unique(list_coord_aes)
+  list_prob_aes = unique(list_prob_aes)
+  if (all(list_coord_aes %in% list_prob_aes)==FALSE){
+    stop('................')
+  }
+}
+
 
 #' Helper: returns the names of all random variables contained in a parsed
 #' mapping.
@@ -67,7 +102,7 @@ parse_aes <- function(mapping){
 #' @return vector of strings containing random variable names
 #'
 get_all_rv <- function(mapping){
-  ##browser()
+  #browser()
 
   # margs <- flatten(mapping$marginals)
   # # filter out the P(1|A) conds
@@ -85,7 +120,7 @@ get_all_rv <- function(mapping){
 #' @return TODO: all marginals in the mapping
 #'
 get_margs <- function(mapping){
-  ##browser()
+  #browser()
   margs <- flatten(mapping$marginals)
   alles <- rev(margs[sapply(margs, function(i) i !=1)])
   alles
@@ -96,7 +131,7 @@ get_margs <- function(mapping){
 #' @return TODO: all conditionals in the mapping
 #'
 get_conds <- function(mapping){
-  ##browser()
+  #browser()
   margs <- flatten(mapping$marginals)
   cond_inx <- sapply(margs, function(i) i == 1)
   rev(flatten(mapping$conditionals[cond_inx]))
@@ -106,7 +141,7 @@ get_conds <- function(mapping){
 
 
 add_coord_aes <- function(prob_mtx, coord_aes){
-  ##browser()
+  #browser()
   for (i in seq_along(coord_aes)){
     aes <- names(coord_aes)[[i]]
     pvar <- as.character(coord_aes[[i]])
@@ -206,7 +241,8 @@ mtx_check <- function(m){
 #'
 aes_to_mtx <- function(mapping){
 
-   #browser()
+  #browser()
+
   mtx_nrow <- length(mapping)
   mtx_ncol <- 3 # marginal, cond, aes name
 
@@ -283,6 +319,7 @@ filter_prob_aes <- function(aes_names, mapping){
 #' @return flattened mapping: $width1 = , $width2 =
 flatten_aes <- function(mapping){
 
+  #browser()
 
   # parse out the list inside the little quosure
   for (i in seq_along(mapping)){
