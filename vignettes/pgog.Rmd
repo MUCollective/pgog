@@ -83,7 +83,7 @@ Assuming B,C, etc. are discrete variables
 ### {w,h} <- P(A)
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(width = c(P(cyl)))) 
+ggplot(mtcars) + geom_bloc(aes(width = c(P(cyl),fill = c(cyl))))
 ```
 
 ### {w,h} <- P(A), {x,y} <- A
@@ -100,7 +100,7 @@ TODO: new combination
 ### {w,h} <- P(A|B), {x,y} <- (A),B
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl|gear)), x = c(gear)))
+ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl|gear)), x = c(gear), fill = gear))
 ```
 
 
