@@ -1,4 +1,3 @@
-context("parse.R")
 library(rlang)
 
 # legit mapping
