@@ -377,6 +377,7 @@ StatBloc <- ggplot2::ggproto(
         # equivalent to stat(density * n)
         # compute_density secretly does it already
         densities$y <- densities$density
+        browser()
 
         # also, stack the y coordinate, similar to position = "stack"
         # need to stack in the reverse order of group = 1, 2, 3
@@ -390,6 +391,9 @@ StatBloc <- ggplot2::ggproto(
           ungroup() %>%
           arrange(group) %>%
           .$y
+
+
+        # densities$y <- densities$y / abs(heights[length(heights)])
 
       } else {
         densities$y <- densities$density
@@ -409,10 +413,7 @@ StatBloc <- ggplot2::ggproto(
 )
 
 
-create_density <- function(base_layout, cont_var, group_var){
 
-
-}
 
 
 

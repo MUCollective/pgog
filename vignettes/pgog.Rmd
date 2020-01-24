@@ -206,7 +206,7 @@ TODO/bug: position needs to be "fill" in `geom_bloc`
 ```{r}
 ggplot(mtcars) + geom_bloc(aes(x = c(mpg), 
                                height = c(P(cyl | mpg)), 
-                               fill = factor(cyl))) # need fixing
+                               fill = factor(cyl)))  # TODO: get rid of fill
 ```
 ```{r}
 test.df <- data.frame(list(
@@ -246,14 +246,14 @@ ggplot(mtcars) +
   geom_bloc(aes(
     x = c(mpg), 
     height = c(P(cyl|mpg), P(mpg)), 
-    fill = factor(cyl)), bw = common_bw, position = "stack") + # TODO: remove position arg
+    fill = factor(cyl)), bw = common_bw) + 
   xlab("mpg")
 ```
 
 
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(x = c(hp, gear), fill = factor(cyl), height = c(P(cyl|hp, gear), P(hp|gear))), position = "stack")
+ggplot(mtcars) + geom_bloc(aes(x = c(hp, gear), fill = factor(cyl), height = c(P(cyl|hp, gear), P(hp|gear))))
 ```
 
 
