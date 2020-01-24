@@ -50,12 +50,8 @@ parse_aes <- function(mapping){
   mtx$level <- seq_len(nrow(mtx))
   ## add level to the matrix
 
-  # pprint(mtx)
-
-
+  class(mtx) <- c("prob_chain", "data.frame")
   mtx
-  # return the matrix
-
 }
 
 

@@ -24,7 +24,7 @@ geom_bloc <- function(mapping = NULL, data = NULL,
 
   # parse prob structure
   parsed_mapping <- parse_aes(mapping)
-  pprint(parsed_mapping)
+  print(parsed_mapping)
 
 
   # print(parsed_mapping)

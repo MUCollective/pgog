@@ -260,7 +260,7 @@ translate_shape_string <- function(shape_string) {
 }
 
 #' prints pretty version of the aesthetics mapping
-pprint <- function(aes_mtx){
+print.prob_chain <- function(aes_mtx){
 
 
   m <- matrix(nrow = nrow(aes_mtx), ncol = ncol(aes_mtx))
