@@ -119,5 +119,8 @@ test_that("complete_conditionals 1", {
 #   ,ignore.order = TRUE, ignore.case = TRUE)
 # })
 
-
+test_that("prob aes mappings without c() work", {
+  expect_equal(parse_aes(aes(width = c(P(A)))), parse_aes(aes(width = P(A))))
+  expect_equal(parse_aes(aes(width = c(P(A|B)), y = B)), parse_aes(aes(width = P(A|B), y = B)))
+})
 

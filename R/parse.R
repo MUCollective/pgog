@@ -291,21 +291,16 @@ flatten_aes <- function(mapping){
     #e.g c(gear), contains one vecotr c() and data part gear
     mapping_expr <- quo_get_expr(pair)
     mapping_env <- quo_get_env(pair)
-    if (length(mapping_expr) > 1){
-      if (as.character(mapping_expr[[1]]) == "c"){
-        list_of_Ps <- c()
-        for (j in seq_along(mapping_expr)){
-          if (j != 1){ # skip the c()
-            # TODO: turn it back to a quosure?
-            list_of_Ps <- c(mapping_expr[[j]],list_of_Ps)
-          }
+    if (length(mapping_expr) > 1 && as.character(mapping_expr[[1]]) == "c"){
+      list_of_Ps <- c()
+      for (j in seq_along(mapping_expr)){
+        if (j != 1){ # skip the c()
+          # TODO: turn it back to a quosure?
+          list_of_Ps <- c(mapping_expr[[j]],list_of_Ps)
         }
-        # quo_set_expr(mapping[[i]]) <- mapping_expr[2:length(mapping_expr)]
-        mapping[[i]] <- list_of_Ps
-      } else {
-        # could be `factor(cyl)`
-        mapping[[i]] <- list(mapping_expr[[2]])
       }
+      # quo_set_expr(mapping[[i]]) <- mapping_expr[2:length(mapping_expr)]
+      mapping[[i]] <- list_of_Ps
     } else {
       mapping[[i]] <- list(mapping_expr)
     }
