@@ -115,6 +115,7 @@ StatBloc <- ggplot2::ggproto(
       # ==================== density plots ======================
       message("Defaulting to density plots. Use `stat=mosaic` to force mosaic plots")
       is_P_B_given_A <- FALSE
+      is_joint <- FALSE
       is_ridges <- FALSE # for P(A|B) defaults to P(A|B), color <- B
 
 
@@ -223,6 +224,7 @@ StatBloc <- ggplot2::ggproto(
           group_var <- marg_var # TODO: wrong
           cont_var <- A
 
+
           # Partition
           if (length(cond_var) == 1){
             # P(B|A)
@@ -242,6 +244,7 @@ StatBloc <- ggplot2::ggproto(
           }
 
           is_P_B_given_A <- TRUE
+
 
           # stop("not implemented: P(B|A,...)")
         }
@@ -376,24 +379,38 @@ StatBloc <- ggplot2::ggproto(
       if (is_P_B_given_A){
         # equivalent to stat(density * n)
         # compute_density secretly does it already
-        densities$y <- densities$density
-        browser()
+        densities$y <- densities$count
+        is_joint <- is_empty(cond_var)
 
         # also, stack the y coordinate, similar to position = "stack"
         # need to stack in the reverse order of group = 1, 2, 3
-        densities$y <- densities %>%
-          mutate(rev_group = max(group) - group +1) %>%
-          arrange(rev_group) %>%
-          group_by(rev_group) %>%
-          mutate(gid = row_number()) %>%
-          group_by(gid) %>%
-          mutate(y = cumsum(y)) %>%
-          ungroup() %>%
-          arrange(group) %>%
-          .$y
+        if (is_joint){
+          densities$y <- densities %>%
+            mutate(rev_group = max(group) - group +1) %>%
+            arrange(rev_group) %>%
+            group_by(rev_group) %>%
+            mutate(gid = row_number()) %>%
+            group_by(gid) %>%
+            mutate(y = cumsum(y)) %>%
+            ungroup() %>%
+            arrange(group) %>%
+            .$y
+        } else {
+
+          densities$y <- densities %>%
+            mutate(rev_group = max(group) - group +1) %>%
+            arrange(rev_group) %>%
+            group_by(rev_group) %>%
+            mutate(gid = row_number()) %>%
+            group_by(gid) %>%
+            mutate(y = cumsum(y)) %>%
+            mutate(y = y / max(y)) %>% # fill logic
+            ungroup() %>%
+            arrange(group) %>%
+            .$y
+        }
 
 
-        # densities$y <- densities$y / abs(heights[length(heights)])
 
       } else {
         densities$y <- densities$density

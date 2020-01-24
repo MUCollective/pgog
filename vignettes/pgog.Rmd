@@ -204,29 +204,12 @@ ggplot(mtcars) + geom_bloc(aes(x = c(mpg,cyl), y = c(gear), fill=factor(cyl), he
 TODO/bug: position needs to be "fill" in `geom_bloc`
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(x = c(mpg), 
-                               height = c(P(cyl | mpg)), 
-                               fill = factor(cyl)))  # TODO: get rid of fill
+ggplot(mtcars) + 
+  geom_bloc(aes(x = c(mpg), 
+                height = c(P(cyl | mpg)), 
+                fill = factor(cyl)))  
 ```
-```{r}
-test.df <- data.frame(list(
-  x = rep(1:5, 2),
-  y = 11:20,
-  group = c(rep(1, 5), rep(2,5))
-))
 
-test.df %>% 
-  group_by(group) %>%
-  mutate(gid = row_number()) %>%
-  group_by(gid) %>%
-  mutate(ynew = cumsum(y))
-  
- test.df %>%
-   group_by(group) %>%
-   do(head(., 3))
-  
-  
-```
 
 Issue #58 TODO/bug
 
