@@ -130,8 +130,8 @@ ggplot(mtcars) + geom_bloc(aes(height = c(P(gear|am)),
 ggplot(mtcars) + geom_bloc(aes(height = c(P(gear), P(cyl|gear))))
 
 ggplot(mtcars) + geom_bloc(aes(height = c(P(gear|am), P(cyl|gear, am)), 
-                               x = c(gear), 
-                               y = c(am)))
+                               x = gear, 
+                               y = am))
 ```
 
 

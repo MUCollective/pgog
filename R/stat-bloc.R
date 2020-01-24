@@ -33,7 +33,8 @@ stat_bloc <- function(
 
 }
 
-
+#' @importFrom tibble as.tibble
+#' @import dplyr
 StatBloc <- ggplot2::ggproto(
   "StatBloc", ggplot2::Stat,
   non_missing_aes = "weight",
@@ -107,6 +108,8 @@ StatBloc <- ggplot2::ggproto(
 
       res <- dplyr::rename(res, xmin=l, xmax=r, ymin=b, ymax=t)
       res$group <- seq_len(nrow(res))
+
+      browser()
 
       res
 
