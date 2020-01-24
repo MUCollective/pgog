@@ -234,9 +234,13 @@ ggplot(mtcars) +
 ```
 
 
-
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(x = c(hp, gear), fill = factor(cyl), height = c(P(cyl|hp, gear), P(hp|gear))))
+# TODO: this is wrong
+
+ggplot(mtcars) + 
+  geom_bloc(aes(x = c(hp, gear), 
+                fill = factor(cyl), 
+                height = c(P(cyl|hp, gear), P(hp|gear))))
 ```
 
 
@@ -325,11 +329,17 @@ ggplot(mtcars) +
 
 TODO: need implementing
 
-### {w,h} <- P(A)
+### {w,h} <- P(A), {x,y} <- A
 
 
 ```{r}
 # ggplot(mtcars) + geom_icon(aes(height=c(P(mpg))))
+```
+
+### 
+
+```{r}
+
 ```
 
 ## x.width and y.height

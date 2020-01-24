@@ -383,7 +383,7 @@ StatBloc <- ggplot2::ggproto(
         is_joint <- is_empty(cond_var)
 
         # also, stack the y coordinate, similar to position = "stack"
-        # need to stack in the reverse order of group = 1, 2, 3
+        # need to stack in the reverse order of group = 1, 2, 3, ...
         if (is_joint){
           densities$y <- densities %>%
             mutate(rev_group = max(group) - group +1) %>%
