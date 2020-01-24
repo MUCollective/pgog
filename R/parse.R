@@ -156,7 +156,7 @@ add_coord_aes <- function(prob_mtx, coord_aes){
 #'
 #' @return the matrix with probability aesthetics, including
 #'
-#' @examples
+#'
 complete_conditionals <- function(prob_mtx){
   #browser()
   # if first cond != null (or first marg != 1)

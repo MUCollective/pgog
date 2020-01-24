@@ -447,6 +447,7 @@ StatBloc <- ggplot2::ggproto(
 #'   \item{ndensity}{alias for `scaled`, to mirror the syntax of
 #'    [`stat_bin()`]}
 #' }
+#' @importFrom stats density
 compute_density <- function(x, w, from, to, bw = "nrd0", adjust = 1,
                             kernel = "gaussian", n = 512) {
   nx <- length(x)
