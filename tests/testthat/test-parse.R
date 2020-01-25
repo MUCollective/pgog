@@ -1,4 +1,3 @@
-context("parse.R")
 library(rlang)
 
 # legit mapping
@@ -120,5 +119,33 @@ test_that("complete_conditionals 1", {
 #   ,ignore.order = TRUE, ignore.case = TRUE)
 # })
 
+test_that("prob aes mappings without c() work", {
+  expect_equal(parse_aes(aes(width = c(P(A)))), parse_aes(aes(width = P(A))))
+  expect_equal(parse_aes(aes(width = c(P(A|B)), y = B)), parse_aes(aes(width = P(A|B), y = B)))
+})
 
+
+test_that("prob aes mappings with factor()", {
+
+  expect_error(parse_aes(aes(
+      x = A,
+      fill = factor(B),
+      height = P(A|B))), NA)
+
+  expect_error(parse_aes(
+    aes(
+      x = c(mpg),
+      y = cyl,
+      fill = factor(cyl),
+      height = c(P(mpg |cyl)))
+  ), NA)
+
+  expect_error(parse_aes(
+    aes(
+      x = c(mpg),
+      fill = factor(cyl),
+      height = c(P(mpg |cyl)))
+  ), NA)
+
+})
 

@@ -33,6 +33,8 @@ stat_bloc <- function(
 
 }
 
+
+#' @importFrom utils tail
 #' @import dplyr
 StatBloc <- ggplot2::ggproto(
   "StatBloc", ggplot2::Stat,
