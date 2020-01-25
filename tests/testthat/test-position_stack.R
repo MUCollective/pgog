@@ -6,6 +6,10 @@ common_bw <- 1.5
 # data `group`s
 
 test_that("P(A,B), equiv to using position=stack", {
+
+  skip_if_not_installed("vdiffr")
+  skip_if_not_installed("svglite")
+
   base_ggplot <- ggplot(mtcars) +
     geom_density(aes(x = mpg, y = ..count..,
                      fill = factor(cyl)), position = "stack",
