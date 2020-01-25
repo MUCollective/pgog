@@ -476,6 +476,7 @@ empty <- function(df) {
 #'
 #' @keywords internal
 #' @noRd
+#' @importFrom stats setNames
 dapply <- function(df, by, fun, ..., drop = TRUE) {
   grouping_cols <- .subset(df, by)
   ids <- id(grouping_cols, drop = drop)

@@ -126,12 +126,26 @@ test_that("prob aes mappings without c() work", {
 
 
 test_that("prob aes mappings with factor()", {
+
+  expect_error(parse_aes(aes(
+      x = A,
+      fill = factor(B),
+      height = P(A|B))), NA)
+
   expect_error(parse_aes(
     aes(
       x = c(mpg),
-      y = c(gear),
+      y = cyl,
       fill = factor(cyl),
-      height = c(P(mpg | gear, cyl)))
+      height = c(P(mpg |cyl)))
   ), NA)
+
+  expect_error(parse_aes(
+    aes(
+      x = c(mpg),
+      fill = factor(cyl),
+      height = c(P(mpg |cyl)))
+  ), NA)
+
 })
 

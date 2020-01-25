@@ -33,7 +33,7 @@ stat_bloc <- function(
 
 }
 
-
+#' @importFrom utils tail
 StatBloc <- ggplot2::ggproto(
   "StatBloc", ggplot2::Stat,
   non_missing_aes = "weight",

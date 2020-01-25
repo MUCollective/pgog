@@ -186,7 +186,7 @@ ggplot(mtcars) + geom_bloc(
   aes(
     x = c(mpg),
     y = c(gear), 
-    fill = cyl, # TODO: factor() not working
+    fill = factor(cyl), # TODO: factor() not working
     height = c(P(mpg | gear, cyl))
   ))
 ```

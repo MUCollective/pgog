@@ -34,7 +34,7 @@ bloc_divide <- function(data, prob.struct, offset, level=1, bounds = productplot
   rbind.fill(parent, children)
 }
 
-
+#' @importFrom dplyr filter
 pack_icons <- function(data, bounds, prob.struct, offset){
 
   base_level <- bounds$level[1]
@@ -163,7 +163,7 @@ calc_spacing <- function(bounds, direction, offset){
 }
 
 
-
+#' @importFrom utils head
 pack_one_partition <- function(counts, bound, spacing, N, offset, direction, max_count){
 
   d <- offset / 2
