@@ -48,6 +48,8 @@ StatBloc <- ggplot2::ggproto(
                            kernel = "gaussian",
                            n = 512){
 
+    assign_prob_case(data, prob.struct)
+
     margin <- getFromNamespace("margin", "productplots") # TODO: get rid of productplot dependency
     # stuff from prodcalc()
     # this is wrong... need unique()
