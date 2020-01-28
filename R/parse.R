@@ -85,6 +85,10 @@ elements_checker = function(prob_aes, coord_aes) {
   }
   list_coord_aes = unique(list_coord_aes)
   list_prob_aes = unique(list_prob_aes)
+  # some coord aes may have functions applied to them, like factor(cyl)
+  # so we pick the last element in the AST in list_coord_aes elements
+  list_coord_aes <- map(list_coord_aes, function(x) as.list(x)[[length(x)]])
+
   if (all(list_coord_aes %in% list_prob_aes)==FALSE){
     stop('Parser failed due to miss matching')
   }

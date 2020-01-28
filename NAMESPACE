@@ -34,4 +34,3 @@ importFrom(stats,density)
 importFrom(stats,setNames)
 importFrom(utils,head)
 importFrom(utils,tail)
-
