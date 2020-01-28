@@ -27,6 +27,7 @@ stat_bloc <- function(
       # divider = divider,
       prob.struct,
       offset = offset,
+      fill_var,
       ...
     )
   )
@@ -42,7 +43,7 @@ StatBloc <- ggplot2::ggproto(
   # default_aes = aes(y = stat(density)),
 
   compute_panel = function(self, data, scales, na.rm = FALSE,
-                           prob.struct, offset = 0.01,
+                           prob.struct, offset = 0.01, fill_var,
                            bw = "nrd0",
                            adjust = 1,
                            kernel = "gaussian",
@@ -51,6 +52,7 @@ StatBloc <- ggplot2::ggproto(
     margin <- getFromNamespace("margin", "productplots") # TODO: get rid of productplot dependency
     # stuff from prodcalc()
     # this is wrong... need unique()
+    browser()
     marg_var <- sapply(get_margs(prob.struct), as.character)
     if (!(is.list(marg_var) & length(marg_var) == 0)) {
       marg_var <- paste0("p.", marg_var)
@@ -59,6 +61,8 @@ StatBloc <- ggplot2::ggproto(
     }
 
     cond_var <- sapply(get_conds(prob.struct), as.character)
+    #browser()
+    #if(fill_var != "NULL") cond_var = c(cond_var, fill_var)
     if (!(is.list(cond_var) & length(cond_var) == 0)){
       cond_var <- paste0("p.", cond_var)
     } else {
@@ -75,13 +79,13 @@ StatBloc <- ggplot2::ggproto(
 
     if (! has_too_many_levels){
       message("Defaulting to mosaic plots. Use `stat=blocdensity` to force density plots")
-
+      browser()
       # the normal mosaic plot things
       wt <- margin(data, marg_var, cond_var)
       # base_layer <- function(data, prob.struct, offset, level=1, bounds = productplots:::bound()){
-      #browser()
+      browser()
       res <- bloc_divide(data = wt, prob.struct = prob.struct, offset = offset)
-
+      res[,"gear"] = res[,paste0("p.", fill_var)]
 #
 #       pieces <- as.list(dlply(res, 1))
 #       res <- ldply(seq_along(pieces), function(i){
@@ -107,7 +111,7 @@ StatBloc <- ggplot2::ggproto(
 
       res <- dplyr::rename(res, xmin=l, xmax=r, ymin=b, ymax=t)
       res$group <- seq_len(nrow(res))
-
+      browser()
       res
 
     } else {

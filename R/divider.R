@@ -1,6 +1,7 @@
 
 aes_lookup <- function(aes_str){
 
+  # TODO: parse out {color, colour, alpha, fill}
   switch (aes_str,
     x.height = return(hbar),
     x.cond = return(hspine),

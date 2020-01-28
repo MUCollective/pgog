@@ -15,7 +15,8 @@ geom_bloc <- function(mapping = NULL, data = NULL,
                       show.legend = NA,
                       inherit.aes = TRUE,
                       offset = 0.01,
-                      prob.struct = NULL) {
+                      prob.struct = NULL,
+                      fill_var = NULL) {
 
   # TODO: only check probability related aesthetics
   # aes_p <- c("x", "y", "width", "height")
@@ -54,8 +55,8 @@ geom_bloc <- function(mapping = NULL, data = NULL,
 
   print(mapping)
 
-
-
+  #get fill var if  exits
+  fill_var = as_label(mapping$fill)
 
   # hack to get position arg right
   # ACHTUNG: but geom doesn't have data values yet
@@ -76,6 +77,7 @@ geom_bloc <- function(mapping = NULL, data = NULL,
       na.rm = na.rm,
       offset = offset,
       prob.struct = parsed_mapping,
+      fill_var = fill_var,
       ...
     )
   )
@@ -90,6 +92,7 @@ GeomBloc <- ggplot2::ggproto(
   ggplot2::Geom,
 
   setup_data = function(data, params){
+    browser()
     data
   },
 
