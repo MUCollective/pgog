@@ -6,6 +6,7 @@
 #' 4. area plot cases
 #' 5. other edge cases, prob throw em out
 assign_prob_case <- function(data, prob.struct){
+
   marg_var <- sapply(get_margs(prob.struct), as.character)
   if (!(is.list(marg_var) & length(marg_var) == 0)) {
     marg_var <- paste0("p.", marg_var)
@@ -19,6 +20,17 @@ assign_prob_case <- function(data, prob.struct){
   } else {
     cond_var <- c()
   }
+
+
+  # check if these variables are continuous
+  all_rvs <- unique(c(marg_var, cond_var))
+  is_continuous <- function(i) ! is.factor(i)
+  rv_levels <- sapply(as.tibble(data[, all_rvs]), is_continuous)
+  has_too_many_levels <- sum(rv_levels)
+
+
+  browser()
+
 
 
   # scenario 1, joint

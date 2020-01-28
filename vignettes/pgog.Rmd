@@ -228,7 +228,7 @@ ggplot(mtcars) +
   geom_bloc(aes(
     x = c(mpg), 
     height = c(P(cyl|mpg), P(mpg)), 
-    fill = factor(cyl)), bw = common_bw) + 
+    fill = factor(cyl/2 + 1)), bw = common_bw) + 
   xlab("mpg")
 ```
 
