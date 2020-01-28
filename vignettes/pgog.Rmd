@@ -126,7 +126,6 @@ ggplot(mtcars) + geom_bloc(aes(height = c(P(gear|am)),
                                width = c(P(cyl|gear, am)), 
                                y = c(am)))
 
-ggplot(mtcars) + geom_bloc(aes(height = c(P(gear), P(cyl|gear))))
 
 ggplot(mtcars) + geom_bloc(aes(height = c(P(gear|am), P(cyl|gear, am)), 
                                x = c(gear), 
@@ -221,14 +220,14 @@ ggplot(mtcars) + geom_bloc(aes(x = c(mpg, gear), height = c(P(cyl | gear,mpg))))
 More than one probabilistic variables in the spec
 
 ```{r}
-common_bw <- 1.5
+#common_bw <- 1.5
 
-ggplot(mtcars) + 
-  geom_bloc(aes(
-    x = c(mpg), 
-    height = c(P(cyl|mpg), P(mpg)), 
-    fill = factor(cyl)), bw = common_bw, position = "stack") + # TODO: remove position arg
-  xlab("mpg")
+#ggplot(mtcars) + 
+#  geom_bloc(aes(
+#    x = c(mpg), 
+#    height = c(P(cyl|mpg), P(mpg)), 
+#    fill = factor(cyl)), bw = common_bw, position = "stack") + # TODO: remove position arg
+#  xlab("mpg")
 ```
 
 
@@ -267,11 +266,11 @@ https://github.com/MUCollective/pgog/issues/60
 bar charts filled with icons 
 
 ```{r}
-ggplot(mtcars) + geom_icon(aes(
-  height = c(P(cyl)), 
-  x = c(cyl), 
-  fill = c(factor(cyl)
-  ))) 
+#ggplot(mtcars) + geom_icon(aes(
+#  height = c(P(cyl)), 
+#  x = c(cyl), 
+#  fill = c(factor(cyl)
+#  ))) 
 ```
 
 This is just ugly
@@ -279,11 +278,11 @@ This is just ugly
 V
 
 ```{r}
-ggplot(mtcars) + geom_icon(aes(
-  width = c(P(cyl)), 
-  y = c(cyl), 
-  fill = c(factor(cyl)
-  ))) 
+#ggplot(mtcars) + geom_icon(aes(
+#  width = c(P(cyl)), 
+#  y = c(cyl), 
+#  fill = c(factor(cyl)
+#  ))) 
 ```
 
 
@@ -365,6 +364,6 @@ ggplot(df_total) + geom_bloc(aes(width = c(P(race|generation)), x = c(race), y =
 
 ```{r}
 #ggplot(mtcars) + geom_icon(aes(height = c(P(gear)), x = c(gear, cyl)))
-ggplot(mtcars) + geom_icon(aes(height = c(P(cyl|gear), P(gear)), x = c(gear, vs)))
+#ggplot(mtcars) + geom_icon(aes(height = c(P(cyl|gear), P(gear)), x = c(gear, vs)))
 ```
 

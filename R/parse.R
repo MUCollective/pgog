@@ -6,7 +6,7 @@
 #' @export
 parse_aes <- function(mapping){
 
-  browser()
+  #browser()
   # 1. get a list of prob and coord aesthetics
   #output list (for example, height = c(P(cyl|gear)), x = c(gear), list with length 2, 2 elements height and x
   #x get gear out of the c(). Within height, 2 elements, P and cyl|gear, then inside cyl|gear, three elements, cyl, |, and gear
@@ -62,9 +62,10 @@ parse_aes <- function(mapping){
 
 }
 
-#' Helper: get all the elements in the height and combine into one vector
-#' @param prob_aes
-#' @return vector of strings contained all the elemtns
+#' Helper: get all the elements in the height and combine into one vector, compare two sets
+#' all elements in coord_aes should be included in the prob_aes
+#' @param prob_aes, coord_aes
+#' @return error message or nothing
 #'
 elements_checker = function(prob_aes, coord_aes) {
   #browser()
@@ -89,7 +90,7 @@ elements_checker = function(prob_aes, coord_aes) {
   list_coord_aes = unique(list_coord_aes)
   list_prob_aes = unique(list_prob_aes)
   if (all(list_coord_aes %in% list_prob_aes)==FALSE){
-    stop('................')
+    stop('Parser failed due to miss matching')
   }
 }
 
