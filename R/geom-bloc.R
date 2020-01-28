@@ -25,7 +25,7 @@ geom_bloc <- function(mapping = NULL, data = NULL,
   #browser()
   # parse prob structure
   parsed_mapping <- parse_aes(mapping)
-  pprint(parsed_mapping)
+  print(parsed_mapping)
 
 
   # print(parsed_mapping)
@@ -157,7 +157,6 @@ GeomBloc <- ggplot2::ggproto(
             data <- cbind(data, rel_min_height = params$rel_min_height)
         }
 
-         browser()
         data <- transform(data,
                   ymin = y,
                   ymax = y + iscale*scale*height,

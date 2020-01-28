@@ -34,6 +34,8 @@ stat_bloc <- function(
 }
 
 
+#' @importFrom utils tail
+#' @import dplyr
 StatBloc <- ggplot2::ggproto(
   "StatBloc", ggplot2::Stat,
   non_missing_aes = "weight",
@@ -108,6 +110,8 @@ StatBloc <- ggplot2::ggproto(
       res <- dplyr::rename(res, xmin=l, xmax=r, ymin=b, ymax=t)
       res$group <- seq_len(nrow(res))
 
+      browser()
+
       res
 
     } else {
@@ -115,6 +119,7 @@ StatBloc <- ggplot2::ggproto(
       # ==================== density plots ======================
       message("Defaulting to density plots. Use `stat=mosaic` to force mosaic plots")
       is_P_B_given_A <- FALSE
+      is_joint <- FALSE
       is_ridges <- FALSE # for P(A|B) defaults to P(A|B), color <- B
 
 
@@ -223,6 +228,7 @@ StatBloc <- ggplot2::ggproto(
           group_var <- marg_var # TODO: wrong
           cont_var <- A
 
+
           # Partition
           if (length(cond_var) == 1){
             # P(B|A)
@@ -242,6 +248,7 @@ StatBloc <- ggplot2::ggproto(
           }
 
           is_P_B_given_A <- TRUE
+
 
           # stop("not implemented: P(B|A,...)")
         }
@@ -343,11 +350,13 @@ StatBloc <- ggplot2::ggproto(
       continuous_diff <- continous_range[2]- continous_range[1]
 
 
+      # estimate separate densities (grouped by aes)
       densities <- ldply(seq_along(pieces), function(i) {
         piece <- pieces[[i]]
         # bound <- bounds[[i]]
 
         range <- continous_range
+        # compute densities
         # TODO: what's that $weight
         res <- compute_density(c(t(select(piece, cont_var))), NULL,
                                from = range[1],
@@ -356,7 +365,6 @@ StatBloc <- ggplot2::ggproto(
                                adjust = adjust,
                                kernel = kernel,
                                n=n)
-
         # keep other vars
         meta_data <- select(piece, -c("x", "y"))[1,]
         meta_data$group <- i
@@ -371,10 +379,43 @@ StatBloc <- ggplot2::ggproto(
       })
 
 
+      # if in the form P(B|A), normalize by category count
       if (is_P_B_given_A){
-        # stat(density * n)
-        densities$y <- densities$density * densities$n
-        # browser()
+        # equivalent to stat(density * n)
+        # compute_density secretly does it already
+        densities$y <- densities$count
+        is_joint <- is_empty(cond_var)
+
+        # also, stack the y coordinate, similar to position = "stack"
+        # need to stack in the reverse order of group = 1, 2, 3, ...
+        if (is_joint){
+          densities$y <- densities %>%
+            mutate(rev_group = max(group) - group +1) %>%
+            arrange(rev_group) %>%
+            group_by(rev_group) %>%
+            mutate(gid = row_number()) %>%
+            group_by(gid) %>%
+            mutate(y = cumsum(y)) %>%
+            ungroup() %>%
+            arrange(group) %>%
+            .$y
+        } else {
+
+          densities$y <- densities %>%
+            mutate(rev_group = max(group) - group +1) %>%
+            arrange(rev_group) %>%
+            group_by(rev_group) %>%
+            mutate(gid = row_number()) %>%
+            group_by(gid) %>%
+            mutate(y = cumsum(y)) %>%
+            mutate(y = y / max(y)) %>% # fill logic
+            ungroup() %>%
+            arrange(group) %>%
+            .$y
+        }
+
+
+
       } else {
         densities$y <- densities$density
       }
@@ -393,13 +434,21 @@ StatBloc <- ggplot2::ggproto(
 )
 
 
-create_density <- function(base_layout, cont_var, group_var){
-
-
-}
 
 
 
+
+#' @references https://github.com/tidyverse/ggplot2/blob/660aad2db2b3495ae0d8040915a40d247133ffc0/R/stat-density.r
+#'
+#'  Computed variables:
+#' \describe{
+#'   \item{density}{density estimate}
+#'   \item{count}{density * number of points - useful for stacked density
+#'      plots}
+#'   \item{scaled}{density estimate, scaled to maximum of 1}
+#'   \item{ndensity}{alias for `scaled`, to mirror the syntax of
+#'    [`stat_bin()`]}
+#' }
 #' @importFrom stats density
 compute_density <- function(x, w, from, to, bw = "nrd0", adjust = 1,
                             kernel = "gaussian", n = 512) {
@@ -419,8 +468,6 @@ compute_density <- function(x, w, from, to, bw = "nrd0", adjust = 1,
       n = NA_integer_
     ), n = 1))
   }
-
-  # browser()
 
   dens <- stats::density(x, weights = w, bw = bw, adjust = adjust,
                          kernel = kernel, n = n, from = from, to = to)

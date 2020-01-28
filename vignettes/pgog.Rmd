@@ -128,8 +128,8 @@ ggplot(mtcars) + geom_bloc(aes(height = c(P(gear|am)),
 
 
 ggplot(mtcars) + geom_bloc(aes(height = c(P(gear|am), P(cyl|gear, am)), 
-                               x = c(gear), 
-                               y = c(am)))
+                               x = gear, 
+                               y = am))
 ```
 
 
@@ -185,7 +185,7 @@ ggplot(mtcars) + geom_bloc(
   aes(
     x = c(mpg),
     y = c(gear), 
-    fill = factor(cyl),
+    fill = factor(cyl), # TODO: factor() not working
     height = c(P(mpg | gear, cyl))
   ))
 ```
@@ -202,11 +202,12 @@ ggplot(mtcars) + geom_bloc(aes(x = c(mpg,cyl), y = c(gear), fill=factor(cyl), he
 TODO/bug: position needs to be "fill" in `geom_bloc`
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(x = c(mpg), 
-                               height = c(P(cyl | mpg)), 
-                               fill = factor(cyl)), 
-                           position = "fill") # need fixing
+ggplot(mtcars) + 
+  geom_bloc(aes(x = c(mpg), 
+                height = c(P(cyl | mpg)), 
+                fill = factor(cyl)))  
 ```
+
 
 Issue #58 TODO/bug
 
@@ -220,20 +221,25 @@ ggplot(mtcars) + geom_bloc(aes(x = c(mpg, gear), height = c(P(cyl | gear,mpg))))
 More than one probabilistic variables in the spec
 
 ```{r}
-#common_bw <- 1.5
 
-#ggplot(mtcars) + 
-#  geom_bloc(aes(
-#    x = c(mpg), 
-#    height = c(P(cyl|mpg), P(mpg)), 
-#    fill = factor(cyl)), bw = common_bw, position = "stack") + # TODO: remove position arg
-#  xlab("mpg")
+common_bw <- 1.5
+
+ggplot(mtcars) + 
+  geom_bloc(aes(
+    x = c(mpg), 
+    height = c(P(cyl|mpg), P(mpg)), 
+    fill = factor(cyl)), bw = common_bw) + 
+  xlab("mpg")
 ```
 
 
-
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(x = c(hp, gear), fill = factor(cyl), height = c(P(cyl|hp, gear), P(hp|gear))), position = "stack")
+# TODO: this is wrong
+
+ggplot(mtcars) + 
+  geom_bloc(aes(x = c(hp, gear), 
+                fill = factor(cyl), 
+                height = c(P(cyl|hp, gear), P(hp|gear))))
 ```
 
 
@@ -322,11 +328,17 @@ ggplot(mtcars) +
 
 TODO: need implementing
 
-### {w,h} <- P(A)
+### {w,h} <- P(A), {x,y} <- A
 
 
 ```{r}
 # ggplot(mtcars) + geom_icon(aes(height=c(P(mpg))))
+```
+
+### 
+
+```{r}
+
 ```
 
 ## x.width and y.height
