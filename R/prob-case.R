@@ -3,8 +3,7 @@
 #' 1. marg = A, cond=NULL, joint (`density` or `scale` in `compute_densities()`)
 #' 2. marg = B, cond=A (continuous), equiv to `count` column and `position = fill`
 #' 3. marg = A, cond=B (discrete), equiv to `count` column
-#' 4. area plot cases
-#' 5. other edge cases, prob throw em out
+#' 4. other edge cases, prob throw em out
 assign_prob_case <- function(data, prob.struct){
 
   marg_var <- sapply(get_margs(prob.struct), as.character)
@@ -22,37 +21,26 @@ assign_prob_case <- function(data, prob.struct){
   }
 
 
-  # check if these variables are continuous
-  all_rvs <- unique(c(marg_var, cond_var))
-  is_continuous <- function(i) ! is.factor(i)
-  rv_levels <- sapply(as.tibble(data[, all_rvs]), is_continuous)
-  has_too_many_levels <- sum(rv_levels)
-
+  is_continuous <- function(i) length(unique(i)) > 7
 
   browser()
 
 
-
   # scenario 1, joint
   if (is_empty(cond_var)){
-    return("joint")
+    return("density") # TODO: or "scaled"?
   } else {
     # scenario 2 and 3
     # is the cond continuous?
     # criteria, is this variable a factor?
-    using_factor <- TRUE
 
     # look up the variable in data
 
-    if (using_factor){
       if (is.factor(cond)){ # discrete B
         return("count")
       } else { # continous A
         return("fill")
       }
-    } else {
-      stop("TODO")
-    }
   }
 }
 

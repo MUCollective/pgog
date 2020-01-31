@@ -48,7 +48,6 @@ StatBloc <- ggplot2::ggproto(
                            kernel = "gaussian",
                            n = 512){
 
-    # assign_prob_case(data, prob.struct)
 
     margin <- getFromNamespace("margin", "productplots") # TODO: get rid of productplot dependency
     # stuff from prodcalc()
@@ -86,12 +85,12 @@ StatBloc <- ggplot2::ggproto(
       res <- dplyr::rename(res, xmin=l, xmax=r, ymin=b, ymax=t)
       res$group <- seq_len(nrow(res))
 
-      browser()
 
       res
 
     } else {
 
+      # assign_prob_case(data, prob.struct)
       # ==================== density plots ======================
       message("Defaulting to density plots. Use `stat=mosaic` to force mosaic plots")
       is_P_B_given_A <- FALSE

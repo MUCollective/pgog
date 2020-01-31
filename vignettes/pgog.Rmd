@@ -82,7 +82,8 @@ Assuming B,C, etc. are discrete variables
 ### {w,h} <- P(A)
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(width = c(P(cyl)))) 
+# waiting on the fill to work
+ggplot(mtcars) + geom_bloc(aes(width = c(P(cyl)), fill = factor(cyl)))
 ```
 
 ### {w,h} <- P(A), {x,y} <- A
@@ -200,20 +201,35 @@ ggplot(mtcars) + geom_bloc(aes(x = c(mpg,cyl), y = c(gear), fill=factor(cyl), he
 
 ### h <- P(B|A), x <- A, f <- B
 
-TODO/bug: position needs to be "fill" in `geom_bloc`
 
 ```{r}
 ggplot(mtcars) + 
-  geom_bloc(aes(x = c(mpg), 
-                height = c(P(cyl | mpg)), 
-                fill = factor(cyl)))  
+  geom_bloc(aes(
+    x = c(mpg), 
+    height = c(P(cyl | mpg)), 
+    fill = factor(cyl)
+  ))  
 ```
 
 
 Issue #58 TODO/bug
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(x = c(mpg, gear), height = c(P(cyl | gear,mpg))))
+# this is not right yet
+ggplot(mtcars) + 
+  geom_bloc(aes(
+    x = c(mpg, gear), 
+    height = c(P(cyl | gear,mpg)),
+    fill = factor(cyl)
+  ))
+```
+```{r}
+ggplot(mtcars) + 
+  geom_bloc(aes(
+    x = c(mpg ), 
+    height = c(P(cyl | mpg)),
+    fill = factor(cyl)
+  )) + facet_grid(gear ~ .)
 ```
 
 
@@ -231,15 +247,25 @@ ggplot(mtcars) +
     fill = factor(cyl/2 + 1)), bw = common_bw) + 
   xlab("mpg")
 ```
+```{r}
+ggplot(mtcars) + 
+  geom_bloc(aes(
+    x = c(mpg), 
+    height = c(P(cyl|mpg), P(mpg)), 
+    fill = factor(cyl/2 + 1)), bw = common_bw) + 
+  xlab("mpg") + facet_grid(gear ~ .)
+```
 
 
 ```{r}
-# TODO: this is wrong
+# TODO: this is wrong because the grid system is not set up
 
 ggplot(mtcars) + 
-  geom_bloc(aes(x = c(hp, gear), 
-                fill = factor(cyl), 
-                height = c(P(cyl|hp, gear), P(hp|gear))))
+  geom_bloc(aes(
+    x = c(hp, gear), 
+    fill = factor(cyl), 
+    height = c(P(cyl|hp, gear), P(hp|gear))
+  ))
 ```
 
 
