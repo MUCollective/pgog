@@ -12,7 +12,8 @@ aes_lookup <- function(aes_str){
     y.height = return(shakabonbon), # ACHTUNG
     height = return(vspine),
     width = return(hspine),
-    fill.width = return(hspine)
+    fill.width = return(hspine),
+    fill.height = return(vspine)
   )
 }
 

@@ -27,7 +27,7 @@ stat_bloc <- function(
       # divider = divider,
       prob.struct,
       offset = offset,
-      fill_var,
+      extra_var,
       ...
     )
   )
@@ -43,7 +43,7 @@ StatBloc <- ggplot2::ggproto(
   # default_aes = aes(y = stat(density)),
 
   compute_panel = function(self, data, scales, na.rm = FALSE,
-                           prob.struct, offset = 0.01, fill_var,
+                           prob.struct, offset = 0.01, extra_var,
                            bw = "nrd0",
                            adjust = 1,
                            kernel = "gaussian",
@@ -62,7 +62,7 @@ StatBloc <- ggplot2::ggproto(
 
     cond_var <- sapply(get_conds(prob.struct), as.character)
     #browser()
-    #if(fill_var != "NULL") cond_var = c(cond_var, fill_var)
+    #if(extra_var != "NULL") cond_var = c(cond_var, fill_var)
     if (!(is.list(cond_var) & length(cond_var) == 0)){
       cond_var <- paste0("p.", cond_var)
     } else {
@@ -85,7 +85,13 @@ StatBloc <- ggplot2::ggproto(
       # base_layer <- function(data, prob.struct, offset, level=1, bounds = productplots:::bound()){
       browser()
       res <- bloc_divide(data = wt, prob.struct = prob.struct, offset = offset)
-      res[,"gear"] = res[,paste0("p.", fill_var)]
+
+      for(i in names(extra_var)){
+        if(!is.na(extra_var[i])){
+          res[,i] = res[,paste0("p.", extra_var[i])]
+        }
+      }
+
 #
 #       pieces <- as.list(dlply(res, 1))
 #       res <- ldply(seq_along(pieces), function(i){
