@@ -221,11 +221,9 @@ ggplot(mtcars) + geom_bloc(aes(x = c(mpg, gear), height = c(P(cyl | gear,mpg))))
 More than one probabilistic variables in the spec
 
 ```{r}
-
 common_bw <- 1.5
 
-ggplot(mtcars) + 
-  geom_bloc(aes(
+ggplot(mtcars) + geom_bloc(aes(
     x = c(mpg), 
     height = c(P(cyl|mpg), P(mpg)), 
     fill = factor(cyl)), bw = common_bw) + 
@@ -375,7 +373,6 @@ ggplot(df_total) + geom_bloc(aes(width = c(P(race|generation)), x = c(race), y =
 ```
 
 ```{r}
-#ggplot(mtcars) + geom_icon(aes(height = c(P(gear)), x = c(gear, cyl)))
-#ggplot(mtcars) + geom_icon(aes(height = c(P(cyl|gear), P(gear)), x = c(gear, vs)))
+#ggplot(df_total) + geom_bloc(aes(width = c(P(race|generation)), x = c(race), y = c(generation),fill = #generation), fill = "black") + theme_bw()
 ```
 

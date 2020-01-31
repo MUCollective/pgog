@@ -73,7 +73,7 @@ elements_checker = function(prob_aes, coord_aes) {
   prob_aes_tmp = prob_aes
   for(j in seq_along(prob_aes_tmp)){
     prob_aes_tmp[[j]][[1]] = NULL
-    if(length(prob_aes_tmp[[1]][[1]]) != 1 && prob_aes_tmp[[j]][[1]][[1]] == "|"){
+    if(length(prob_aes_tmp[[j]][[1]]) != 1 && prob_aes_tmp[[j]][[1]][[1]] == "|"){
       prob_aes_tmp[[j]][[1]][[1]] = NULL
       for (k in seq_along(unlist(prob_aes_tmp))) {
         list_prob_aes = c(list_prob_aes,unlist(prob_aes_tmp)[[k]])
@@ -87,7 +87,7 @@ elements_checker = function(prob_aes, coord_aes) {
   list_prob_aes = unique(list_prob_aes)
   # some coord aes may have functions applied to them, like factor(cyl)
   # so we pick the last element in the AST in list_coord_aes elements
-  list_coord_aes <- map(list_coord_aes, function(x) as.list(x)[[length(x)]])
+  list_coord_aes = map(list_coord_aes, function(x) as.list(x)[[length(x)]])
 
   if (all(list_coord_aes %in% list_prob_aes)==FALSE){
     stop('Parser failed due to miss matching')
