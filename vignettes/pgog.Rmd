@@ -223,6 +223,7 @@ ggplot(mtcars) +
     fill = factor(cyl)
   ))
 ```
+
 ```{r}
 ggplot(mtcars) + 
   geom_bloc(aes(
@@ -247,6 +248,10 @@ ggplot(mtcars) +
     fill = factor(cyl/2 + 1)), bw = common_bw) + 
   xlab("mpg")
 ```
+
+
+Bad example: facet_grid doesn't work well
+
 ```{r}
 ggplot(mtcars) + 
   geom_bloc(aes(
@@ -262,9 +267,9 @@ ggplot(mtcars) +
 
 ggplot(mtcars) + 
   geom_bloc(aes(
-    x = c(hp, gear), 
+    x = c(mpg, gear), 
     fill = factor(cyl), 
-    height = c(P(cyl|hp, gear), P(hp|gear))
+    height = c(P(cyl|mpg, gear), P(mpg|gear))
   ))
 ```
 
