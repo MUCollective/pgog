@@ -110,7 +110,7 @@ StatBloc <- ggplot2::ggproto(
       res <- dplyr::rename(res, xmin=l, xmax=r, ymin=b, ymax=t)
       res$group <- seq_len(nrow(res))
 
-      browser()
+      #browser()
 
       res
 
