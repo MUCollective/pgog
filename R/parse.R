@@ -5,6 +5,7 @@
 #' @return the aesthetics matrix
 #' @export
 parse_aes <- function(mapping){
+  # browser()
 
   #browser()
   # 1. get a list of prob and coord aesthetics
@@ -13,7 +14,6 @@ parse_aes <- function(mapping){
   # In the meantime, get the rid of env, only need the object part, primiarily just get rid of the environment, flat_mapping is a list of length 2
   # , and cannot access the information inside the second index)
   flat_mapping <- flatten_aes(mapping)$mapping
-
   prob_aes_names <- c("width", "height", "area")
   # prob_aes_names <- c("width", "height", "area", "alpha", "color", "colour", "fill")
 
@@ -195,6 +195,7 @@ add_coord_aes <- function(prob_mtx, coord_aes){
 #'
 #'
 complete_conditionals <- function(prob_mtx){
+  #browser()
   # if first cond != null (or first marg != 1)
   extra_conds <- prob_mtx$conditionals[[1]]
   if (! is.null(extra_conds)){
@@ -217,6 +218,7 @@ complete_conditionals <- function(prob_mtx){
 #'
 mtx_check <- function(m){
 
+  #browser()
   for (i in seq_len(nrow(m))){
     cond <- m[i, 2][[1]]
     marg <- m[i, 1][[1]]
@@ -241,7 +243,7 @@ mtx_check <- function(m){
 #'
 aes_to_mtx <- function(mapping){
 
-
+   #browser()
   mtx_nrow <- length(mapping)
   mtx_ncol <- 3 # marginal, cond, aes name
 
@@ -253,9 +255,7 @@ aes_to_mtx <- function(mapping){
   for (i in seq_len(mtx_nrow)){
 
     # marginal
-    # m <- as.character(i)
     m <- parse_pmf(mapping[[i]])$marginals
-
     if (!is.list(m)){
       m <- list(m)
     }
@@ -355,6 +355,7 @@ flatten_aes <- function(mapping){
     }
   }
   names(new_mapping) <- new_names
+  # browser()
   list(mapping=new_mapping, env = mapping_env)
 
 }

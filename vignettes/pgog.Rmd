@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 title: "Examples"
 author: "Vignette Author"
@@ -382,3 +383,761 @@ ggplot(df_total) + geom_bloc(aes(width = c(P(race|generation)), x = c(race), y =
 #ggplot(df_total) + geom_bloc(aes(width = c(P(race|generation)), x = c(race), y = c(generation),fill = #generation), fill = "black") + theme_bw()
 ```
 
+||||||| merged common ancestors
+---
+title: "Examples"
+author: "Vignette Author"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: inline
+---
+
+editor_options:
+  chunk_output_type: console
+  
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+library(tidyverse)
+library(gridExtra)
+library(ggplot2)
+library(pgog)
+```
+
+
+
+# Override default themes
+
+```{r}
+custom_theme <- theme_minimal() + 
+  theme(axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.text.x = element_text(vjust=5),
+        panel.grid = element_blank(),
+        axis.ticks = element_blank(),
+        # axis.ticks = element_line(),
+        legend.position = "none"
+  )
+theme_set(custom_theme)
+
+colorbrewer2 <- rev(c(
+  "#f7fcf0",
+  "#e0f3db",
+  "#ccebc5",
+  "#a8ddb5",
+  "#7bccc4",
+  "#4eb3d3",
+  "#2b8cbe",
+  "#0868ac",
+  "#084081"))
+
+
+colorbrewer2_warm <- rev(c(
+  "#ffffb2",
+  "#fecc5c",
+  "#fd8d3c",
+  "#e31a1c"
+))
+
+names(colorbrewer2) <- 1:length(colorbrewer2)
+
+
+# https://stackoverflow.com/questions/10504724/change-the-default-colour-palette-in-ggplot
+# scale_aesthetic_discrete <- function(...) scale_fill_manual(values = colorbrewer2)
+scale_fill_discrete <- function(...) scale_fill_manual(values = colorbrewer2)
+
+# to our great dismay scale_color_* doesn't work
+scale_colour_discrete <- function(...) scale_colour_manual(values = colorbrewer2_warm)
+```
+
+
+# geom_bloc
+
+Assuming B,C, etc. are discrete variables
+
+## Product/area plots for discrete A
+
+### {w,h} <- P(A)
+
+```{r}
+ggplot(mtcars) + geom_bloc(aes(width = c(P(cyl)))) 
+```
+
+### {w,h} <- P(A), {x,y} <- A
+
+```{r}
+ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl)), x = c(cyl)))
+```
+
+TODO: new combination 
+
+  w <- P(A)
+  x <-A
+
+### {w,h} <- P(A|B), {x,y} <- (A),B
+
+```{r}
+ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl|gear)), x = c(gear)))
+```
+
+
+```{r}
+ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl|gear)), x = c(cyl), y = c(gear)))
+
+```
+
+
+
+### {w,h} <- P(A|B,C), {x,y} <- B,C
+
+```{r}
+ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl|gear, carb)), x = c(gear), y=c(carb)))
+```
+
+### 1+ probabilistic variables
+
+```{r}
+ggplot(mtcars) + geom_bloc(aes(height = c(P(gear|am), P(cyl|gear, am)), 
+                               x = c(am)))
+
+ggplot(mtcars) + geom_bloc(aes(height = c(P(gear|am)), 
+                               width = c(P(cyl|gear, am)), 
+                               y = c(am)))
+
+
+ggplot(mtcars) + geom_bloc(aes(height = c(P(gear|am), P(cyl|gear, am)), 
+                               x = gear, 
+                               y = am))
+```
+
+
+## Density plots for continuous A
+
+Currently PGoG only includes `x, height` or `y, width` combinations for density plots. All of the examples in this subsection should work `y, width` as well. 
+
+
+### {w,h} <- P(A)
+
+Doesn't exist yet in the grammar. 
+
+### h <- P(A), x <- A
+
+
+```{r}
+ggplot(mtcars) +  geom_bloc(aes(x = c(mpg), height = c(P(mpg)))) 
+```
+
+
+Alternatively, w <- P(A), y <- A
+
+TODO: this is not rotated hmmm issue #59
+
+```{r}
+ggplot(mtcars) +  geom_bloc(aes(y = c(mpg), width = c(P(mpg)))) 
+```
+
+
+### h <- P(A|B), x <- A, f <- B
+
+`fill = cyl` cannot be omitted
+
+```{r}
+ggplot(mtcars) + geom_bloc(aes(x = mpg, fill = cyl, height = c(P(mpg | cyl))))
+```
+
+
+### h <- P(A|B), x <- A, y <- B
+  
+Ridge plots
+  
+```{r}
+ggplot(mtcars) + geom_bloc(aes(x = c(mpg), height = c(P(mpg | cyl)), y = c(cyl), fill = cyl))
+```
+
+### h <- P(A|B,C), x <- A, y <- B, f <- C
+
+More conditionals
+
+```{r}
+ggplot(mtcars) + geom_bloc(
+  aes(
+    x = c(mpg),
+    y = c(gear), 
+    fill = factor(cyl), # TODO: factor() not working
+    height = c(P(mpg | gear, cyl))
+  ))
+```
+
+
+Issue #58 TODO/bug: this should be different from above; should be faceting?
+
+```{r}
+ggplot(mtcars) + geom_bloc(aes(x = c(mpg,cyl), y = c(gear), fill=factor(cyl), height = c(P(mpg | gear, cyl))))
+```
+
+### h <- P(B|A), x <- A, f <- B
+
+TODO/bug: position needs to be "fill" in `geom_bloc`
+
+```{r}
+ggplot(mtcars) + 
+  geom_bloc(aes(x = c(mpg), 
+                height = c(P(cyl | mpg)), 
+                fill = factor(cyl)))  
+```
+
+
+Issue #58 TODO/bug
+
+```{r}
+ggplot(mtcars) + geom_bloc(aes(x = c(mpg, gear), height = c(P(cyl | gear,mpg))))
+```
+
+
+### 1+ probabilistic variables
+
+More than one probabilistic variables in the spec
+
+```{r}
+common_bw <- 1.5
+
+ggplot(mtcars) + geom_bloc(aes(
+    x = c(mpg), 
+    height = c(P(cyl|mpg), P(mpg)), 
+    fill = factor(cyl)), bw = common_bw) + 
+  xlab("mpg")
+```
+
+
+```{r}
+# TODO: this is wrong
+
+ggplot(mtcars) + 
+  geom_bloc(aes(x = c(hp, gear), 
+                fill = factor(cyl), 
+                height = c(P(cyl|hp, gear), P(hp|gear))))
+```
+
+
+# geom_icon
+
+## Discrete var (icon arrays)
+
+### {w,h} <- P(A)
+
+aka spine plots
+
+```{r}
+ggplot(mtcars) + geom_icon(aes(height=c(P(cyl))))
+```
+
+```{r}
+ggplot(mtcars) + geom_icon(aes(width=c(P(cyl))))
+```
+
+TODO: can't add fill color Computation failed in `stat_icon()`: could not find function "divider"
+
+https://github.com/MUCollective/pgog/issues/60
+
+```{r}
+# ggplot(mtcars) + geom_icon(aes(height=c(P(cyl)), fill= cyl))
+```
+
+### {w,h} <- P(A), x,y <- A
+
+bar charts filled with icons 
+
+```{r}
+#ggplot(mtcars) + geom_icon(aes(
+#  height = c(P(cyl)), 
+#  x = c(cyl), 
+#  fill = c(factor(cyl)
+#  ))) 
+```
+
+This is just ugly
+|
+V
+
+```{r}
+#ggplot(mtcars) + geom_icon(aes(
+#  width = c(P(cyl)), 
+#  y = c(cyl), 
+#  fill = c(factor(cyl)
+#  ))) 
+```
+
+
+### {w,h} <- P(A|B), {x,y} <- (A),B
+
+```{r}
+ggplot(mtcars) + geom_icon(aes(height = c(P(cyl|gear)), x = c(gear)))
+```
+
+TODO: this one is supposed to be different from the prev one?
+
+```{r}
+ggplot(mtcars) + geom_icon(aes(height = c(P(cyl|gear)), x = c(cyl, gear)))
+```
+
+
+
+TODO: these spec are wrong why does the parser not catch it
+
+```{r}
+# ggplot(mtcars) + geom_icon(aes(height = c(P(gear)), x = c(gear, cyl)))
+
+# ggplot(mtcars) + geom_icon(aes(height = c(P(cyl|gear), P(gear)), x = c(gear, vs)))
+```
+
+
+### {w,h} <- P(A|B,C), {x,y} <- B,C
+
+```{r}
+ggplot(mtcars) + 
+  geom_icon(aes(height = c(P(cyl|gear, vs)), x = c(gear), y=c(vs))) 
+```
+
+
+
+## Continuous var (dotplots)
+
+TODO: need implementing
+
+### {w,h} <- P(A), {x,y} <- A
+
+
+```{r}
+# ggplot(mtcars) + geom_icon(aes(height=c(P(mpg))))
+```
+
+### 
+
+```{r}
+
+```
+
+## x.width and y.height
+```{r}
+ggplot(mtcars) + geom_bloc(aes(width = c(P(cyl)), x = c(cyl)))
+```
+```{r}
+# ggplot(mtcars) + geom_icon(aes(width=c(P(mpg))))
+```
+
+
+### {w,h} <- P(A), x,y <- A
+
+
+### {w,h} <- P(A|B), {x,y} <- (A),B
+### {w,h} <- P(A|B,C), {x,y} <- B,C
+
+
+
+```{r}
+df_test_1 = data.frame(generation = c("Post-Millennials in 2018"), 
+                       race = c(rep("White",52),rep("Hispanic",25),rep("Black",14),rep("Asian",6),rep("Other",4)))
+df_test_2 = data.frame(generation = c("Millennials in 2002"), 
+                       race = c(rep("White",61),rep("Hispanic",18),rep("Black",15),rep("Asian",4),rep("Other",1)))
+df_test_3 = data.frame(generation = c("Gen-Xer in 1986"), 
+                       race = c(rep("White",70),rep("Hispanic",12),rep("Black",15),rep("Other",3)))
+df_test_4 = data.frame(generation = c("Early Boomers in 1986"), 
+                       race = c(rep("White",82),rep("Hispanic",4),rep("Black",13),rep("Asian",1),rep("Other",1)))
+
+df_total = rbind(df_test_1,df_test_2,df_test_3,df_test_4)
+df_total = df_total %>% mutate(generation = fct_relevel(generation, "Early Boomers in 1986","Gen-Xer in 1986","Millennials in 2002", "Post-Millennials in 2018"), race = fct_relevel(race, "White", "Hispanic", "Black", "Asian", "Other"))
+
+ggplot(df_total) + geom_bloc(aes(width = c(P(race|generation)), x = c(race), y = c(generation),fill = generation), fill = "black") + theme_bw()
+```
+
+```{r}
+#ggplot(df_total) + geom_bloc(aes(width = c(P(race|generation)), x = c(race), y = c(generation),fill = #generation), fill = "black") + theme_bw()
+```
+
+=======
+---
+title: "Examples"
+author: "Vignette Author"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: inline
+---
+
+editor_options:
+  chunk_output_type: console
+  
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+library(tidyverse)
+library(gridExtra)
+library(ggplot2)
+library(pgog)
+```
+
+
+
+# Override default themes
+
+```{r}
+custom_theme <- theme_minimal() + 
+  theme(axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.text.x = element_text(vjust=5),
+        panel.grid = element_blank(),
+        axis.ticks = element_blank(),
+        # axis.ticks = element_line(),
+        legend.position = "none"
+  )
+theme_set(custom_theme)
+
+colorbrewer2 <- rev(c(
+  "#f7fcf0",
+  "#e0f3db",
+  "#ccebc5",
+  "#a8ddb5",
+  "#7bccc4",
+  "#4eb3d3",
+  "#2b8cbe",
+  "#0868ac",
+  "#084081"))
+
+
+colorbrewer2_warm <- rev(c(
+  "#ffffb2",
+  "#fecc5c",
+  "#fd8d3c",
+  "#e31a1c"
+))
+
+names(colorbrewer2) <- 1:length(colorbrewer2)
+
+
+# https://stackoverflow.com/questions/10504724/change-the-default-colour-palette-in-ggplot
+# scale_aesthetic_discrete <- function(...) scale_fill_manual(values = colorbrewer2)
+scale_fill_discrete <- function(...) scale_fill_manual(values = colorbrewer2)
+
+# to our great dismay scale_color_* doesn't work
+scale_colour_discrete <- function(...) scale_colour_manual(values = colorbrewer2_warm)
+```
+
+
+# geom_bloc
+
+Assuming B,C, etc. are discrete variables
+
+## Product/area plots for discrete A
+
+### {w,h} <- P(A)
+
+```{r}
+ggplot(mtcars) + geom_bloc(aes(width = c(P(cyl))))
+```
+
+### {w,h} <- P(A), {x,y} <- A
+
+```{r}
+ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl)), x = c(cyl)))
+```
+
+TODO: new combination 
+
+  w <- P(A)
+  x <-A
+
+### {w,h} <- P(A|B), {x,y} <- (A),B
+
+```{r}
+ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl|gear)), x = c(gear), fill = factor(cyl)))
+```
+
+
+```{r}
+ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl|gear)), x = c(cyl), y = c(gear),fill = factor(gear)))
+```
+
+
+
+### {w,h} <- P(A|B,C), {x,y} <- B,C
+
+```{r}
+ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl|gear, carb)), x = c(gear), y=c(carb), fill = factor(cyl)))
+```
+
+### 1+ probabilistic variables
+
+```{r}
+ggplot(mtcars) + geom_bloc(aes(height = c(P(gear|am), P(cyl|gear, am)), 
+                               x = c(am)))
+
+ggplot(mtcars) + geom_bloc(aes(height = c(P(gear|am)), 
+                               width = c(P(cyl|gear, am)), 
+                               y = c(am)))
+
+
+ggplot(mtcars) + geom_bloc(aes(height = c(P(gear|am), P(cyl|gear, am)), 
+                               x = gear, 
+                               y = am))
+```
+
+
+## Density plots for continuous A
+
+Currently PGoG only includes `x, height` or `y, width` combinations for density plots. All of the examples in this subsection should work `y, width` as well. 
+
+
+### {w,h} <- P(A)
+
+Doesn't exist yet in the grammar. 
+
+### h <- P(A), x <- A
+
+
+```{r}
+ggplot(mtcars) +  geom_bloc(aes(x = c(mpg), height = c(P(mpg)))) 
+```
+
+
+Alternatively, w <- P(A), y <- A
+
+TODO: this is not rotated hmmm issue #59
+
+```{r}
+ggplot(mtcars) +  geom_bloc(aes(y = c(mpg), width = c(P(mpg)))) 
+```
+
+
+### h <- P(A|B), x <- A, f <- B
+
+`fill = cyl` cannot be omitted
+
+```{r}
+ggplot(mtcars) + geom_bloc(aes(x = mpg, fill = cyl, height = c(P(mpg | cyl))))
+```
+
+
+### h <- P(A|B), x <- A, y <- B
+  
+Ridge plots
+  
+```{r}
+ggplot(mtcars) + geom_bloc(aes(x = c(mpg), height = c(P(mpg | cyl)), y = c(cyl), fill = cyl))
+```
+
+### h <- P(A|B,C), x <- A, y <- B, f <- C
+
+More conditionals
+
+```{r}
+ggplot(mtcars) + geom_bloc(
+  aes(
+    x = c(mpg),
+    y = c(gear), 
+    fill = factor(cyl), # TODO: factor() not working
+    height = c(P(mpg | gear, cyl))
+  ))
+```
+
+
+Issue #58 TODO/bug: this should be different from above; should be faceting?
+
+```{r}
+ggplot(mtcars) + geom_bloc(aes(x = c(mpg,cyl), y = c(gear), fill=factor(cyl), height = c(P(mpg | gear, cyl))))
+```
+
+### h <- P(B|A), x <- A, f <- B
+
+TODO/bug: position needs to be "fill" in `geom_bloc`
+
+```{r}
+ggplot(mtcars) + 
+  geom_bloc(aes(x = c(mpg), 
+                height = c(P(cyl | mpg)), 
+                fill = factor(cyl)))  
+```
+
+
+Issue #58 TODO/bug
+
+```{r}
+ggplot(mtcars) + geom_bloc(aes(x = c(mpg, gear), height = c(P(cyl | gear,mpg))))
+```
+
+
+### 1+ probabilistic variables
+
+More than one probabilistic variables in the spec
+
+```{r}
+common_bw <- 1.5
+
+ggplot(mtcars) + geom_bloc(aes(
+    x = c(mpg), 
+    height = c(P(cyl|mpg), P(mpg)), 
+    fill = factor(cyl)), bw = common_bw) + 
+  xlab("mpg")
+```
+
+
+```{r}
+# TODO: this is wrong
+
+ggplot(mtcars) + 
+  geom_bloc(aes(x = c(hp, gear), 
+                fill = factor(cyl), 
+                height = c(P(cyl|hp, gear), P(hp|gear))))
+```
+
+
+# geom_icon
+
+## Discrete var (icon arrays)
+
+### {w,h} <- P(A)
+
+aka spine plots
+
+```{r}
+ggplot(mtcars) + geom_icon(aes(height=c(P(cyl))))
+```
+
+```{r}
+ggplot(mtcars) + geom_icon(aes(width=c(P(cyl))))
+```
+
+TODO: can't add fill color Computation failed in `stat_icon()`: could not find function "divider"
+
+https://github.com/MUCollective/pgog/issues/60
+
+```{r}
+# ggplot(mtcars) + geom_icon(aes(height=c(P(cyl)), fill= cyl))
+```
+
+### {w,h} <- P(A), x,y <- A
+
+bar charts filled with icons 
+
+```{r}
+#ggplot(mtcars) + geom_icon(aes(
+#  height = c(P(cyl)), 
+#  x = c(cyl), 
+#  fill = c(factor(cyl)
+#  ))) 
+```
+
+This is just ugly
+|
+V
+
+```{r}
+#ggplot(mtcars) + geom_icon(aes(
+#  width = c(P(cyl)), 
+#  y = c(cyl), 
+#  fill = c(factor(cyl)
+#  ))) 
+```
+
+
+### {w,h} <- P(A|B), {x,y} <- (A),B
+
+```{r}
+ggplot(mtcars) + geom_icon(aes(height = c(P(cyl|gear)), x = c(gear)))
+```
+
+TODO: this one is supposed to be different from the prev one?
+
+```{r}
+ggplot(mtcars) + geom_icon(aes(height = c(P(cyl|gear)), x = c(cyl, gear)))
+```
+
+
+
+TODO: these spec are wrong why does the parser not catch it
+
+```{r}
+# ggplot(mtcars) + geom_icon(aes(height = c(P(gear)), x = c(gear, cyl)))
+
+# ggplot(mtcars) + geom_icon(aes(height = c(P(cyl|gear), P(gear)), x = c(gear, vs)))
+```
+
+
+### {w,h} <- P(A|B,C), {x,y} <- B,C
+
+```{r}
+ggplot(mtcars) + 
+  geom_icon(aes(height = c(P(cyl|gear, vs)), x = c(gear), y=c(vs))) 
+```
+
+
+
+## Continuous var (dotplots)
+
+TODO: need implementing
+
+### {w,h} <- P(A), {x,y} <- A
+
+
+```{r}
+# ggplot(mtcars) + geom_icon(aes(height=c(P(mpg))))
+```
+
+### 
+
+```{r}
+
+```
+
+## x.width and y.height
+```{r}
+ggplot(mtcars) + geom_bloc(aes(width = c(P(cyl)), x = c(cyl)))
+```
+```{r}
+# ggplot(mtcars) + geom_icon(aes(width=c(P(mpg))))
+```
+
+
+### {w,h} <- P(A), x,y <- A
+
+
+### {w,h} <- P(A|B), {x,y} <- (A),B
+### {w,h} <- P(A|B,C), {x,y} <- B,C
+
+
+
+```{r}
+df_test_1 = data.frame(generation = c("Post-Millennials in 2018"), 
+                       race = c(rep("White",52),rep("Hispanic",25),rep("Black",14),rep("Asian",6),rep("Other",4)))
+df_test_2 = data.frame(generation = c("Millennials in 2002"), 
+                       race = c(rep("White",61),rep("Hispanic",18),rep("Black",15),rep("Asian",4),rep("Other",1)))
+df_test_3 = data.frame(generation = c("Gen-Xer in 1986"), 
+                       race = c(rep("White",70),rep("Hispanic",12),rep("Black",15),rep("Other",3)))
+df_test_4 = data.frame(generation = c("Early Boomers in 1986"), 
+                       race = c(rep("White",82),rep("Hispanic",4),rep("Black",13),rep("Asian",1),rep("Other",1)))
+
+df_total = rbind(df_test_1,df_test_2,df_test_3,df_test_4)
+df_total = df_total %>% mutate(generation = fct_relevel(generation, "Early Boomers in 1986","Gen-Xer in 1986","Millennials in 2002", "Post-Millennials in 2018"), race = fct_relevel(race, "White", "Hispanic", "Black", "Asian", "Other"))
+
+ggplot(df_total) + geom_bloc(aes(width = c(P(race|generation)), x = c(race), y = c(generation),fill = generation), fill = "black") + theme_bw()
+```
+
+```{r}
+#ggplot(df_total) + geom_bloc(aes(width = c(P(race|generation)), x = c(race), y = c(generation),fill = #generation), fill = "black") + theme_bw()
+```
+
+>>>>>>> master

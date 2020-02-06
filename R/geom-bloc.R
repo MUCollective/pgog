@@ -15,7 +15,8 @@ geom_bloc <- function(mapping = NULL, data = NULL,
                       show.legend = NA,
                       inherit.aes = TRUE,
                       offset = 0.01,
-                      prob.struct = NULL) {
+                      prob.struct = NULL,
+                      extra_var = NULL) {
 
   # TODO: only check probability related aesthetics
   # aes_p <- c("x", "y", "width", "height")
@@ -55,9 +56,17 @@ geom_bloc <- function(mapping = NULL, data = NULL,
 
   print(mapping)
 
-
-
-
+  #get fill var if  exits
+  extra_var = c()
+  extra_var["fill"] = as_label(mapping$fill)
+  extra_var["alpha"] = as_label(mapping$alpha)
+  #TODO:can not both exit!
+  extra_var["color"] = as_label(mapping$color)
+  extra_var["colour"] = as_label(mapping$colour)
+  name = names(extra_var)
+  #trim the factor() out
+  extra_var = str_extract(extra_var,"\\(.*\\)") %>% str_replace("\\(","") %>% str_replace("\\)","")
+  names(extra_var) = name
   # hack to get position arg right
   # ACHTUNG: but geom doesn't have data values yet
 
@@ -77,6 +86,7 @@ geom_bloc <- function(mapping = NULL, data = NULL,
       na.rm = na.rm,
       offset = offset,
       prob.struct = parsed_mapping,
+      extra_var = extra_var,
       ...
     )
   )
@@ -91,6 +101,7 @@ GeomBloc <- ggplot2::ggproto(
   ggplot2::Geom,
 
   setup_data = function(data, params){
+    browser()
     data
   },
 
@@ -157,6 +168,7 @@ GeomBloc <- ggplot2::ggproto(
             data <- cbind(data, rel_min_height = params$rel_min_height)
         }
 
+         browser()
         data <- transform(data,
                   ymin = y,
                   ymax = y + iscale*scale*height,
