@@ -3,7 +3,7 @@ prop <- function(x) x / sum(x, na.rm = TRUE)
 margin <- function(table, marginals = c(), conditionals = c()) {
   if (is.numeric(marginals))    marginals    <- names(table)[marginals]
   if (is.numeric(conditionals)) conditionals <- names(table)[conditionals]
-
+  #browser()
   marginals <- rev(marginals)
   conditionals <- rev(conditionals)
 

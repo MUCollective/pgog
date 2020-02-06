@@ -82,7 +82,7 @@ Assuming B,C, etc. are discrete variables
 ### {w,h} <- P(A)
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(width = c(P(cyl)))) 
+ggplot(mtcars) + geom_bloc(aes(width = c(P(cyl))))
 ```
 
 ### {w,h} <- P(A), {x,y} <- A
@@ -99,13 +99,12 @@ TODO: new combination
 ### {w,h} <- P(A|B), {x,y} <- (A),B
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl|gear)), x = c(gear)))
+ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl|gear)), x = c(gear), fill = factor(cyl)))
 ```
 
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl|gear)), x = c(cyl), y = c(gear)))
-
+ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl|gear)), x = c(cyl), y = c(gear),fill = factor(gear)))
 ```
 
 
@@ -113,7 +112,7 @@ ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl|gear)), x = c(cyl), y = c(gear))
 ### {w,h} <- P(A|B,C), {x,y} <- B,C
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl|gear, carb)), x = c(gear), y=c(carb)))
+ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl|gear, carb)), x = c(gear), y=c(carb), fill = factor(cyl)))
 ```
 
 ### 1+ probabilistic variables
