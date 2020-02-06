@@ -15,7 +15,7 @@ geom_icon <- function(mapping = NULL,
   # same as in geom_bloc
   # parse prob structure
   parsed_mapping <- parse_aes(mapping)
-  pprint(parsed_mapping)
+  print(parsed_mapping)
 
 
   # hack the aes mapping so that ggplot selects the column in data

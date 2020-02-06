@@ -2,8 +2,6 @@
 #' @param p a single expression like P(A, B | C, D)
 #' @return a list of marginals and conditionals
 parse_pmf <- function(p){
-  #browser()
-
   l <- as.character(p)
   l <- l[2:length(l)]
   char_l <- as.character(l)

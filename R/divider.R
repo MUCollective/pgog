@@ -166,6 +166,7 @@ bonshakalaka <- function(data, bounds, offset = 0.02, max = NULL){
   )
   squeeze(locations, bounds)
 }
+
 shakabonbon <- function(data, bounds, offset = 0.02, max = NULL) {
   rotate(bonshakalaka(data, rotate(bounds), offset, max = max))
 }

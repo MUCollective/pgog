@@ -23,9 +23,10 @@ geom_bloc <- function(mapping = NULL, data = NULL,
   # is_aes_p <- function(i) i %in% aes_p
   # mapping_p <- mapping[is_aes_p(names(mapping))]
 
+  #browser()
   # parse prob structure
   parsed_mapping <- parse_aes(mapping)
-  pprint(parsed_mapping)
+  print(parsed_mapping)
 
 
   # print(parsed_mapping)
@@ -104,7 +105,6 @@ GeomBloc <- ggplot2::ggproto(
     data
   },
 
-
   # required_aes = c("xmin", "xmax", "ymin", "ymax"),
   required_aes = c(),
 
@@ -168,7 +168,7 @@ GeomBloc <- ggplot2::ggproto(
             data <- cbind(data, rel_min_height = params$rel_min_height)
         }
 
-        #browser()
+         browser()
         data <- transform(data,
                   ymin = y,
                   ymax = y + iscale*scale*height,

@@ -125,11 +125,10 @@ ggplot(mtcars) + geom_bloc(aes(height = c(P(gear|am)),
                                width = c(P(cyl|gear, am)), 
                                y = c(am)))
 
-ggplot(mtcars) + geom_bloc(aes(height = c(P(gear), P(cyl|gear))))
 
 ggplot(mtcars) + geom_bloc(aes(height = c(P(gear|am), P(cyl|gear, am)), 
-                               x = c(gear), 
-                               y = c(am)))
+                               x = gear, 
+                               y = am))
 ```
 
 
@@ -185,7 +184,7 @@ ggplot(mtcars) + geom_bloc(
   aes(
     x = c(mpg),
     y = c(gear), 
-    fill = factor(cyl),
+    fill = factor(cyl), # TODO: factor() not working
     height = c(P(mpg | gear, cyl))
   ))
 ```
@@ -202,11 +201,12 @@ ggplot(mtcars) + geom_bloc(aes(x = c(mpg,cyl), y = c(gear), fill=factor(cyl), he
 TODO/bug: position needs to be "fill" in `geom_bloc`
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(x = c(mpg), 
-                               height = c(P(cyl | mpg)), 
-                               fill = factor(cyl)), 
-                           position = "fill") # need fixing
+ggplot(mtcars) + 
+  geom_bloc(aes(x = c(mpg), 
+                height = c(P(cyl | mpg)), 
+                fill = factor(cyl)))  
 ```
+
 
 Issue #58 TODO/bug
 
@@ -222,18 +222,21 @@ More than one probabilistic variables in the spec
 ```{r}
 common_bw <- 1.5
 
-ggplot(mtcars) + 
-  geom_bloc(aes(
+ggplot(mtcars) + geom_bloc(aes(
     x = c(mpg), 
     height = c(P(cyl|mpg), P(mpg)), 
-    fill = factor(cyl)), bw = common_bw, position = "stack") + # TODO: remove position arg
+    fill = factor(cyl)), bw = common_bw) + 
   xlab("mpg")
 ```
 
 
-
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(x = c(hp, gear), fill = factor(cyl), height = c(P(cyl|hp, gear), P(hp|gear))), position = "stack")
+# TODO: this is wrong
+
+ggplot(mtcars) + 
+  geom_bloc(aes(x = c(hp, gear), 
+                fill = factor(cyl), 
+                height = c(P(cyl|hp, gear), P(hp|gear))))
 ```
 
 
@@ -266,11 +269,11 @@ https://github.com/MUCollective/pgog/issues/60
 bar charts filled with icons 
 
 ```{r}
-ggplot(mtcars) + geom_icon(aes(
-  height = c(P(cyl)), 
-  x = c(cyl), 
-  fill = c(factor(cyl)
-  ))) 
+#ggplot(mtcars) + geom_icon(aes(
+#  height = c(P(cyl)), 
+#  x = c(cyl), 
+#  fill = c(factor(cyl)
+#  ))) 
 ```
 
 This is just ugly
@@ -278,11 +281,11 @@ This is just ugly
 V
 
 ```{r}
-ggplot(mtcars) + geom_icon(aes(
-  width = c(P(cyl)), 
-  y = c(cyl), 
-  fill = c(factor(cyl)
-  ))) 
+#ggplot(mtcars) + geom_icon(aes(
+#  width = c(P(cyl)), 
+#  y = c(cyl), 
+#  fill = c(factor(cyl)
+#  ))) 
 ```
 
 
@@ -322,11 +325,17 @@ ggplot(mtcars) +
 
 TODO: need implementing
 
-### {w,h} <- P(A)
+### {w,h} <- P(A), {x,y} <- A
 
 
 ```{r}
 # ggplot(mtcars) + geom_icon(aes(height=c(P(mpg))))
+```
+
+### 
+
+```{r}
+
 ```
 
 ## x.width and y.height
@@ -362,4 +371,7 @@ df_total = df_total %>% mutate(generation = fct_relevel(generation, "Early Boome
 ggplot(df_total) + geom_bloc(aes(width = c(P(race|generation)), x = c(race), y = c(generation),fill = generation), fill = "black") + theme_bw()
 ```
 
+```{r}
+#ggplot(df_total) + geom_bloc(aes(width = c(P(race|generation)), x = c(race), y = c(generation),fill = #generation), fill = "black") + theme_bw()
+```
 
