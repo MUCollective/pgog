@@ -52,7 +52,7 @@ StatBloc <- ggplot2::ggproto(
     margin <- getFromNamespace("margin", "productplots") # TODO: get rid of productplot dependency
     # stuff from prodcalc()
     # this is wrong... need unique()
-    browser()
+    #browser()
     marg_var <- sapply(get_margs(prob.struct), as.character)
     if (!(is.list(marg_var) & length(marg_var) == 0)) {
       marg_var <- paste0("p.", marg_var)
@@ -79,11 +79,11 @@ StatBloc <- ggplot2::ggproto(
 
     if (! has_too_many_levels){
       message("Defaulting to mosaic plots. Use `stat=blocdensity` to force density plots")
-      browser()
+      #browser()
       # the normal mosaic plot things
       wt <- margin(data, marg_var, cond_var)
       # base_layer <- function(data, prob.struct, offset, level=1, bounds = productplots:::bound()){
-      browser()
+      #browser()
       res <- bloc_divide(data = wt, prob.struct = prob.struct, offset = offset)
 
       for(i in names(extra_var)){
@@ -117,7 +117,7 @@ StatBloc <- ggplot2::ggproto(
 
       res <- dplyr::rename(res, xmin=l, xmax=r, ymin=b, ymax=t)
       res$group <- seq_len(nrow(res))
-      browser()
+      #browser()
       res
 
     } else {
