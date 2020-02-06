@@ -1,6 +1,12 @@
 
 aes_lookup <- function(aes_str){
 
+  #browser()
+
+  if(aes_str %in% c("alpha","color","colour","fill")){
+    return(NULL)
+  }
+
   switch (aes_str,
     x.height = return(hbar),
     x.cond = return(hspine),

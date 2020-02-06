@@ -119,18 +119,18 @@ ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl|gear, carb)), x = c(gear), y=c(c
 ### 1+ probabilistic variables
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(height = c(P(gear|am), P(cyl|gear, am)), 
-                               x = c(am)))
+#ggplot(mtcars) + geom_bloc(aes(height = c(P(gear|am), P(cyl|gear, am)), 
+#                               x = c(am)))
 
 ggplot(mtcars) + geom_bloc(aes(height = c(P(gear|am)), 
                                width = c(P(cyl|gear, am)), 
                                y = c(am)))
 
-ggplot(mtcars) + geom_bloc(aes(height = c(P(gear), P(cyl|gear))))
+#ggplot(mtcars) + geom_bloc(aes(height = c(P(gear), P(cyl|gear))))
 
-ggplot(mtcars) + geom_bloc(aes(height = c(P(gear|am), P(cyl|gear, am)), 
-                               x = gear, 
-                               y = am))
+#ggplot(mtcars) + geom_bloc(aes(height = c(P(gear|am), P(cyl|gear, am)), 
+#                               x = gear, 
+#                               y = am))
 ```
 
 
