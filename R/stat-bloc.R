@@ -74,12 +74,14 @@ StatBloc <- ggplot2::ggproto(
 
     # check if these variables are continuous
     all_rvs <- unique(c(marg_var, cond_var))
-    is_continuous <- function(i) length(unique(i)) > 7
+    is_continuous <- function(i) {
+      !rlang::is_integerish(i)
+    }
     rv_levels <- sapply(as.tibble(data[, all_rvs]), is_continuous)
     has_too_many_levels <- sum(rv_levels)
 
 
-    if (! has_too_many_levels){
+    if (!has_too_many_levels){
       message("Defaulting to mosaic plots. Use `stat=blocdensity` to force density plots")
       #browser()
       # the normal mosaic plot things

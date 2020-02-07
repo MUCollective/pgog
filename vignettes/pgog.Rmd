@@ -368,10 +368,17 @@ df_test_4 = data.frame(generation = c("Early Boomers in 1986"),
 df_total = rbind(df_test_1,df_test_2,df_test_3,df_test_4)
 df_total = df_total %>% mutate(generation = fct_relevel(generation, "Early Boomers in 1986","Gen-Xer in 1986","Millennials in 2002", "Post-Millennials in 2018"), race = fct_relevel(race, "White", "Hispanic", "Black", "Asian", "Other"))
 
-ggplot(df_total) + geom_bloc(aes(width = c(P(race|generation)), x = c(race), y = c(generation),fill = generation), fill = "black") + theme_bw()
+ggplot(df_total) + geom_bloc(aes(width = c(P(race|generation)), x = c(race), y = c(generation),fill = factor(generation))) + theme_bw()
 ```
 
 ```{r}
 #ggplot(df_total) + geom_bloc(aes(width = c(P(race|generation)), x = c(race), y = c(generation),fill = #generation), fill = "black") + theme_bw()
+```
+test is_continuous() in stat_Bloc
+```{r}
+ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl)), x = c(cyl)))
+ggplot(mtcars) +  geom_bloc(aes(x = c(mpg), height = c(P(mpg)))) 
+
+
 ```
 
