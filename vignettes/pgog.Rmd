@@ -173,7 +173,13 @@ Ridge plots
   
 ```{r}
 ggplot(mtcars) + geom_bloc(aes(x = c(mpg), height = c(P(mpg | cyl)), y = c(cyl), fill = cyl))
+
 ```
+
+```{r}
+ggplot(mtcars) + geom_bloc(aes(y = c(mpg), width = c(P(mpg | cyl)), x = c(cyl), fill = cyl))
+```
+
 
 ### h <- P(A|B,C), x <- A, y <- B, f <- C
 
@@ -225,7 +231,7 @@ common_bw <- 1.5
 ggplot(mtcars) + geom_bloc(aes(
     x = c(mpg), 
     height = c(P(cyl|mpg), P(mpg)), 
-    fill = factor(cyl)), bw = common_bw) + 
+    fill = factor(cyl), bw = common_bw )) + 
   xlab("mpg")
 ```
 
@@ -235,7 +241,7 @@ ggplot(mtcars) + geom_bloc(aes(
 
 ggplot(mtcars) + 
   geom_bloc(aes(x = c(hp, gear), 
-                fill = factor(cyl), 
+                fill = factor(cyl), color = factor(cyl),
                 height = c(P(cyl|hp, gear), P(hp|gear))))
 ```
 
@@ -368,7 +374,7 @@ df_test_4 = data.frame(generation = c("Early Boomers in 1986"),
 df_total = rbind(df_test_1,df_test_2,df_test_3,df_test_4)
 df_total = df_total %>% mutate(generation = fct_relevel(generation, "Early Boomers in 1986","Gen-Xer in 1986","Millennials in 2002", "Post-Millennials in 2018"), race = fct_relevel(race, "White", "Hispanic", "Black", "Asian", "Other"))
 
-ggplot(df_total) + geom_bloc(aes(width = c(P(race|generation)), x = c(race), y = c(generation),fill = generation), fill = "black") + theme_bw()
+ggplot(df_total) + geom_bloc(aes(width = c(P(race|generation)), x = c(race), y = c(generation),fill = generation, color = race), fill = "black") + theme_bw()
 ```
 
 ```{r}

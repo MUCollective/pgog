@@ -5,7 +5,7 @@
 #' @return the aesthetics matrix
 #' @export
 parse_aes <- function(mapping){
-  # browser()
+  #browser()
 
   #browser()
   # 1. get a list of prob and coord aesthetics

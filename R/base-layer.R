@@ -313,6 +313,8 @@ divide_base <- function(data, bounds, aes, level=1, max_wt = NULL, offset){
     max_wt <- max(wt, na.rm = TRUE)
   }
 
+  #browser()
+
   # those $l, $r, $b, $t things
   divider <- aes_lookup(aes)
   # divider(data, bounds, offset = offset, max = NULL)

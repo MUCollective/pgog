@@ -101,7 +101,7 @@ GeomBloc <- ggplot2::ggproto(
   ggplot2::Geom,
 
   setup_data = function(data, params){
-    browser()
+    #browser()
     data
   },
 
@@ -168,7 +168,7 @@ GeomBloc <- ggplot2::ggproto(
             data <- cbind(data, rel_min_height = params$rel_min_height)
         }
 
-         browser()
+         #browser()
         data <- transform(data,
                   ymin = y,
                   ymax = y + iscale*scale*height,
