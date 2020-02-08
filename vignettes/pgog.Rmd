@@ -380,4 +380,3 @@ ggplot(df_total) + geom_bloc(aes(width = c(P(race|generation)), x = c(race), y =
 ```{r}
 #ggplot(df_total) + geom_bloc(aes(width = c(P(race|generation)), x = c(race), y = c(generation),fill = #generation), fill = "black") + theme_bw()
 ```
-
