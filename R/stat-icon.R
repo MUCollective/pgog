@@ -1,4 +1,3 @@
-
 stat_icon <- function(
   mapping = NULL,
   data = NULL,
@@ -7,7 +6,7 @@ stat_icon <- function(
   na.rm = FALSE,
   show.legend = NA,
   inherit.aes = TRUE, ...){
-  browser()
+  #browser()
   ggplot2::layer(
     data = data,
     mapping = mapping,
@@ -34,7 +33,7 @@ StatIcon <- ggplot2::ggproto(
   compute_panel = function(self, data, scales, na.rm = FALSE,
                            prob.struct, offset = 0.01){
 
-    browser()
+    #browser()
     marg_var <- sapply(get_margs(prob.struct), as.character)
     if (!(is.list(marg_var) & length(marg_var) == 0)) {
       marg_var <- paste0("p.", marg_var)
@@ -176,3 +175,4 @@ StatIcon <- ggplot2::ggproto(
 #' }
 #'
 #'
+

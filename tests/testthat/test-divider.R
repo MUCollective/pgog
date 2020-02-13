@@ -63,3 +63,40 @@ test_that("squeeze multiple stacked rectangle on a non-unit bound", {
   expect_equal(result$b, c(0,0,0.3,0.2))
   expect_equal(result$t, c(0.3,0.2,0.5, 0.5))
 })
+
+test_that ("aes checker 1",{
+  aes = c("x.height","width","y.cond","width.color")
+  result = c()
+  for(i in 1:length(aes)){
+  result = c(result,aes_checker(aes[i]))
+  }
+  expect_equal(result,c("x.height","width","y.cond","width"))
+})
+
+
+test_that ("aes checker 2",{
+  aes = c("x.height","width","y.cond","color")
+  result = c()
+  for(i in 1:length(aes)){
+    result = c(result,aes_checker(aes[i]))
+  }
+  expect_equal(result,c("x.height","width","y.cond",NA))
+})
+
+test_that ("aes checker 3",{
+  aes = c("x.height","width","y.cond","fill.width.color")
+  result = c()
+  for(i in 1:length(aes)){
+    result = c(result,aes_checker(aes[i]))
+  }
+  expect_equal(result,c("x.height","width","y.cond","width"))
+})
+
+test_that ("aes lookup 1",{
+  aes = c("x.height","width","y.cond","fill.width.color")
+  result = c()
+  for(i in 1:length(aes)){
+    result = c(result,aes_lookup(aes[i]))
+  }
+  expect_equal(result,c(eval(hbar),eval(hspine),eval(vspine),eval(hspine)))
+})

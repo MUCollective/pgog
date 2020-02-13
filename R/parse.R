@@ -1,4 +1,3 @@
-
 #' parses and checks aesthetics mapping
 #' @param mapping aesthetics mapping, a list of expressions (used to be
 #' quosures)
@@ -359,5 +358,3 @@ flatten_aes <- function(mapping){
   list(mapping=new_mapping, env = mapping_env)
 
 }
-
-

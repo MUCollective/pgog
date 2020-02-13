@@ -381,4 +381,3 @@ ggplot(mtcars) +  geom_bloc(aes(x = c(mpg), height = c(P(mpg))))
 
 
 ```
-

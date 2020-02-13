@@ -101,7 +101,7 @@ GeomBloc <- ggplot2::ggproto(
   ggplot2::Geom,
 
   setup_data = function(data, params){
-    browser()
+    #browser()
     data
   },
 
@@ -285,3 +285,4 @@ GeomBloc <- ggplot2::ggproto(
   draw_key = ggplot2::draw_key_polygon
 
 )
+

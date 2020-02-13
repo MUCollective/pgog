@@ -1,4 +1,3 @@
-
 #' @importFrom plyr dlply ldply rbind.fill
 bloc_divide <- function(data, prob.struct, offset, level=1, bounds = productplots:::bound()){
   # browser()
