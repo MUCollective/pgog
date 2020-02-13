@@ -1,4 +1,3 @@
-
 #' @importFrom plyr dlply ldply rbind.fill
 bloc_divide <- function(data, prob.struct, offset, level=1, bounds = productplots:::bound()){
   # browser()
@@ -312,8 +311,6 @@ divide_base <- function(data, bounds, aes, level=1, max_wt = NULL, offset){
   if (is.null(max_wt)){
     max_wt <- max(wt, na.rm = TRUE)
   }
-
-  #browser()
 
   # those $l, $r, $b, $t things
   divider <- aes_lookup(aes)

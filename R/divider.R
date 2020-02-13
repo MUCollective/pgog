@@ -1,7 +1,7 @@
 
 aes_lookup <- function(aes_str){
 
-  browser()
+  #browser()
 
   aes_str_check = aes_checker(aes_str)
   if (is.na(aes_str_check)==FALSE) {
@@ -26,7 +26,7 @@ aes_lookup <- function(aes_str){
 }
 
 aes_checker <- function(aes_str){
-  browser()
+  #browser()
 
   aes_splitted = as.vector(unlist(strsplit(aes_str, "[.]")))
   for( i in seq_along(aes_splitted)){

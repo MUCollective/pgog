@@ -285,3 +285,4 @@ GeomBloc <- ggplot2::ggproto(
   draw_key = ggplot2::draw_key_polygon
 
 )
+

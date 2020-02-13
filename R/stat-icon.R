@@ -1,4 +1,3 @@
-
 stat_icon <- function(
   mapping = NULL,
   data = NULL,
@@ -7,7 +6,7 @@ stat_icon <- function(
   na.rm = FALSE,
   show.legend = NA,
   inherit.aes = TRUE, ...){
-  browser()
+  #browser()
   ggplot2::layer(
     data = data,
     mapping = mapping,
@@ -176,3 +175,4 @@ StatIcon <- ggplot2::ggproto(
 #' }
 #'
 #'
+
