@@ -6,6 +6,8 @@
 *.R text eol=lf
 *.Rmd text eol=lf
 *.Rd text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
 
 # Declare files that will always have CRLF line endings on checkout.
 *.sln text eol=crlf
