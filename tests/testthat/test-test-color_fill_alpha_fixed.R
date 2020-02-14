@@ -30,4 +30,13 @@ test_that("color,fill,alpha doesn't change", {
       alpha = factor(cyl)))
 
   vdiffr::expect_doppelganger("pgog-alpha", pgog_stacked)
+
+  pgog_multiple_variable1 <- ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl|gear)),
+                                 x = c(gear), fill = factor(cyl), alpha = factor(cyl)))
+  vdiffr::expect_doppelganger("pgog-alpha-fill1", pgog_multiple_variable1)
+
+  pgog_multiple_variable2 <- ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl|gear)),
+                                 x = c(gear), fill = factor(gear), alpha = factor(cyl)))
+  vdiffr::expect_doppelganger("pgog-alpha-fill2", pgog_multiple_variable1)
 })
+
