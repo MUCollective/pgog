@@ -193,7 +193,7 @@ ggplot(mtcars) + geom_bloc(
 Issue #58 TODO/bug: this should be different from above; should be faceting?
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(x = c(mpg,cyl), y = c(gear), fill=factor(cyl), height = c(P(mpg | gear, cyl))))
+ggplot(mtcars) + geom_bloc(aes(x = c(mpg,cyl), y = c(gear), fill=(cyl), height = c(P(mpg | gear, cyl))))
 ```
 
 ### h <- P(B|A), x <- A, f <- B

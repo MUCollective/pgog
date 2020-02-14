@@ -1,6 +1,6 @@
 #' @importFrom plyr dlply ldply rbind.fill
 bloc_divide <- function(data, prob.struct, offset, level=1, bounds = productplots:::bound()){
-  # browser()
+  #browser()
   if (nrow(prob.struct) == 1)
     return(divide_base(data=data, bounds = bounds, aes = prob.struct[1,3],
                        level = level, offset = offset))

@@ -66,6 +66,7 @@ geom_bloc <- function(mapping = NULL, data = NULL,
   name = names(extra_var)
   #trim the factor() out
   extra_var = str_extract(extra_var,"\\(.*\\)") %>% str_replace("\\(","") %>% str_replace("\\)","")
+  #browser()
   names(extra_var) = name
   # hack to get position arg right
   # ACHTUNG: but geom doesn't have data values yet
@@ -122,6 +123,7 @@ GeomBloc <- ggplot2::ggproto(
   # from ggplot, geom-ribbon.r
   setup_data = function(self, data, params){
     if ("density" %in% names(data)) {
+      #browser()
       # all density plots
       data <- transform(data[order(data$PANEL, data$group, data$x), ], ymin = 0, ymax = y)
 
@@ -182,7 +184,7 @@ GeomBloc <- ggplot2::ggproto(
       # not density plots
 
       # product plots, etc. only want top level rectangles
-
+      #browser()
       subset(data, level==max(data$level))
     }
   },
@@ -195,7 +197,7 @@ GeomBloc <- ggplot2::ggproto(
       stop("Aesthetics can not vary along a ridgeline")
     }
     aes <- as.list(aes)
-
+    #browser()
     if ("density" %in% names(data)){
       if ("height" %in% names(data)){
         # ridge plot
@@ -205,6 +207,7 @@ GeomBloc <- ggplot2::ggproto(
 
 
       # from ggplot, geom-ribbon.r
+      #browser()
       if (na.rm) data <- data[stats::complete.cases(data[c("x", "ymin", "ymax")]), ]
       data <- data[order(data$group), ]
 
@@ -212,7 +215,7 @@ GeomBloc <- ggplot2::ggproto(
       ids <- cumsum(missing_pos) + 1
       ids[missing_pos] <- NA
 
-
+      #browser()
       data <- unclass(data) #for faster indexing
       positions <- new_data_frame(list(
         x = c(data$x, rev(data$x)),

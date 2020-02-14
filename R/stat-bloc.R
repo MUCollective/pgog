@@ -12,7 +12,7 @@ stat_bloc <- function(
   # custom params
   # offset = 0.01) {
 
-
+  #browser()
   ggplot2::layer(
     data = data,
     mapping = mapping,
@@ -80,9 +80,10 @@ StatBloc <- ggplot2::ggproto(
     rv_levels <- sapply(as.tibble(data[, all_rvs]), is_continuous)
     has_too_many_levels <- sum(rv_levels)
 
-
+    #TODO: cqa, fix the issue that categorical variable must come after factor to be drew correctly
     if (!has_too_many_levels){
       message("Defaulting to mosaic plots. Use `stat=blocdensity` to force density plots")
+      #here data$group is different
       #browser()
       # the normal mosaic plot things
       wt <- margin(data, marg_var, cond_var)
@@ -120,6 +121,7 @@ StatBloc <- ggplot2::ggproto(
 #       })
 
       res <- dplyr::rename(res, xmin=l, xmax=r, ymin=b, ymax=t)
+      #browser()
       res$group <- seq_len(nrow(res))
 
       res
@@ -376,6 +378,7 @@ StatBloc <- ggplot2::ggproto(
                                kernel = kernel,
                                n=n)
         # keep other vars
+        #browser()
         meta_data <- select(piece, -c("x", "y"))[1,]
         meta_data$group <- i
 
