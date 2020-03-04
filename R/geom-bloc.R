@@ -8,6 +8,7 @@
 geom_bloc <- function(mapping = NULL, data = NULL,
                       stat = "bloc",
                       position = "identity",
+                      side = "up",
                       ...,
                       binwidth = NULL,
                       bins = NULL,
@@ -16,7 +17,8 @@ geom_bloc <- function(mapping = NULL, data = NULL,
                       inherit.aes = TRUE,
                       offset = 0.01,
                       prob.struct = NULL,
-                      extra_var = NULL) {
+                      extra_var = NULL
+                      ) {
 
   # TODO: only check probability related aesthetics
   # aes_p <- c("x", "y", "width", "height")
@@ -88,6 +90,7 @@ geom_bloc <- function(mapping = NULL, data = NULL,
       offset = offset,
       prob.struct = parsed_mapping,
       extra_var = extra_var,
+      side = side,
       ...
     )
   )
@@ -222,11 +225,25 @@ GeomBloc <- ggplot2::ggproto(
         y = c(data$ymax, rev(data$ymin)),
         id = c(ids, rev(ids))
       ))
-      munched <- coord_munch(coord, positions, panel_params)
-
+      #browser()
+      # munched <- tibble(x=c(1,2,3,3,2,1),
+      #              y=c(1,2,1,-1,-2,-1),
+      #              id=c(1))
+      # munched <- coord_munch(coord, positions, panel_params)
+      if(sum(positions$y) == 0){
+        position_positive = positions %>% filter(y > 0) %>% arrange(x)
+        position_negative = positions %>% filter(y < 0) %>% arrange(desc(x))
+        munched = rbind(position_positive, position_negative)
+        munched <- coord_munch(coord, munched, panel_params)
+      }
+      else{
+        munched <- coord_munch(coord, positions, panel_params)
+      }
+      #munched <- coord_munch(coord, positions, panel_params)
+      #browser()
       ggname("geom_bloc", grid::polygonGrob(
         munched$x, munched$y, id = munched$id,
-        default.units = "native",
+        default.units = "npc",
         gp = gpar(
           fill = alpha(aes$fill, aes$alpha),
           col = aes$colour,
@@ -244,7 +261,7 @@ GeomBloc <- ggplot2::ggproto(
         polys <- lapply(split(data, seq_len(nrow(data))), function(row) {
           poly <- rect_to_poly(row$xmin, row$xmax, row$ymin, row$ymax)
           aes <- new_data_frame(row[aesthetics])[rep(1,5), ]
-
+          browser()
           GeomPolygon$draw_panel(cbind(poly, aes), panel_params, coord)
         })
 
