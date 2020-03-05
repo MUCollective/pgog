@@ -17,8 +17,8 @@ This is an R package that accompanies our [CHI 2020 paper](https://osf.io/dy8qv/
 - [Sketch(-y) proof of correctness](https://xiaoyingpu.github.io/note/correctness-proof/)
 
 ## PGoG paper
-- [Paper pre-print]
-- [Paper at ACM DL]
+- [Paper pre-print on OSF](https://osf.io/dy8qv/)
+- [Paper at ACM DL (to appear)]
 - [Project website]()
   - [Probabilistic visualization collection]()
 
