@@ -19,6 +19,5 @@ This is an R package that accompanies our [CHI 2020 paper](https://osf.io/dy8qv/
 ## PGoG paper
 - [Paper pre-print on OSF](https://osf.io/dy8qv/)
 - [Paper at ACM DL (to appear)]
-- [Project website]()
-  - [Probabilistic visualization collection]()
+- [Probabilistic visualization collection](https://mucollective.github.io/visualization/)
 
