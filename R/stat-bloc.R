@@ -438,11 +438,17 @@ StatBloc <- ggplot2::ggproto(
           mutate_(y = group_var) %>%
           mutate(height = density)
       }
-      if(prob.struct$aes == "	y.width"){
+      #browser()
+
+      if("y.width" %in% prob.struct$aes ){
         tmp = densities$x
         densities$x = densities$y
         densities$y = tmp
+        densities$flip = TRUE
+      } else {
+        densities$flip = FALSE
       }
+
       return(densities)
 
     }

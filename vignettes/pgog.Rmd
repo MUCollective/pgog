@@ -377,7 +377,15 @@ ggplot(df_total) + geom_bloc(aes(width = c(P(race|generation)), x = c(race), y =
 test is_continuous() in stat_Bloc
 ```{r}
 ggplot(mtcars) + geom_bloc(aes(height = c(P(cyl)), x = c(cyl)))
-ggplot(mtcars) +  geom_bloc(aes(x = c(mpg), height = c(P(mpg)))) 
-
-
+ggplot(mtcars) +  geom_bloc(aes(x = c(mpg), height = c(P(mpg))))
 ```
+
+
+```{r}
+ggplot(mtcars) + geom_bloc(aes(y = c(mpg), width = c(P(mpg | cyl)), x = c(cyl), fill = cyl))
+```
+
+```{r}
+ggplot(mtcars) + geom_bloc(aes(x = c(mpg), height = c(P(mpg | cyl)), y = c(cyl), fill = cyl))
+```
+
