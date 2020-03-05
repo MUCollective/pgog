@@ -429,13 +429,19 @@ StatBloc <- ggplot2::ggproto(
       } else {
         densities$y <- densities$density
       }
+      #browser()
 
       if (is_ridges){
-        # browser()
+      #browser()
         # densities$y <-
         densities <- densities %>%
           mutate_(y = group_var) %>%
           mutate(height = density)
+      }
+      if(prob.struct$aes == "	y.width"){
+        tmp = densities$x
+        densities$x = densities$y
+        densities$y = tmp
       }
       return(densities)
 
