@@ -13,7 +13,7 @@ This is an R package that accompanies our [CHI 2020 paper](https://osf.io/dy8qv/
 
 
 ## More about the PGoG grammar
-- [This vignette]() lists many PGoG specification examples.
+- [This vignette](https://github.com/MUCollective/pgog/blob/master/vignettes/pgog.Rmd) lists many PGoG specification examples.
 - [Sketch(-y) proof of correctness](https://xiaoyingpu.github.io/note/correctness-proof/)
 
 ## PGoG paper
