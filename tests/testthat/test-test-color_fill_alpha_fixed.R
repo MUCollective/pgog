@@ -1,4 +1,6 @@
 library(vdiffr)
+library(ggplot2)
+
 #control shift P for Qiang use(ignore)
 test_that("color,fill,alpha doesn't change", {
   skip_if_not_installed("vdiffr")

@@ -8,7 +8,7 @@ stat_bloc <- function(
   na.rm = FALSE,
   show.legend = NA,
   inherit.aes = TRUE,
-  side,
+  side = side,
   ...){
   # custom params
   # offset = 0.01) {
@@ -444,19 +444,23 @@ StatBloc <- ggplot2::ggproto(
       }
       #browser()
       if(side == "up"){
-        return(densities)
+        #return(densities)
+        densities$up = c(NA)
       }
       else if(side == "down"){
-        densities$y = -densities$y
-        return(densities)
+        # densities$y = -densities$y
+        # return(densities)
+        densities$down = c(NA)
       }
       else if(side == "both"){
-        temp = densities
-        temp$y = -temp$y
-        temp = temp %>% arrange(desc(x))
-        densities = rbind(densities,temp)
-        return(densities)
+        # temp = densities
+        # temp$y = -temp$y
+        # temp = temp %>% arrange(desc(x))
+        # densities = rbind(densities,temp)
+        # return(densities)
+        densities$both = c(NA)
       }
+      return(densities)
       print("error: side is either up, down, or both")
 
     }
