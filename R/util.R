@@ -136,7 +136,7 @@ P <- function(x) {
         tbl <- table(cond_unnormalized)
         counts <- sum(tbl)
         factor <- len %/% counts
-        browser()
+        #browser()
 
         # TODO: this does not consider three or more variables
         # TODO: this returns a char vec, not the original data type

@@ -155,6 +155,9 @@ TODO: this is not rotated hmmm issue #59
 
 ```{r}
 ggplot(mtcars) +  geom_bloc(aes(y = c(mpg), width = c(P(mpg)))) 
+ggplot(mtcars) +  geom_bloc(aes(y = c(mpg), width = c(P(mpg))),side = "up") 
+ggplot(mtcars) +  geom_bloc(aes(y = c(mpg), width = c(P(mpg))),side = "down")
+ggplot(mtcars) +  geom_bloc(aes(y = c(mpg), width = c(P(mpg))),side = "both") 
 ```
 
 
@@ -164,6 +167,9 @@ ggplot(mtcars) +  geom_bloc(aes(y = c(mpg), width = c(P(mpg))))
 
 ```{r}
 ggplot(mtcars) + geom_bloc(aes(x = mpg, fill = cyl, height = c(P(mpg | cyl))))
+ggplot(mtcars) + geom_bloc(aes(x = mpg, fill = cyl, height = c(P(mpg | cyl))),side = "up")
+ggplot(mtcars) + geom_bloc(aes(x = mpg, fill = cyl, height = c(P(mpg | cyl))),side = "down")
+ggplot(mtcars) + geom_bloc(aes(x = mpg, fill = cyl, height = c(P(mpg | cyl))),side = "both")
 ```
 
 
@@ -193,7 +199,7 @@ ggplot(mtcars) + geom_bloc(
 Issue #58 TODO/bug: this should be different from above; should be faceting?
 
 ```{r}
-ggplot(mtcars) + geom_bloc(aes(x = c(mpg,cyl), y = c(gear), fill=factor(cyl), height = c(P(mpg | gear, cyl))))
+ggplot(mtcars) + geom_bloc(aes(x = c(mpg,cyl), y = c(gear), fill=(cyl), height = c(P(mpg | gear, cyl))))
 ```
 
 ### h <- P(B|A), x <- A, f <- B

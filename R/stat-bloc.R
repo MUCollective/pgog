@@ -8,11 +8,12 @@ stat_bloc <- function(
   na.rm = FALSE,
   show.legend = NA,
   inherit.aes = TRUE,
+  side = side,
   ...){
   # custom params
   # offset = 0.01) {
 
-
+  #browser()
   ggplot2::layer(
     data = data,
     mapping = mapping,
@@ -21,7 +22,8 @@ stat_bloc <- function(
     position = position,
     show.legend = show.legend,
     check.aes = FALSE,
-    inherit.aes = FALSE, # only FALSE to turn the warning off
+    inherit.aes = FALSE,
+    side,# only FALSE to turn the warning off
     params = list(
       na.rm = na.rm,
       # divider = divider,
@@ -49,7 +51,7 @@ StatBloc <- ggplot2::ggproto(
                            bw = "nrd0",
                            adjust = 1,
                            kernel = "gaussian",
-                           n = 512){
+                           n = 512,side){
 
     margin <- getFromNamespace("margin", "productplots") # TODO: get rid of productplot dependency
     # stuff from prodcalc()
@@ -80,9 +82,9 @@ StatBloc <- ggplot2::ggproto(
     rv_levels <- sapply(as.tibble(data[, all_rvs]), is_continuous)
     has_too_many_levels <- sum(rv_levels)
 
-
     if (!has_too_many_levels){
       message("Defaulting to mosaic plots. Use `stat=blocdensity` to force density plots")
+      #here data$group is different
       #browser()
       # the normal mosaic plot things
       wt <- margin(data, marg_var, cond_var)
@@ -120,6 +122,7 @@ StatBloc <- ggplot2::ggproto(
 #       })
 
       res <- dplyr::rename(res, xmin=l, xmax=r, ymin=b, ymax=t)
+      #browser()
       res$group <- seq_len(nrow(res))
 
       res
@@ -368,6 +371,7 @@ StatBloc <- ggplot2::ggproto(
         range <- continous_range
         # compute densities
         # TODO: what's that $weight
+        #browser()
         res <- compute_density(c(t(select(piece, cont_var))), NULL,
                                from = range[1],
                                to = range[2],
@@ -376,6 +380,7 @@ StatBloc <- ggplot2::ggproto(
                                kernel = kernel,
                                n=n)
         # keep other vars
+        #browser()
         meta_data <- select(piece, -c("x", "y"))[1,]
         meta_data$group <- i
 
@@ -437,7 +442,26 @@ StatBloc <- ggplot2::ggproto(
           mutate_(y = group_var) %>%
           mutate(height = density)
       }
+      #browser()
+      if(side == "up"){
+        #return(densities)
+        densities$up = c(NA)
+      }
+      else if(side == "down"){
+        # densities$y = -densities$y
+        # return(densities)
+        densities$down = c(NA)
+      }
+      else if(side == "both"){
+        # temp = densities
+        # temp$y = -temp$y
+        # temp = temp %>% arrange(desc(x))
+        # densities = rbind(densities,temp)
+        # return(densities)
+        densities$both = c(NA)
+      }
       return(densities)
+      print("error: side is either up, down, or both")
 
     }
   }
@@ -478,7 +502,6 @@ compute_density <- function(x, w, from, to, bw = "nrd0", adjust = 1,
       n = NA_integer_
     ), n = 1))
   }
-
   dens <- stats::density(x, weights = w, bw = bw, adjust = adjust,
                          kernel = kernel, n = n, from = from, to = to)
   new_data_frame(list(
