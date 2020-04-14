@@ -8,6 +8,7 @@
 geom_bloc <- function(mapping = NULL, data = NULL,
                       stat = "bloc",
                       position = "identity",
+                      side = "up",
                       ...,
                       binwidth = NULL,
                       bins = NULL,
@@ -16,7 +17,8 @@ geom_bloc <- function(mapping = NULL, data = NULL,
                       inherit.aes = TRUE,
                       offset = 0.01,
                       prob.struct = NULL,
-                      extra_var = NULL) {
+                      extra_var = NULL
+                      ) {
 
   # TODO: only check probability related aesthetics
   # aes_p <- c("x", "y", "width", "height")
@@ -66,6 +68,7 @@ geom_bloc <- function(mapping = NULL, data = NULL,
   name = names(extra_var)
   #trim the factor() out
   extra_var = str_extract(extra_var,"\\(.*\\)") %>% str_replace("\\(","") %>% str_replace("\\)","")
+  #browser()
   names(extra_var) = name
   # hack to get position arg right
   # ACHTUNG: but geom doesn't have data values yet
@@ -87,6 +90,7 @@ geom_bloc <- function(mapping = NULL, data = NULL,
       offset = offset,
       prob.struct = parsed_mapping,
       extra_var = extra_var,
+      side = side,
       ...
     )
   )
@@ -101,7 +105,7 @@ GeomBloc <- ggplot2::ggproto(
   ggplot2::Geom,
 
   setup_data = function(data, params){
-    #browser()
+    browser()
     data
   },
 
@@ -123,6 +127,7 @@ GeomBloc <- ggplot2::ggproto(
   setup_data = function(self, data, params){
     #browser()
     if ("density" %in% names(data)) {
+      #browser()
       # all density plots
 
       order = data$x
@@ -196,16 +201,39 @@ GeomBloc <- ggplot2::ggproto(
                   min_height = hmax*rel_min_height)
         }
 
+        #browser()
+        if ("down" %in% names(data)){
+          data$ymax  = -(data$ymax) + 2 * data$y
+
+        }
+        else if("both" %in% names(data)){
+          temp = data
+          temp$ymax  = -(temp$ymax) + 2 * temp$y
+          data = rbind(data,temp)
+        }
         return(data)
 
       }
-      return(data)
+      #browser()
+      if ("down" %in% names(data)){
+        data$ymax  = -(data$ymax) + 2 * data$ymin
+
+      }
+      else if("both" %in% names(data)){
+        temp = data
+        temp$ymax  = -(temp$ymax) + 2 * temp$ymin
+        data = rbind(data,temp)
+      }
+      data
+
     } else {
       # not density plots
 
       # product plots, etc. only want top level rectangles
 
-      return(subset(data, level==max(data$level)))
+      #browser()
+      subset(data, level==max(data$level))
+
     }
   },
 
@@ -218,7 +246,7 @@ GeomBloc <- ggplot2::ggproto(
       stop("Aesthetics can not vary along a ridgeline")
     }
     aes <- as.list(aes)
-
+    #browser()
     if ("density" %in% names(data)){
       if ("height" %in% names(data)){
         # ridge plot
@@ -232,11 +260,13 @@ GeomBloc <- ggplot2::ggproto(
 
 
       # from ggplot, geom-ribbon.r
+
       if (all(data$flip == TRUE)){
         if (na.rm) data <- data[stats::complete.cases(data[c("y", "xmin", "xmax")]), ]
       } else {
         if (na.rm) data <- data[stats::complete.cases(data[c("x", "ymin", "ymax")]), ]
       }
+
       data <- data[order(data$group), ]
 
 
@@ -249,8 +279,9 @@ GeomBloc <- ggplot2::ggproto(
       ids <- cumsum(missing_pos) + 1
       ids[missing_pos] <- NA
 
-
+      #browser()
       data <- unclass(data) #for faster indexing
+
       if (all(data$flip == TRUE)){
         positions <- new_data_frame(list(
           x = c(data$xmax, rev(data$xmin)),
@@ -266,6 +297,28 @@ GeomBloc <- ggplot2::ggproto(
       }
 
       munched <- coord_munch(coord, positions, panel_params)
+
+
+      #browser()
+      if("both" %in% names(data)){
+        positions = positions %>% filter(y != data$ymin[1])
+      }
+      #data$y  = -(data$y) + 2 * data$ymin[1]
+      # munched <- tibble(x=c(1,2,3,3,2,1),
+      #              y=c(1,2,1,-1,-2,-1),
+      #              id=c(1))
+      # munched <- coord_munch(coord, positions, panel_params)
+      if(mean(positions$y) == data$ymin[1]){
+        position_positive = positions %>% filter(y > data$ymin[1]) %>% arrange(x)
+        position_negative = positions %>% filter(y < data$ymin[1]) %>% arrange(desc(x))
+        munched = rbind(position_positive, position_negative)
+        munched <- coord_munch(coord, munched, panel_params)
+      }
+      else{
+        munched <- coord_munch(coord, positions, panel_params)
+      }
+      #munched <- coord_munch(coord, positions, panel_params)
+      #browser()
 
       ggname("geom_bloc", grid::polygonGrob(
         munched$x, munched$y, id = munched$id,
@@ -287,7 +340,7 @@ GeomBloc <- ggplot2::ggproto(
         polys <- lapply(split(data, seq_len(nrow(data))), function(row) {
           poly <- rect_to_poly(row$xmin, row$xmax, row$ymin, row$ymax)
           aes <- new_data_frame(row[aesthetics])[rep(1,5), ]
-
+          #browser()
           GeomPolygon$draw_panel(cbind(poly, aes), panel_params, coord)
         })
 
