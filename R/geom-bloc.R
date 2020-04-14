@@ -187,7 +187,7 @@ GeomBloc <- ggplot2::ggproto(
             data <- cbind(data, rel_min_height = params$rel_min_height)
         }
 
-         #browser()
+         browser()
         if (all(data$flip == TRUE)){
           data <- transform(data,
                             xmin = x,
@@ -201,7 +201,7 @@ GeomBloc <- ggplot2::ggproto(
                   min_height = hmax*rel_min_height)
         }
 
-        #browser()
+        browser()
         if ("down" %in% names(data)){
           data$ymax  = -(data$ymax) + 2 * data$y
 
@@ -214,7 +214,7 @@ GeomBloc <- ggplot2::ggproto(
         return(data)
 
       }
-      #browser()
+      browser()
       if ("down" %in% names(data)){
         data$ymax  = -(data$ymax) + 2 * data$ymin
 
@@ -231,7 +231,7 @@ GeomBloc <- ggplot2::ggproto(
 
       # product plots, etc. only want top level rectangles
 
-      #browser()
+      browser()
       subset(data, level==max(data$level))
 
     }
@@ -279,7 +279,7 @@ GeomBloc <- ggplot2::ggproto(
       ids <- cumsum(missing_pos) + 1
       ids[missing_pos] <- NA
 
-      #browser()
+      browser()
       data <- unclass(data) #for faster indexing
 
       if (all(data$flip == TRUE)){
@@ -296,10 +296,10 @@ GeomBloc <- ggplot2::ggproto(
         ))
       }
 
-      munched <- coord_munch(coord, positions, panel_params)
+      #munched <- coord_munch(coord, positions, panel_params)
 
 
-      #browser()
+      browser()
       if("both" %in% names(data)){
         positions = positions %>% filter(y != data$ymin[1])
       }
