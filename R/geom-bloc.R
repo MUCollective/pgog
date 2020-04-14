@@ -127,7 +127,7 @@ GeomBloc <- ggplot2::ggproto(
   setup_data = function(self, data, params){
     #browser()
     if ("density" %in% names(data)) {
-      #browser()
+      browser()
       # all density plots
 
       order = data$x
@@ -308,7 +308,8 @@ GeomBloc <- ggplot2::ggproto(
       #              y=c(1,2,1,-1,-2,-1),
       #              id=c(1))
       # munched <- coord_munch(coord, positions, panel_params)
-      if(mean(positions$y) == data$ymin[1]){
+      # if(mean(positions$y) == data$ymin[1]){
+      if(sum(positions$y) == 0){
         position_positive = positions %>% filter(y > data$ymin[1]) %>% arrange(x)
         position_negative = positions %>% filter(y < data$ymin[1]) %>% arrange(desc(x))
         munched = rbind(position_positive, position_negative)

@@ -444,7 +444,11 @@ StatBloc <- ggplot2::ggproto(
           mutate(height = density)
       }
 
-      #browser()
+      browser()
+      #Here is the situation. When Chen is working on the mirror feature, the master doesn't have the flip feature I am working on.
+      # So there is conflict when I try to resolve the merge conflict. Here are two possibilities.
+      # One the test case in the pgog.rmd is wrong (it is easy to fix, just gave a correct test case)
+      # Two the master branch didn't consider the flip situation.
 
       if("y.width" %in% prob.struct$aes ){
         tmp = densities$x
@@ -456,7 +460,7 @@ StatBloc <- ggplot2::ggproto(
       }
 
 
-      #browser()
+      browser()
       if(side == "up"){
         #return(densities)
         densities$up = c(NA)
