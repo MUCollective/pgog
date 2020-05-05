@@ -370,10 +370,8 @@ df_test_3 = data.frame(generation = c("Gen-Xer in 1986"),
                        race = c(rep("White",70),rep("Hispanic",12),rep("Black",15),rep("Other",3)))
 df_test_4 = data.frame(generation = c("Early Boomers in 1986"), 
                        race = c(rep("White",82),rep("Hispanic",4),rep("Black",13),rep("Asian",1),rep("Other",1)))
-
 df_total = rbind(df_test_1,df_test_2,df_test_3,df_test_4)
 df_total = df_total %>% mutate(generation = fct_relevel(generation, "Early Boomers in 1986","Gen-Xer in 1986","Millennials in 2002", "Post-Millennials in 2018"), race = fct_relevel(race, "White", "Hispanic", "Black", "Asian", "Other"))
-
 ggplot(df_total) + geom_bloc(aes(width = c(P(race|generation)), x = c(race), y = c(generation),fill = factor(generation))) + theme_bw()
 ```
 

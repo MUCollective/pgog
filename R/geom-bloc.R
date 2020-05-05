@@ -125,9 +125,9 @@ GeomBloc <- ggplot2::ggproto(
 
   # from ggplot, geom-ribbon.r
   setup_data = function(self, data, params){
-    browser()
+    #browser()
     if ("density" %in% names(data)) {
-      browser()
+      #browser()
       # all density plots
 
       order = data$x
@@ -187,13 +187,13 @@ GeomBloc <- ggplot2::ggproto(
             data <- cbind(data, rel_min_height = params$rel_min_height)
         }
 
-         browser()
+         #browser()
         if (all(data$flip == TRUE)){
           data <- transform(data,
                             xmin = x,
                             xmax = x + iscale*scale*height,
                             min_height = hmax*rel_min_height)
-          browser()
+          #browser()
           if ("down" %in% names(data)){
             data$xmax  = -(data$xmax) + 2 * data$x
 
@@ -212,7 +212,7 @@ GeomBloc <- ggplot2::ggproto(
                   ymax = y + iscale*scale*height,
                   min_height = hmax*rel_min_height)
 
-          browser()
+          #browser()
           if ("down" %in% names(data)){
             data$ymax  = -(data$ymax) + 2 * data$y
 
@@ -226,7 +226,7 @@ GeomBloc <- ggplot2::ggproto(
         }
 
       }
-      browser()
+      #browser()
       if (all(data$flip == TRUE)){
 
         if ("down" %in% names(data)){
@@ -259,7 +259,7 @@ GeomBloc <- ggplot2::ggproto(
 
       # product plots, etc. only want top level rectangles
 
-      browser()
+      #browser()
       subset(data, level==max(data$level))
 
     }
@@ -268,13 +268,13 @@ GeomBloc <- ggplot2::ggproto(
   # draw_panel = function(data, panel_scales, coord) {
   draw_group = function(data, panel_params, coord, na.rm = FALSE) {
     # Check that aesthetics are constant
-    browser()
+    #browser()
     aes <- unique(data[c("colour", "fill", "size", "linetype", "alpha")])
     if (nrow(aes) > 1) {
       stop("Aesthetics can not vary along a ridgeline")
     }
     aes <- as.list(aes)
-    browser()
+    #browser()
     if ("density" %in% names(data)){
       if ("height" %in% names(data)){
         # ridge plot
@@ -307,7 +307,7 @@ GeomBloc <- ggplot2::ggproto(
       ids <- cumsum(missing_pos) + 1
       ids[missing_pos] <- NA
 
-      browser()
+      #browser()
       data <- unclass(data) #for faster indexing
 
       if (all(data$flip == TRUE)){
@@ -327,7 +327,7 @@ GeomBloc <- ggplot2::ggproto(
       #munched <- coord_munch(coord, positions, panel_params)
 
 
-      browser()
+      #browser()
       if("both" %in% names(data)){
         if (all(data$flip == TRUE)){
           positions = positions %>% filter(x != data$xmin[1])
