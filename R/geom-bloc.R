@@ -125,7 +125,7 @@ GeomBloc <- ggplot2::ggproto(
 
   # from ggplot, geom-ribbon.r
   setup_data = function(self, data, params){
-    #browser()
+    browser()
     if ("density" %in% names(data)) {
       browser()
       # all density plots
@@ -240,13 +240,13 @@ GeomBloc <- ggplot2::ggproto(
   # draw_panel = function(data, panel_scales, coord) {
   draw_group = function(data, panel_params, coord, na.rm = FALSE) {
     # Check that aesthetics are constant
-    #browser()
+    browser()
     aes <- unique(data[c("colour", "fill", "size", "linetype", "alpha")])
     if (nrow(aes) > 1) {
       stop("Aesthetics can not vary along a ridgeline")
     }
     aes <- as.list(aes)
-    #browser()
+    browser()
     if ("density" %in% names(data)){
       if ("height" %in% names(data)){
         # ridge plot
@@ -309,14 +309,27 @@ GeomBloc <- ggplot2::ggproto(
       #              id=c(1))
       # munched <- coord_munch(coord, positions, panel_params)
       # if(mean(positions$y) == data$ymin[1]){
-      if(sum(positions$y) == 0){
-        position_positive = positions %>% filter(y > data$ymin[1]) %>% arrange(x)
-        position_negative = positions %>% filter(y < data$ymin[1]) %>% arrange(desc(x))
+      if (all(data$flip == TRUE)){
+
+      if(mean(positions$y) == data$xmin[1]){
+        position_positive = positions %>% filter(y > data$xmin[1]) %>% arrange(y)
+        position_negative = positions %>% filter(y < data$xmin[1]) %>% arrange(desc(y))
         munched = rbind(position_positive, position_negative)
         munched <- coord_munch(coord, munched, panel_params)
       }
       else{
         munched <- coord_munch(coord, positions, panel_params)
+      }
+      } else {
+        if(mean(positions$y) == data$ymin[1]){
+          position_positive = positions %>% filter(y > data$ymin[1]) %>% arrange(x)
+          position_negative = positions %>% filter(y < data$ymin[1]) %>% arrange(desc(x))
+          munched = rbind(position_positive, position_negative)
+          munched <- coord_munch(coord, munched, panel_params)
+        }
+        else{
+          munched <- coord_munch(coord, positions, panel_params)
+        }
       }
       #munched <- coord_munch(coord, positions, panel_params)
       #browser()

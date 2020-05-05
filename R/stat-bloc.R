@@ -434,7 +434,7 @@ StatBloc <- ggplot2::ggproto(
       } else {
         densities$y <- densities$density
       }
-      #browser()
+      browser()
 
       if (is_ridges){
       #browser()

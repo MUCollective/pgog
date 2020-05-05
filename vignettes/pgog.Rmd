@@ -154,10 +154,10 @@ Alternatively, w <- P(A), y <- A
 TODO: this is not rotated hmmm issue #59
 
 ```{r}
-ggplot(mtcars) +  geom_bloc(aes(y = c(mpg), height = c(P(mpg)))) 
-ggplot(mtcars) +  geom_bloc(aes(y = c(mpg), height = c(P(mpg))),side = "up") 
-ggplot(mtcars) +  geom_bloc(aes(y = c(mpg), height = c(P(mpg))),side = "down")
-ggplot(mtcars) +  geom_bloc(aes(y = c(mpg), height = c(P(mpg))),side = "both") 
+ggplot(mtcars) +  geom_bloc(aes(y = c(mpg), width = c(P(mpg)))) 
+ggplot(mtcars) +  geom_bloc(aes(y = c(mpg), width = c(P(mpg))),side = "up") 
+ggplot(mtcars) +  geom_bloc(aes(y = c(mpg), width = c(P(mpg))),side = "down")
+ggplot(mtcars) +  geom_bloc(aes(y = c(mpg), width = c(P(mpg))),side = "both") 
 ```
 
 
