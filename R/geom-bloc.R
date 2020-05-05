@@ -193,38 +193,66 @@ GeomBloc <- ggplot2::ggproto(
                             xmin = x,
                             xmax = x + iscale*scale*height,
                             min_height = hmax*rel_min_height)
+          browser()
+          if ("down" %in% names(data)){
+            data$xmax  = -(data$xmax) + 2 * data$x
+
+          }
+          else if("both" %in% names(data)){
+            temp = data
+            temp$xmax  = -(temp$xmax) + 2 * temp$x
+            data = rbind(data,temp)
+          }
+          return(data)
+
 
         } else {
           data <- transform(data,
                   ymin = y,
                   ymax = y + iscale*scale*height,
                   min_height = hmax*rel_min_height)
+
+          browser()
+          if ("down" %in% names(data)){
+            data$ymax  = -(data$ymax) + 2 * data$y
+
+          }
+          else if("both" %in% names(data)){
+            temp = data
+            temp$ymax  = -(temp$ymax) + 2 * temp$y
+            data = rbind(data,temp)
+          }
+          return(data)
         }
 
-        browser()
+      }
+      browser()
+      if (all(data$flip == TRUE)){
+
         if ("down" %in% names(data)){
-          data$ymax  = -(data$ymax) + 2 * data$y
+          data$xmax  = -(data$xmax) + 2 * data$xmin
 
         }
         else if("both" %in% names(data)){
           temp = data
-          temp$ymax  = -(temp$ymax) + 2 * temp$y
+          temp$xmax  = -(temp$xmax) + 2 * temp$xmin
           data = rbind(data,temp)
         }
-        return(data)
+        data
 
-      }
-      browser()
-      if ("down" %in% names(data)){
-        data$ymax  = -(data$ymax) + 2 * data$ymin
+      } else {
+        if ("down" %in% names(data)){
+          data$ymax  = -(data$ymax) + 2 * data$ymin
 
+        }
+        else if("both" %in% names(data)){
+          temp = data
+          temp$ymax  = -(temp$ymax) + 2 * temp$ymin
+          data = rbind(data,temp)
+        }
+        data
       }
-      else if("both" %in% names(data)){
-        temp = data
-        temp$ymax  = -(temp$ymax) + 2 * temp$ymin
-        data = rbind(data,temp)
-      }
-      data
+
 
     } else {
       # not density plots
@@ -301,7 +329,12 @@ GeomBloc <- ggplot2::ggproto(
 
       browser()
       if("both" %in% names(data)){
-        positions = positions %>% filter(y != data$ymin[1])
+        if (all(data$flip == TRUE)){
+          positions = positions %>% filter(x != data$xmin[1])
+        } else {
+          positions = positions %>% filter(y != data$ymin[1])
+        }
+
       }
       #data$y  = -(data$y) + 2 * data$ymin[1]
       # munched <- tibble(x=c(1,2,3,3,2,1),
@@ -311,9 +344,9 @@ GeomBloc <- ggplot2::ggproto(
       # if(mean(positions$y) == data$ymin[1]){
       if (all(data$flip == TRUE)){
 
-      if(mean(positions$y) == data$xmin[1]){
-        position_positive = positions %>% filter(y > data$xmin[1]) %>% arrange(y)
-        position_negative = positions %>% filter(y < data$xmin[1]) %>% arrange(desc(y))
+      if(mean(positions$x) == data$xmin[1]){
+        position_positive = positions %>% filter(x > data$xmin[1]) %>% arrange(y)
+        position_negative = positions %>% filter(x < data$xmin[1]) %>% arrange(desc(y))
         munched = rbind(position_positive, position_negative)
         munched <- coord_munch(coord, munched, panel_params)
       }
