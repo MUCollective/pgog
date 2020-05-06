@@ -384,7 +384,7 @@ StatBloc <- ggplot2::ggproto(
         meta_data <- select(piece, -c("x", "y"))[1,]
         meta_data$group <- i
 
-        if (! is.na(res$density)){
+        if (! sum(is.na(res$density))){
           # ====== ACHTUNG =========
           # adjust positions to grids
           # res$x <- res$x + (bound$x_rank - 1) * continuous_diff
