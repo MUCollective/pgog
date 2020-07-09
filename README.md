@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.com/MUCollective/pgog.svg?branch=master)](https://travis-ci.com/MUCollective/pgog)
 
 
-# Under construction: A Probabilistic Grammar of Graphics
+# A Probabilistic Grammar of Graphics
 
 <img src="https://xiaoyingpu.github.io/images/pgog-thumbnail.jpg" width="100">
 
