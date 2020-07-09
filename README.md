@@ -10,7 +10,9 @@ This is an R package that accompanies our [CHI 2020 paper](https://osf.io/dy8qv/
 
 [Package documentation TODO]
 
-
+```
+devtools::install_github("MUCollective/pgog")
+```
 
 ## More about the PGoG grammar
 - [This vignette](https://github.com/MUCollective/pgog/blob/master/vignettes/pgog.Rmd) lists many PGoG specification examples.
