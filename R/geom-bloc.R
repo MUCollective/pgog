@@ -125,10 +125,20 @@ GeomBloc <- ggplot2::ggproto(
 
   # from ggplot, geom-ribbon.r
   setup_data = function(self, data, params){
+    #browser()
     if ("density" %in% names(data)) {
       #browser()
       # all density plots
-      data <- transform(data[order(data$PANEL, data$group, data$x), ], ymin = 0, ymax = y)
+
+      order = data$x
+      if(all(data$flip == TRUE)){
+        order = data$y
+        data <- transform(data[order(data$PANEL, data$group, order), ], xmin =min(x), xmax = x)
+      } else {
+        data <- transform(data[order(data$PANEL, data$group, order), ], ymin =0, ymax = y)
+      }
+
+      #data <- transform(data[order(data$PANEL, data$group, data$y), ], xmin =min(x), xmax = x)
 
       if ("height" %in% names(data)){
         # ridge plots
@@ -138,8 +148,12 @@ GeomBloc <- ggplot2::ggproto(
         }
 
         # calculate internal scale
-        yrange = max(data$y) - min(data$y)
-        n = length(unique(data$y))
+        tmp = data$y
+        if(all(data$flip == TRUE)){
+          tmp = data$x
+        }
+        range = max(tmp) - min(tmp)
+        n = length(unique(tmp))
 
         if (n<2) {
           hmax <- max(data$height, na.rm = TRUE)
@@ -150,10 +164,10 @@ GeomBloc <- ggplot2::ggproto(
             heights <- split(data$height, data$PANEL)
             max_heights <- vapply(heights, max, numeric(1), na.rm = TRUE)
             hmax <- max_heights[data$PANEL]
-            iscale <- yrange/((n-1)*hmax)
+            iscale <- range/((n-1)*hmax)
           } else {
             hmax <- max(data$height, na.rm = TRUE)
-            iscale <- yrange/((n-1)*hmax)
+            iscale <- range/((n-1)*hmax)
           }
 
         }
@@ -174,47 +188,87 @@ GeomBloc <- ggplot2::ggproto(
         }
 
          #browser()
-        data <- transform(data,
+        if (all(data$flip == TRUE)){
+          data <- transform(data,
+                            xmin = x,
+                            xmax = x + iscale*scale*height,
+                            min_height = hmax*rel_min_height)
+          #browser()
+          if ("down" %in% names(data)){
+            data$xmax  = -(data$xmax) + 2 * data$x
+
+          }
+          else if("both" %in% names(data)){
+            temp = data
+            temp$xmax  = -(temp$xmax) + 2 * temp$x
+            data = rbind(data,temp)
+          }
+          return(data)
+
+
+        } else {
+          data <- transform(data,
                   ymin = y,
                   ymax = y + iscale*scale*height,
                   min_height = hmax*rel_min_height)
 
-        #browser()
+          #browser()
+          if ("down" %in% names(data)){
+            data$ymax  = -(data$ymax) + 2 * data$y
+
+          }
+          else if("both" %in% names(data)){
+            temp = data
+            temp$ymax  = -(temp$ymax) + 2 * temp$y
+            data = rbind(data,temp)
+          }
+          return(data)
+        }
+
+      }
+      #browser()
+      if (all(data$flip == TRUE)){
+
         if ("down" %in% names(data)){
-          data$ymax  = -(data$ymax) + 2 * data$y
+          data$xmax  = -(data$xmax) + 2 * data$xmin
 
         }
         else if("both" %in% names(data)){
           temp = data
-          temp$ymax  = -(temp$ymax) + 2 * temp$y
+          temp$xmax  = -(temp$xmax) + 2 * temp$xmin
           data = rbind(data,temp)
         }
-        return(data)
+        data
 
-      }
-      #browser()
-      if ("down" %in% names(data)){
-        data$ymax  = -(data$ymax) + 2 * data$ymin
+      } else {
+        if ("down" %in% names(data)){
+          data$ymax  = -(data$ymax) + 2 * data$ymin
 
+        }
+        else if("both" %in% names(data)){
+          temp = data
+          temp$ymax  = -(temp$ymax) + 2 * temp$ymin
+          data = rbind(data,temp)
+        }
+        data
       }
-      else if("both" %in% names(data)){
-        temp = data
-        temp$ymax  = -(temp$ymax) + 2 * temp$ymin
-        data = rbind(data,temp)
-      }
-      data
+
+
     } else {
       # not density plots
 
       # product plots, etc. only want top level rectangles
+
       #browser()
       subset(data, level==max(data$level))
+
     }
   },
 
   # draw_panel = function(data, panel_scales, coord) {
   draw_group = function(data, panel_params, coord, na.rm = FALSE) {
     # Check that aesthetics are constant
+    #browser()
     aes <- unique(data[c("colour", "fill", "size", "linetype", "alpha")])
     if (nrow(aes) > 1) {
       stop("Aesthetics can not vary along a ridgeline")
@@ -225,46 +279,94 @@ GeomBloc <- ggplot2::ggproto(
       if ("height" %in% names(data)){
         # ridge plot
         # remove all points that fall below the minimum height
-        data$ymax[data$height < data$min_height] <- NA
+        if (all(data$flip == TRUE)){
+          data$xmax[data$height < data$min_height] <- NA
+        }else{
+          data$ymax[data$height < data$min_height] <- NA
+        }
       }
 
 
       # from ggplot, geom-ribbon.r
-      #browser()
-      if (na.rm) data <- data[stats::complete.cases(data[c("x", "ymin", "ymax")]), ]
+
+      if (all(data$flip == TRUE)){
+        if (na.rm) data <- data[stats::complete.cases(data[c("y", "xmin", "xmax")]), ]
+      } else {
+        if (na.rm) data <- data[stats::complete.cases(data[c("x", "ymin", "ymax")]), ]
+      }
+
       data <- data[order(data$group), ]
 
-      missing_pos <- !stats::complete.cases(data[c("x", "ymin", "ymax")])
+
+      if (all(data$flip == TRUE)){
+        missing_pos <- !stats::complete.cases(data[c("y", "xmin", "xmax")])
+      } else {
+        missing_pos <- !stats::complete.cases(data[c("x", "ymin", "ymax")])
+      }
+
       ids <- cumsum(missing_pos) + 1
       ids[missing_pos] <- NA
 
       #browser()
       data <- unclass(data) #for faster indexing
-      positions <- new_data_frame(list(
-        x = c(data$x, rev(data$x)),
-        y = c(data$ymax, rev(data$ymin)),
-        id = c(ids, rev(ids))
-      ))
+
+      if (all(data$flip == TRUE)){
+        positions <- new_data_frame(list(
+          x = c(data$xmax, rev(data$xmin)),
+          y = c(data$y, rev(data$y)),
+          id = c(ids, rev(ids))
+        ))
+      } else {
+        positions <- new_data_frame(list(
+          x = c(data$x, rev(data$x)),
+          y = c(data$ymax, rev(data$ymin)),
+          id = c(ids, rev(ids))
+        ))
+      }
+
+      #munched <- coord_munch(coord, positions, panel_params)
+
+
       #browser()
       if("both" %in% names(data)){
-        positions = positions %>% filter(y != data$ymin[1])
+        if (all(data$flip == TRUE)){
+          positions = positions %>% filter(x != data$xmin[1])
+        } else {
+          positions = positions %>% filter(y != data$ymin[1])
+        }
+
       }
       #data$y  = -(data$y) + 2 * data$ymin[1]
       # munched <- tibble(x=c(1,2,3,3,2,1),
       #              y=c(1,2,1,-1,-2,-1),
       #              id=c(1))
       # munched <- coord_munch(coord, positions, panel_params)
-      if(mean(positions$y) == data$ymin[1]){
-        position_positive = positions %>% filter(y > data$ymin[1]) %>% arrange(x)
-        position_negative = positions %>% filter(y < data$ymin[1]) %>% arrange(desc(x))
+      # if(mean(positions$y) == data$ymin[1]){
+      if (all(data$flip == TRUE)){
+
+      if(mean(positions$x) == data$xmin[1]){
+        position_positive = positions %>% filter(x > data$xmin[1]) %>% arrange(y)
+        position_negative = positions %>% filter(x < data$xmin[1]) %>% arrange(desc(y))
         munched = rbind(position_positive, position_negative)
         munched <- coord_munch(coord, munched, panel_params)
       }
       else{
         munched <- coord_munch(coord, positions, panel_params)
       }
+      } else {
+        if(mean(positions$y) == data$ymin[1]){
+          position_positive = positions %>% filter(y > data$ymin[1]) %>% arrange(x)
+          position_negative = positions %>% filter(y < data$ymin[1]) %>% arrange(desc(x))
+          munched = rbind(position_positive, position_negative)
+          munched <- coord_munch(coord, munched, panel_params)
+        }
+        else{
+          munched <- coord_munch(coord, positions, panel_params)
+        }
+      }
       #munched <- coord_munch(coord, positions, panel_params)
       #browser()
+
       ggname("geom_bloc", grid::polygonGrob(
         munched$x, munched$y, id = munched$id,
         default.units = "native",

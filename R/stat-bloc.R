@@ -384,7 +384,7 @@ StatBloc <- ggplot2::ggproto(
         meta_data <- select(piece, -c("x", "y"))[1,]
         meta_data$group <- i
 
-        if (! is.na(res$density)){
+        if (! sum(is.na(res$density))){
           # ====== ACHTUNG =========
           # adjust positions to grids
           # res$x <- res$x + (bound$x_rank - 1) * continuous_diff
@@ -434,14 +434,28 @@ StatBloc <- ggplot2::ggproto(
       } else {
         densities$y <- densities$density
       }
+      #browser()
 
       if (is_ridges){
-        # browser()
+      #browser()
         # densities$y <-
         densities <- densities %>%
           mutate_(y = group_var) %>%
           mutate(height = density)
       }
+
+      #browser()
+
+      if("y.width" %in% prob.struct$aes ){
+        tmp = densities$x
+        densities$x = densities$y
+        densities$y = tmp
+        densities$flip = TRUE
+      } else {
+        densities$flip = FALSE
+      }
+
+
       #browser()
       if(side == "up"){
         #return(densities)
@@ -460,6 +474,7 @@ StatBloc <- ggplot2::ggproto(
         # return(densities)
         densities$both = c(NA)
       }
+
       return(densities)
       print("error: side is either up, down, or both")
 
