@@ -20,6 +20,6 @@ devtools::install_github("MUCollective/pgog")
 
 ## PGoG paper
 - [Paper pre-print on OSF](https://osf.io/dy8qv/)
-- [Paper at ACM DL (to appear)]
+- [Paper at ACM DL](https://dl.acm.org/doi/abs/10.1145/3313831.3376466)
 - [Probabilistic visualization collection](https://mucollective.github.io/visualization/)
 
