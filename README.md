@@ -1,4 +1,4 @@
-[![Build Status](https://github.com/mucollective/pgog/workflows/R-CMD-check/badge.svg)
+![Build Status](https://github.com/mucollective/pgog/workflows/R-CMD-check/badge.svg)
 
 
 # A Probabilistic Grammar of Graphics
