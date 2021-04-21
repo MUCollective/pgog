@@ -1,0 +1,75 @@
+---
+title: "Untitled"
+author: "Daniel Wang"
+date: "11/11/2020"
+output: html_document
+---
+
+```{r}
+devtools::load_all(".")
+library(tidyverse)
+library(ggplot2)
+# library(pgog)
+data(mpg)
+ggplot(mtcars) +
+    geom_bloc(aes(x = c(mpg), height = c(P(mpg | cyl)), y = c(cyl), fill = cyl))
+```
+
+
+```{r}
+library(testthat)
+usethis::use_testthat()
+library(stringr)
+
+test_that("str_length is number of characters", {
+  expect_equal(str_length("a"), 1)
+  expect_equal(str_length("ab"), 2)
+  expect_equal(str_length("abc"), 3)
+})
+
+string <- "Testing is fun!"
+test_that("tests for string", {expect_match(string, "Testing") 
+expect_match(string, "testing")
+expect_match(string, "testing", ignore.case = TRUE)})
+```
+
+
+```{r}
+test_that("parsing things connect to ggplot", {
+obj <- ggplot(mtcars) +
+    geom_bloc(aes(x = c(mpg), height = c(P(mpg | cyl)), y = c(cyl), fill = cyl))
+expect_null(obj)
+})
+```
+
+```{r}
+data(cancer)
+
+disp_x_height <- cancer %>%
+ ggplot() +
+ geom_icon(aes(x = factor(test),
+               height = P(cancer),
+               color = cancer,
+               size = 10
+ ), position = "array")
+vdiffr::expect_doppelganger("x = A, height = P(A), array", disp_x_height)
+
+rlang::last_error()
+```
+
+```{r}
+vdiffr::manage_cases()
+```
+```{r}
+test_that("plots have known output", {
+  # disp_hist_base <- function() hist(mtcars$disp)
+  # expect_doppelganger("disp-histogram-base", disp_hist_base)
+
+  # disp_hist_ggplot <- ggplot(mtcars, aes(disp)) + geom_histogram()
+  # expect_doppelganger("disp-histogram-ggplot", disp_hist_ggplot)
+
+  mpg_plot <- ggplot(mtcars) + geom_bloc(aes(x = c(mpg), height = c(P(mpg | cyl)), y = c(cyl), fill = cyl))
+  expect_doppelganger("mpg_plot", mpg_plot)
+})
+```
+
