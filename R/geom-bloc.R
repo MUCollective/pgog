@@ -127,26 +127,6 @@ GeomBloc <- ggplot2::ggproto(
   setup_data = function(self, data, params){
     #browser()
     
-    # fill.level = levels(as.factor(data$fill))
-    # rows = list()
-    # new.data = data.frame()
-    # copy.data = data.frame(data)
-    # for (i in seq(length(fill.level), 1, -1)) {
-    #   rows[[i]] = which(data$fill == fill.level[i])
-    #   copy.data[rows[[i]], ]$fill = as.numeric(fill.level[length(fill.level) - i + 1])
-    #   new.data = rbind(new.data, copy.data[rows[[i]], ])
-    # }
-    # data = new.data
-
-    new.data = data.frame(data)
-    grp.level = levels(as.factor(data$group))
-    grp = list()
-    for (i in seq(length(grp.level))) {
-      grp[[i]] = which(data$group == as.numeric(grp.level[i]))
-      new.data[grp[[i]], ]$group = as.numeric(grp.level[length(grp.level) - i + 1])
-    }
-    data = new.data
-    
     if ("density" %in% names(data)) {
       #browser()
       # all density plots
