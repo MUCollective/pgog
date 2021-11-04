@@ -1,35 +1,9 @@
-icon_grob = function(data, num_of_icon, num_of_group, connected,
-                     name = NULL, gp = gpar(), vp = NULL) {
-
-  gTree(
-    data = data, num_of_icon = num_of_icon, num_of_group = num_of_group, connected = connected,
-    name = name, gp = gp, vp = vp, cl = "icon_grob"
-  )
-}
-
-makeContent.icon_grob = function(x) {
-  data = x$data
-  canvas_height = convertUnit(unit(1, 'npc'), 'native', valueOnly = TRUE)
-  canvas_length = convertUnit(unit(0, 'npc'), 'native', axisFrom = "y", valueOnly = TRUE)
-  num_of_icon = x$num_of_icon
-  num_of_group = x$num_of_group
-  connected = x$connected
-
-  result = arrangement(canvas_length, canvas_height, NumberOfIcon = num_of_icon,
-                       NumberOfGroups = num_of_group, connected = connected)
-
-
-}
-
-
-
-
 # CanvasLength: the length of the canvas in numeric
 # CanvasHeight: the height of the canvas in numeric
 # NumberOfIcon: number of icon for each group in vector
 # NumberOfGroup: number of groups in integer, default 1
 # connected: whether different groups of icon is connected in boolean, default false
-arrangement = function(CanvasLength, CanvasHeight, NumberOfIcon, NumberOfGroups=1, connected=FALSE) {
+arrangement = function(CanvasLength, CanvasHeight, NumberOfIcon, NumberOfGroups=1, connected=FALSE, ratio=1.0) {
 
   # color vector
   color = c("blue", "green", "yellow", "red", "gray")
@@ -58,7 +32,7 @@ arrangement = function(CanvasLength, CanvasHeight, NumberOfIcon, NumberOfGroups=
 
   # swap height and length then make the recursive call if height is larger than length
   if (CanvasHeight > CanvasLength) {
-    result = arrangement(CanvasHeight, CanvasLength, NumberOfIcon, NumberOfGroups, connected)
+    result = arrangement(CanvasHeight, CanvasLength, NumberOfIcon, NumberOfGroups, connected, ratio)
     for (i in seq(1, length(result))) {
       temp = result[[i]][1]
       result[[i]][1] = result[[i]][2]
@@ -88,6 +62,7 @@ arrangement = function(CanvasLength, CanvasHeight, NumberOfIcon, NumberOfGroups=
     iconPerLine = iconPerLine + ceiling(sqrt(NumberOfIcon)) - 1
     iconSizeHorizontal = CanvasLength / iconPerLine
     iconSizeVertical = CanvasHeight / ceiling(NumberOfIcon / iconPerLine)
+    iconSize = min(c(iconSizeVertical, iconSizeHorizontal)) * ratio
 
     # create list to return using the selected arrangement
     x = 1
@@ -95,7 +70,7 @@ arrangement = function(CanvasLength, CanvasHeight, NumberOfIcon, NumberOfGroups=
     index = 1
     result = list()
     while(index <= NumberOfIcon) {
-      result[[index]] = c((x - 1/2) * iconSizeHorizontal, (y - 1/2) * iconSizeVertical, color[1])
+      result[[index]] = c((x - 1/2) * iconSizeHorizontal, (y - 1/2) * iconSizeVertical, color[1], iconSize)
       index = index + 1
       x = x + 1
       if (x > iconPerLine) {
@@ -111,7 +86,7 @@ arrangement = function(CanvasLength, CanvasHeight, NumberOfIcon, NumberOfGroups=
     if (connected) {
 
       # recursive call as if all groups are one large group
-      result = arrangement(CanvasLength, CanvasHeight, c(sum(NumberOfIcon)), 1, FALSE)
+      result = arrangement(CanvasLength, CanvasHeight, c(sum(NumberOfIcon)), 1, FALSE, ratio)
 
       # change colors in the return value above to make sure different group has different color
       index = NumberOfIcon[1]
@@ -137,6 +112,7 @@ arrangement = function(CanvasLength, CanvasHeight, NumberOfIcon, NumberOfGroups=
       iconHolderPerVerticalLine = which(differences == min(differences))[1]
       iconSizeVertical = CanvasHeight / iconHolderPerVerticalLine
       iconSizeHorizontal = CanvasLength / (sum(ceiling(NumberOfIcon / iconHolderPerVerticalLine)) + NumberOfGroups - 1)
+      iconSize = min(c(iconSizeVertical, iconSizeHorizontal)) * ratio
 
       # create list to return using the selected arrangement
       x = 1
@@ -151,7 +127,7 @@ arrangement = function(CanvasLength, CanvasHeight, NumberOfIcon, NumberOfGroups=
             x = x + 1
             y = 1
           }
-          result[[index]] = c((x - 1/2) * iconSizeHorizontal, (y - 1/2) * iconSizeVertical, color[i])
+          result[[index]] = c((x - 1/2) * iconSizeHorizontal, (y - 1/2) * iconSizeVertical, color[i], iconSize)
         }
         x = x + 2
         y = 0
@@ -164,7 +140,52 @@ arrangement = function(CanvasLength, CanvasHeight, NumberOfIcon, NumberOfGroups=
   return(list())
 }
 
+icon_grob = function(data, num_of_icon, num_of_group, connected, canvas_length, canvas_height, ratio,
+                     name = NULL, gp = gpar(), vp = NULL) {
 
+  gTree(
+    data = data, num_of_icon = num_of_icon, num_of_group = num_of_group, connected = connected,
+    canvas_length = canvas_length, canvas_height = canvas_height, ratio = ratio, name = name, gp = gp, vp = vp, cl = "icon_grob"
+  )
+}
+
+#' @import grid
+#' @export
+makeContent.icon_grob = function(x) {
+
+  # browser()
+  # print(1 / convertUnit(unit(1, 'inches'), 'native', valueOnly = TRUE))
+  # print(1 / convertUnit(unit(1, 'inches'), 'native', axisFrom = "y", valueOnly = TRUE))
+  data = x$data
+  canvas_length = 1 / convertUnit(unit(1, 'inches'), 'native', valueOnly = TRUE)
+  canvas_height = 1 / convertUnit(unit(1, 'inches'), 'native', axisFrom = "y", valueOnly = TRUE)
+  # canvas_length = convertUnit(unit(1, 'npc'), 'native', valueOnly = TRUE)
+  # canvas_height = convertUnit(unit(0, 'npc'), 'native', axisFrom = "y", valueOnly = TRUE)
+  num_of_icon = x$num_of_icon
+  num_of_group = x$num_of_group
+  connected = x$connected
+
+  result = arrangement(canvas_length, canvas_height, NumberOfIcon = num_of_icon,
+                       NumberOfGroups = num_of_group, connected = connected, x$ratio)
+
+  x_vals = c()
+  y_vals = c()
+  cols = c()
+  for (i in seq(length(result)))
+  {
+    x_vals = append(x_vals, as.double(result[[i]][1]) / canvas_length)
+    y_vals = append(y_vals, as.double(result[[i]][2]) /  canvas_height)
+    cols = append(cols, result[[i]][3])
+  }
+
+  grobSize = as.double(result[[1]][4]) / 2 / canvas_height
+
+  # print(x_vals)
+  # print(y_vals)
+  # print(grobSize)
+
+  circleGrob(x_vals, y_vals, grobSize, default.units = "native", gp = x$gp)
+}
 
 
 #' @export
@@ -178,7 +199,8 @@ geom_icon <- function(mapping = NULL,
                       show.legend = NA,
                       inherit.aes = TRUE,
                       offset = 0.01,
-                      prob.struct = NULL){
+                      prob.struct = NULL
+                      ){
 
   # same as in geom_bloc
   # parse prob structure
@@ -232,17 +254,53 @@ geom_icon <- function(mapping = NULL,
 #' @importFrom grid pointsGrob
 #' @importFrom grid gpar
 #' @importFrom ggplot2 aes
-GeomIcon <- ggplot2::ggproto("GeomIcon", ggplot2::GeomPoint,
+GeomIcon <- ggplot2::ggproto("GeomIcon", ggplot2::Geom,
                     required_aes = c("x", "y"),
                     non_missing_aes = c("size", "shape", "colour"),
                     default_aes = ggplot2::aes(
                       shape = 16, colour = "gray", size = 10, fill = NA,
-                      alpha = NA, stroke = 0.5
+                      alpha = NA, stroke = 0.5, ratio = 1.0
                     ),
 
                     setup_data = function(data, params) {
                       #browser()
                       data
+                    },
+
+                    draw_panel = function(self, data, panel_params, coord, na.rm = FALSE) {
+                      coords <- coord$transform(data, panel_params)
+                      str(coords)
+
+                      # assuming the first row of the data is cyl
+                      vec = unlist(coords[1])
+
+                      # browser()
+
+                      canvas_length = convertUnit(unit(1, 'npc'), 'native', valueOnly = TRUE)
+                      canvas_height = convertUnit(unit(0, 'npc'), 'native', axisFrom = "y", valueOnly = TRUE)
+
+                      group_input = length(levels(as.factor(vec)))
+                      icon_input = rep(0, length(levels(as.factor(vec))))
+                      for (i in seq(length(levels(as.factor(vec))))) {
+                        icon_input[i] = length(which(vec == as.numeric(levels(vec)[i])))
+                      }
+
+                      result = arrangement(canvas_length, canvas_height, NumberOfIcon = icon_input,
+                                           NumberOfGroups = group_input, connected = FALSE, ratio = coords$ratio[1])
+
+                      x_vals = c()
+                      y_vals = c()
+                      cols = c()
+                      for (i in seq(length(result)))
+                      {
+                        x_vals = append(x_vals, as.double(result[[i]][1]) / canvas_length)
+                        y_vals = append(y_vals, as.double(result[[i]][2]) /  canvas_height)
+                        cols = append(cols, result[[i]][3])
+                      }
+
+                      # pointsGrob(x_vals, y_vals, default.units = "native", gp = gpar(col = cols,  lwd = 2))
+                      icon_grob(data = vec, num_of_icon = icon_input, num_of_group = group_input,
+                                connected = FALSE, canvas_length, canvas_height, coords$ratio[1], gp = gpar(fill = cols))
                     }
 
 
