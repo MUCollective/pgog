@@ -53,7 +53,6 @@ colorbrewer2 <- rev(c(
   "#0868ac",
   "#084081"))
 
-
 colorbrewer2_warm <- rev(c(
   "#ffffb2",
   "#fecc5c",
