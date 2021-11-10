@@ -150,6 +150,7 @@ icon_grob = function(data, num_of_icon, num_of_group, connected, canvas_length, 
 }
 
 #' @import grid
+#' @export makeContent.icon_grob
 #' @export
 makeContent.icon_grob = function(x) {
 
