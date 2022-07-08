@@ -126,6 +126,7 @@ GeomBloc <- ggplot2::ggproto(
   # from ggplot, geom-ribbon.r
   setup_data = function(self, data, params){
     #browser()
+    
     if ("density" %in% names(data)) {
       #browser()
       # all density plots
