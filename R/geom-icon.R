@@ -153,7 +153,6 @@ icon_grob = function(data, num_of_icon, num_of_group, connected, canvas_length, 
 #' @export
 makeContent.icon_grob = function(x) {
 
-  # browser()
   # print(1 / convertUnit(unit(1, 'inches'), 'native', valueOnly = TRUE))
   # print(1 / convertUnit(unit(1, 'inches'), 'native', axisFrom = "y", valueOnly = TRUE))
   data = x$data
